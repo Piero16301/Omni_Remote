@@ -1,0 +1,28 @@
+name: omni_remote
+description: Application to send and receive data from Arduino and ESP boards using a broker and custom MQTT topics.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+  flutter: ^3.35.0
+
+dependencies:
+  bloc: ^9.0.1
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^9.1.1
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+
+dev_dependencies:
+  bloc_test: ^10.0.0
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.4
+  very_good_analysis: ^10.0.0
+
+flutter:
+  generate: true
+  uses-material-design: true
