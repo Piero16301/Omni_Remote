@@ -2,39 +2,39 @@
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 
-// --- 1. CONFIGURACIÓN DE RED WIFI ---
-const char* ssid = "ENGOMOHE-2.4G";
-const char* password = "0178691930";
+// --- 1. WIFI NETWORK CONFIGURATION ---
+const char* ssid = "SSID_NAME_HERE";
+const char* password = "PASSWORD_HERE";
 
-// --- 2. CONFIGURACIÓN DEL BROKER MQTT (IMPORTANTE) ---
-const char* mqtt_server = "4a3d7cdffc0943709189065b2b48eece.s1.eu.hivemq.cloud";
+// --- 2. MQTT BROKER CONFIGURATION ---
+const char* mqtt_server = "MQTT_BROKER_ADDRESS_HERE";
 const int mqtt_port = 8883;
 
-// --- 3. AUTENTICACIÓN DEL BROKER ---
-const char* mqtt_user = "pmorales";
-const char* mqtt_password = "qweASD123*";
+// --- 3. BROKER AUTHENTICATION ---
+const char* mqtt_user = "MQTT_USERNAME_HERE";
+const char* mqtt_password = "MQTT_PASSWORD_HERE";
 
-// --- 4. DEFINICIÓN DE TÓPICOS ---
-const char* in_topic = "casa/legos/camp_nou/comando"; 
-const char* out_topic = "casa/legos/camp_nou/estado"; 
+// --- 4. TOPIC DEFINITIONS ---
+const char* in_topic = "RECEIVE_TOPIC_HERE";
+const char* out_topic = "STATUS_TOPIC_HERE";
 
-// --- 5. CONFIGURACIÓN DEL HARDWARE ---
+// --- 5. HARDWARE CONFIGURATION ---
 const int RELAY_PIN = 5;
 int led_state = LOW;
 
-// Objetos cliente WiFi y MQTT
+// WiFi and MQTT client objects
 WiFiClientSecure espClient;
 PubSubClient client(espClient);
 
 
 // =========================================================================
-// FUNCIONES DE CONEXIÓN Y RECONEXIÓN
+// CONNECTION AND RECONNECTION FUNCTIONS
 // =========================================================================
 
 void setup_wifi() {
   delay(10);
   Serial.println();
-  Serial.print("Conectando a la red: ");
+  Serial.print("Connecting to network: ");
   Serial.println(ssid);
 
   WiFi.begin(ssid, password);
@@ -45,47 +45,47 @@ void setup_wifi() {
   }
 
   Serial.println("");
-  Serial.println("WiFi Conectado!");
-  Serial.print("Dirección IP: ");
+  Serial.println("WiFi Connected!");
+  Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
 }
 
 void reconnect() {
   while (!client.connected()) {
-    Serial.print("Intentando conexión MQTT...");
+    Serial.print("Attempting MQTT connection...");
 
-    // Genera un ID de Cliente único
-    String clientId = "ESP8266_Cliente_";
+    // Generate a unique Client ID
+    String clientId = "ESP8266_Client_";
     clientId += String(random(0xffff), HEX);
 
-    // Conexión con autenticación (Usuario y Contraseña)
+    // Connection with authentication (Username and Password)
     if (client.connect(clientId.c_str(), mqtt_user, mqtt_password)) {
-      Serial.println("conectado!");
+      Serial.println("connected!");
       
-      // Suscripción al tópico de comando
+      // Subscribe to command topic
       if (client.subscribe(in_topic, 1)) {
-        Serial.print("Suscrito a: ");
+        Serial.print("Subscribed to: ");
         Serial.println(in_topic);
       } else {
-        Serial.print("ERROR: Falló la suscripción a: ");
+        Serial.print("ERROR: Failed to subscribe to: ");
         Serial.println(in_topic);
       }
 
-      // Suscripción al tópico de estado
+      // Subscribe to status topic
       if (client.subscribe(out_topic, 1)) {
-        Serial.print("Suscrito a: ");
+        Serial.print("Subscribed to: ");
         Serial.println(out_topic);
       } else {
-        Serial.print("ERROR: Falló la suscripción a: ");
+        Serial.print("ERROR: Failed to subscribe to: ");
         Serial.println(out_topic);
       }
 
-      // Apagar LED integrado cuando la conexión al broker esté completa
+      // Turn off built-in LED when broker connection is complete
       digitalWrite(LED_BUILTIN, HIGH);
     } else {
-      Serial.print("falló, rc=");
+      Serial.print("failed, rc=");
       Serial.print(client.state());
-      Serial.println(" Intentando de nuevo en 5 segundos...");
+      Serial.println(" Retrying in 5 seconds...");
       delay(5000);
     }
   }
@@ -93,11 +93,11 @@ void reconnect() {
 
 
 // =========================================================================
-// FUNCIÓN DE RECEPCIÓN DE MENSAJES (CALLBACK)
+// MESSAGE RECEPTION FUNCTION (CALLBACK)
 // =========================================================================
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Mensaje recibido en el tópico: ");
+  Serial.print("Message received on topic: ");
   Serial.println(topic);
 
   String messageTemp;
@@ -105,24 +105,24 @@ void callback(char* topic, byte* payload, unsigned int length) {
     messageTemp += (char)payload[i];
   }
 
-  Serial.print("Mensaje: ");
+  Serial.print("Message: ");
   Serial.println(messageTemp);
 
-  // Procesar solo los tópicos definidos (in_topic y out_topic)
+  // Process only defined topics (in_topic and out_topic)
   if (String(topic) == in_topic || String(topic) == out_topic) {
     int new_state;
     int pin_output;
 
-    // Mapeo de ON/OFF a la lógica del pin (Activo-Alto para LED externo)
+    // Map ON/OFF to pin logic (Active-High for external LED)
     if (messageTemp == "1" || messageTemp.equalsIgnoreCase("ON")) {
-      new_state = HIGH; 
-      pin_output = HIGH; 
+      new_state = HIGH;
+      pin_output = HIGH;
     } else if (messageTemp == "0" || messageTemp.equalsIgnoreCase("OFF")) {
-      new_state = LOW; 
-      pin_output = LOW;  
+      new_state = LOW;
+      pin_output = LOW;
     } else {
-      Serial.println("Comando MQTT inválido.");
-      return; 
+      Serial.println("Invalid MQTT command.");
+      return;
     }
 
     if (new_state != led_state) {
@@ -130,11 +130,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
         digitalWrite(RELAY_PIN, pin_output);
 
-        Serial.print("Luz cambiada a: ");
-        Serial.println(led_state == HIGH ? "ENCENDIDO" : "APAGADO");
+        Serial.print("Light changed to: ");
+        Serial.println(led_state == HIGH ? "ON" : "OFF");
 
-        // Solo publica RETROALIMENTACIÓN si el mensaje proviene del tópico de COMANDO
-        // Evita un loop infinito al recibir el mensaje retenido
+        // Only publish FEEDBACK if the message comes from the COMMAND topic
+        // Avoids an infinite loop when receiving the retained message
         if (String(topic) == in_topic) {
           String status_msg = (led_state == HIGH) ? "1" : "0";
           client.publish(out_topic, (uint8_t*)status_msg.c_str(), status_msg.length(), true);
@@ -145,15 +145,15 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 
 // =========================================================================
-// SETUP Y LOOP
+// SETUP AND LOOP
 // =========================================================================
 
 void setup() {
   Serial.begin(115200);
 
-  // Configurar LED integrado
+  // Configure built-in LED
   pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW); // LED ON (LOW enciende el LED integrado en ESP8266)
+  digitalWrite(LED_BUILTIN, LOW); // LED ON (LOW turns on the built-in LED on ESP8266)
 
   pinMode(RELAY_PIN, OUTPUT);
 
