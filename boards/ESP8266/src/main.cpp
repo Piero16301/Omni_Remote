@@ -3,20 +3,21 @@
 #include <PubSubClient.h>
 
 // --- 1. WIFI NETWORK CONFIGURATION ---
-const char* ssid = "SSID_NAME_HERE";
-const char* password = "PASSWORD_HERE";
+const char* ssid = "ENGOMOHE-2.4G";
+const char* password = "0178691930";
 
 // --- 2. MQTT BROKER CONFIGURATION ---
-const char* mqtt_server = "MQTT_BROKER_ADDRESS_HERE";
+const char* mqtt_server = "4a3d7cdffc0943709189065b2b48eece.s1.eu.hivemq.cloud";
 const int mqtt_port = 8883;
 
 // --- 3. BROKER AUTHENTICATION ---
-const char* mqtt_user = "MQTT_USERNAME_HERE";
-const char* mqtt_password = "MQTT_PASSWORD_HERE";
+const char* mqtt_user = "pmorales";
+const char* mqtt_password = "qweASD123*";
 
 // --- 4. TOPIC DEFINITIONS ---
-const char* in_topic = "RECEIVE_TOPIC_HERE";
-const char* out_topic = "STATUS_TOPIC_HERE";
+const char* command_topic = "legos/camp_nou/command";
+const char* status_topic = "legos/camp_nou/status";
+const char* online_topic = "legos/camp_nou/online";
 
 // --- 5. HARDWARE CONFIGURATION ---
 const int RELAY_PIN = 5;
@@ -59,25 +60,36 @@ void reconnect() {
     clientId += String(random(0xffff), HEX);
 
     // Connection with authentication (Username and Password)
-    if (client.connect(clientId.c_str(), mqtt_user, mqtt_password)) {
+    if (client.connect(
+      clientId.c_str(),
+      mqtt_user,
+      mqtt_password,
+      online_topic,
+      1,
+      true,
+      "0"
+    )) {
       Serial.println("connected!");
+
+      // Publish "1" status
+      client.publish(online_topic, "1", true);
       
       // Subscribe to command topic
-      if (client.subscribe(in_topic, 1)) {
+      if (client.subscribe(command_topic, 1)) {
         Serial.print("Subscribed to: ");
-        Serial.println(in_topic);
+        Serial.println(command_topic);
       } else {
         Serial.print("ERROR: Failed to subscribe to: ");
-        Serial.println(in_topic);
+        Serial.println(command_topic);
       }
 
       // Subscribe to status topic
-      if (client.subscribe(out_topic, 1)) {
+      if (client.subscribe(status_topic, 1)) {
         Serial.print("Subscribed to: ");
-        Serial.println(out_topic);
+        Serial.println(status_topic);
       } else {
         Serial.print("ERROR: Failed to subscribe to: ");
-        Serial.println(out_topic);
+        Serial.println(status_topic);
       }
 
       // Turn off built-in LED when broker connection is complete
@@ -108,18 +120,15 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message: ");
   Serial.println(messageTemp);
 
-  // Process only defined topics (in_topic and out_topic)
-  if (String(topic) == in_topic || String(topic) == out_topic) {
+  // Process only defined topics (command_topic and status_topic)
+  if (String(topic) == command_topic || String(topic) == status_topic) {
     int new_state;
-    int pin_output;
 
     // Map ON/OFF to pin logic (Active-High for external LED)
     if (messageTemp == "1" || messageTemp.equalsIgnoreCase("ON")) {
       new_state = HIGH;
-      pin_output = HIGH;
     } else if (messageTemp == "0" || messageTemp.equalsIgnoreCase("OFF")) {
       new_state = LOW;
-      pin_output = LOW;
     } else {
       Serial.println("Invalid MQTT command.");
       return;
@@ -128,16 +137,16 @@ void callback(char* topic, byte* payload, unsigned int length) {
     if (new_state != led_state) {
         led_state = new_state;
 
-        digitalWrite(RELAY_PIN, pin_output);
+        digitalWrite(RELAY_PIN, new_state);
 
         Serial.print("Light changed to: ");
         Serial.println(led_state == HIGH ? "ON" : "OFF");
 
         // Only publish FEEDBACK if the message comes from the COMMAND topic
         // Avoids an infinite loop when receiving the retained message
-        if (String(topic) == in_topic) {
+        if (String(topic) == command_topic) {
           String status_msg = (led_state == HIGH) ? "1" : "0";
-          client.publish(out_topic, (uint8_t*)status_msg.c_str(), status_msg.length(), true);
+          client.publish(status_topic, (uint8_t*)status_msg.c_str(), status_msg.length(), true);
         }
     }
   }
