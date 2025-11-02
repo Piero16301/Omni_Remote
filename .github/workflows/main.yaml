@@ -71,7 +71,7 @@ jobs:
         run: |
           flutter pub global activate very_good_cli
           very_good packages get --recursive
-      - name: 🧪 Run Tests and Generate Coverage Badge
+      - name: 🧪 Run and Generate Coverage Badge
         run: |
           dart run test_coverage_badge
       - name: 📊 Upload Coverage Report

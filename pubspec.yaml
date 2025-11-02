@@ -9,17 +9,30 @@ environment:
 
 dependencies:
   bloc: ^9.0.1
+  equatable: ^2.0.7
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
   flutter_localizations:
     sdk: flutter
+  go_router: ^16.3.0
+  google_fonts: ^6.3.2
+  hive: ^2.2.3
   intl: ^0.20.2
+  mqtt_client: ^10.11.1
+  shared_preferences: ^2.5.3
+  user_api:
+    path: packages/user_api
+  user_api_remote:
+    path: packages/user_api_remote
+  user_repository:
+    path: packages/user_repository
 
 dev_dependencies:
   bloc_test: ^10.0.0
   flutter_test:
     sdk: flutter
+  mockito: ^5.5.0
   mocktail: ^1.0.4
   test_coverage_badge: ^0.3.2
   very_good_analysis: ^10.0.0
