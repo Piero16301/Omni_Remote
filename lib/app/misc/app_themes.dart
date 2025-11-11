@@ -4,7 +4,7 @@ import 'package:omni_remote/app/app.dart';
 
 class AppThemes {
   static ThemeData lightTheme({required String baseColor}) {
-    final color = AppHelpers.getColorByName(baseColor);
+    final color = ColorHelper.getColorByName(baseColor);
     return ThemeData(
       useMaterial3: true,
       fontFamily: GoogleFonts.rubik().fontFamily,
@@ -16,7 +16,7 @@ class AppThemes {
   }
 
   static ThemeData darkTheme({required String baseColor}) {
-    final color = AppHelpers.getColorByName(baseColor);
+    final color = ColorHelper.getColorByName(baseColor);
     return ThemeData(
       useMaterial3: true,
       fontFamily: GoogleFonts.rubik().fontFamily,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/home/widgets/widgets.dart';
 
 class HomeView extends StatefulWidget {
@@ -9,11 +10,11 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  bool _livingRoomExpanded = true;
+  bool _livingRoomEnabled = true;
 
-  bool _mainLightOn = true;
-  double _ambientLampBrightness = 75;
-  double _thermostatTemp = 65.5;
+  bool _mainLight = true;
+  double _roomTemperature = 30.5;
+  double _soundbarVolume = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -33,66 +34,85 @@ class _HomeViewState extends State<HomeView> {
       body: ListView(
         children: [
           GroupCard(
-            icon: Icons.weekend_outlined,
-            title: 'Living Room',
-            subtitle: '3 Devices',
-            isActive: _livingRoomExpanded,
-            onActivate: () {
+            title: 'Sala',
+            subtitle: '3 dispositivos',
+            icon: Icons.tv,
+            isEnabled: _livingRoomEnabled,
+            onEnable: () {
               setState(() {
-                _livingRoomExpanded = !_livingRoomExpanded;
+                _livingRoomEnabled = !_livingRoomEnabled;
               });
             },
             devices: [
               DeviceBooleanTile(
-                icon: Icons.lightbulb_outline,
-                title: 'Main Light',
-                subtitle: _mainLightOn ? 'On' : 'Off',
-                value: _mainLightOn,
+                device: DeviceModel(
+                  id: '1',
+                  title: 'Luz principal',
+                  subtitle: _mainLight ? 'Encendida' : 'Apagada',
+                  icon: 'LIGHT',
+                  tileType: DeviceTileType.boolean,
+                ),
+                value: _mainLight,
                 onChanged: ({value}) {
                   setState(() {
-                    _mainLightOn = value ?? false;
+                    _mainLight = value ?? false;
                   });
                 },
               ),
               DeviceNumberTile(
-                icon: Icons.lightbulb_outline,
-                title: 'Ambient Lamp',
-                subtitle: 'Brightness',
-                value: _ambientLampBrightness,
+                device: DeviceModel(
+                  id: '2',
+                  title: 'Habitación',
+                  subtitle: 'Termostato',
+                  icon: 'THERMOSTAT',
+                  tileType: DeviceTileType.number,
+                  rangeMin: 10,
+                  rangeMax: 80,
+                  divisions: 7,
+                  interval: 0.5,
+                ),
+                value: _roomTemperature,
                 onChanged: (value) {
                   setState(() {
-                    _ambientLampBrightness = value;
+                    _roomTemperature = value;
                   });
                 },
                 onIncrement: () {
                   setState(() {
-                    _ambientLampBrightness += 0.5;
+                    _roomTemperature += 0.5;
                   });
                 },
                 onDecrement: () {
                   setState(() {
-                    _ambientLampBrightness -= 0.5;
+                    _roomTemperature -= 0.5;
                   });
                 },
               ),
               DeviceNumberTile(
-                icon: Icons.thermostat_outlined,
-                title: 'Thermostat',
-                subtitle: 'Temperature',
-                value: _thermostatTemp,
+                device: DeviceModel(
+                  id: '3',
+                  title: 'Habitación',
+                  subtitle: 'Barra de sonido',
+                  icon: 'SPEAKER',
+                  tileType: DeviceTileType.number,
+                  rangeMax: 20,
+                  divisions: 20,
+                  interval: 1,
+                ),
+                value: _soundbarVolume,
                 onChanged: (value) {
                   setState(() {
-                    _thermostatTemp = value;
+                    _soundbarVolume = value;
                   });
                 },
                 onIncrement: () {
                   setState(() {
-                    _thermostatTemp += 0.5;
+                    _soundbarVolume += 1;
                   });
                 },
                 onDecrement: () {
                   setState(() {
-                    _thermostatTemp -= 0.5;
+                    _soundbarVolume -= 1;
                   });
                 },
               ),

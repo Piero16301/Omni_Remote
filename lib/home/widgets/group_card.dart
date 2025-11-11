@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 
 class GroupCard extends StatelessWidget {
   const GroupCard({
-    required this.icon,
     required this.title,
     required this.subtitle,
-    required this.isActive,
-    required this.onActivate,
+    required this.icon,
+    required this.isEnabled,
+    required this.onEnable,
     required this.devices,
     super.key,
   });
 
-  final IconData icon;
   final String title;
   final String subtitle;
-  final bool isActive;
-  final void Function() onActivate;
+  final IconData icon;
+  final bool isEnabled;
+  final void Function() onEnable;
   final List<Widget> devices;
 
   @override
@@ -32,8 +32,10 @@ class GroupCard extends StatelessWidget {
               borderRadius: BorderRadius.only(
                 topLeft: const Radius.circular(16),
                 topRight: const Radius.circular(16),
-                bottomLeft: isActive ? Radius.zero : const Radius.circular(16),
-                bottomRight: isActive ? Radius.zero : const Radius.circular(16),
+                bottomLeft: isEnabled ? Radius.zero : const Radius.circular(16),
+                bottomRight: isEnabled
+                    ? Radius.zero
+                    : const Radius.circular(16),
               ),
               color: Theme.of(context).colorScheme.primary.withValues(
                 alpha: 0.1,
@@ -70,8 +72,8 @@ class GroupCard extends StatelessWidget {
                     ),
                   ),
                   Switch(
-                    value: isActive,
-                    onChanged: (_) => onActivate(),
+                    value: isEnabled,
+                    onChanged: (_) => onEnable(),
                   ),
                 ],
               ),
@@ -80,20 +82,20 @@ class GroupCard extends StatelessWidget {
           AnimatedSize(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: 28,
-                right: 12,
-                top: 12,
-                bottom: 12,
-              ),
-              child: Column(
-                spacing: 18,
-                children: [
-                  if (isActive) ...devices,
-                ],
-              ),
-            ),
+            child: isEnabled
+                ? Padding(
+                    padding: const EdgeInsets.only(
+                      left: 28,
+                      right: 12,
+                      top: 12,
+                      bottom: 12,
+                    ),
+                    child: Column(
+                      spacing: 18,
+                      children: devices,
+                    ),
+                  )
+                : const SizedBox.shrink(),
           ),
         ],
       ),

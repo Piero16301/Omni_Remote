@@ -5,6 +5,9 @@ import 'package:omni_remote/home/home.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  static const String pageName = 'home';
+  static const String pagePath = '/';
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

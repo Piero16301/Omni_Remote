@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:omni_remote/app/app.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'app_state.dart';
@@ -34,7 +35,9 @@ class AppCubit extends Cubit<AppState> {
     // Setting the base color to INDIGO if it's not set
     final baseColor = userRepository.getBaseColor();
     if (baseColor == null) {
-      await userRepository.saveBaseColor(baseColor: 'INDIGO');
+      await userRepository.saveBaseColor(
+        baseColor: AppVariables.defaultBaseColor,
+      );
     }
     emit(state.copyWith(baseColor: userRepository.getBaseColor()));
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AppHelpers {
+class ColorHelper {
   static const Map<String, Color> colorMap = <String, Color>{
     'RED': Colors.red,
     'PINK': Colors.pink,
