@@ -1,30 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:omni_remote/app/app.dart';
+import 'package:user_api/user_api.dart';
 
 class GroupCard extends StatelessWidget {
   const GroupCard({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.isEnabled,
+    required this.group,
     required this.onEnable,
     required this.devices,
     super.key,
   });
 
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final bool isEnabled;
+  final GroupModel group;
   final void Function() onEnable;
   final List<Widget> devices;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
       child: Column(
         children: [
           Container(
@@ -32,8 +25,10 @@ class GroupCard extends StatelessWidget {
               borderRadius: BorderRadius.only(
                 topLeft: const Radius.circular(16),
                 topRight: const Radius.circular(16),
-                bottomLeft: isEnabled ? Radius.zero : const Radius.circular(16),
-                bottomRight: isEnabled
+                bottomLeft: group.enabled
+                    ? Radius.zero
+                    : const Radius.circular(16),
+                bottomRight: group.enabled
                     ? Radius.zero
                     : const Radius.circular(16),
               ),
@@ -46,9 +41,10 @@ class GroupCard extends StatelessWidget {
               child: Row(
                 spacing: 16,
                 children: [
-                  Icon(
-                    icon,
+                  HugeIcon(
+                    icon: IconHelper.getIconByName(group.icon),
                     size: 32,
+                    strokeWidth: 2,
                   ),
                   Expanded(
                     child: Column(
@@ -56,14 +52,14 @@ class GroupCard extends StatelessWidget {
                       spacing: 4,
                       children: [
                         Text(
-                          title,
+                          group.title,
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          subtitle,
+                          group.subtitle,
                           style: const TextStyle(
                             fontSize: 16,
                           ),
@@ -72,7 +68,7 @@ class GroupCard extends StatelessWidget {
                     ),
                   ),
                   Switch(
-                    value: isEnabled,
+                    value: group.enabled,
                     onChanged: (_) => onEnable(),
                   ),
                 ],
@@ -82,14 +78,9 @@ class GroupCard extends StatelessWidget {
           AnimatedSize(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            child: isEnabled
+            child: group.enabled
                 ? Padding(
-                    padding: const EdgeInsets.only(
-                      left: 28,
-                      right: 12,
-                      top: 12,
-                      bottom: 12,
-                    ),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
                       spacing: 18,
                       children: devices,

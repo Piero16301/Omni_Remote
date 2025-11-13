@@ -3,22 +3,22 @@ part of 'app_cubit.dart';
 class AppState extends Equatable {
   const AppState({
     this.language = 'en_US',
-    this.darkTheme = false,
+    this.theme = 'LIGHT',
     this.baseColor = 'INDIGO',
   });
 
   final String language;
-  final bool darkTheme;
+  final String theme;
   final String baseColor;
 
   AppState copyWith({
     String? language,
-    bool? darkTheme,
+    String? theme,
     String? baseColor,
   }) {
     return AppState(
       language: language ?? this.language,
-      darkTheme: darkTheme ?? this.darkTheme,
+      theme: theme ?? this.theme,
       baseColor: baseColor ?? this.baseColor,
     );
   }
@@ -26,7 +26,7 @@ class AppState extends Equatable {
   @override
   List<Object> get props => [
     language,
-    darkTheme,
+    theme,
     baseColor,
   ];
 }

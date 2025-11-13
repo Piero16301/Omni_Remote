@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:omni_remote/app/app.dart';
+import 'package:user_api/user_api.dart';
 
 class DeviceNumberTile extends StatelessWidget {
   const DeviceNumberTile({
@@ -9,6 +10,7 @@ class DeviceNumberTile extends StatelessWidget {
     required this.onChanged,
     required this.onIncrement,
     required this.onDecrement,
+    this.online = false,
     super.key,
   });
 
@@ -17,6 +19,7 @@ class DeviceNumberTile extends StatelessWidget {
   final void Function(double value) onChanged;
   final void Function() onIncrement;
   final void Function() onDecrement;
+  final bool online;
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +28,18 @@ class DeviceNumberTile extends StatelessWidget {
         Row(
           spacing: 16,
           children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: online ? Colors.green : Colors.red,
+                shape: BoxShape.circle,
+              ),
+            ),
             HugeIcon(
               icon: IconHelper.getIconByName(device.icon),
               size: 28,
+              strokeWidth: 2,
             ),
             Expanded(
               child: Column(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:omni_remote/app/app.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:omni_remote/home/widgets/widgets.dart';
+import 'package:user_api/user_api.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -24,20 +25,24 @@ class _HomeViewState extends State<HomeView> {
           'Dashboard',
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add, size: 28),
-            onPressed: () {},
+        leading: IconButton(
+          onPressed: () {},
+          icon: const HugeIcon(
+            icon: HugeIcons.strokeRoundedSettings01,
+            strokeWidth: 2,
           ),
-        ],
+        ),
       ),
       body: ListView(
         children: [
           GroupCard(
-            title: 'Sala',
-            subtitle: '3 dispositivos',
-            icon: Icons.tv,
-            isEnabled: _livingRoomEnabled,
+            group: GroupModel(
+              id: 1,
+              title: 'Sala',
+              subtitle: '3 dispositivos',
+              icon: 'SMART_TV',
+              enabled: _livingRoomEnabled,
+            ),
             onEnable: () {
               setState(() {
                 _livingRoomEnabled = !_livingRoomEnabled;
@@ -58,6 +63,7 @@ class _HomeViewState extends State<HomeView> {
                     _mainLight = value ?? false;
                   });
                 },
+                online: true,
               ),
               DeviceNumberTile(
                 device: DeviceModel(
@@ -115,10 +121,39 @@ class _HomeViewState extends State<HomeView> {
                     _soundbarVolume -= 1;
                   });
                 },
+                online: true,
               ),
             ],
           ),
+          Card(
+            child: InkWell(
+              onTap: () {},
+              borderRadius: BorderRadius.circular(16),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    HugeIcon(
+                      icon: HugeIcons.strokeRoundedDashboardSquareAdd,
+                      strokeWidth: 2,
+                    ),
+                    SizedBox(width: 8),
+                    Text('Nuevo grupo'),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const HugeIcon(
+          icon: HugeIcons.strokeRoundedComputerAdd,
+          size: 28,
+          strokeWidth: 2,
+        ),
       ),
     );
   }

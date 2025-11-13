@@ -1,27 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:omni_remote/app/app.dart';
+import 'package:user_api/user_api.dart';
 
 class DeviceBooleanTile extends StatelessWidget {
   const DeviceBooleanTile({
     required this.device,
     required this.value,
     required this.onChanged,
+    this.online = false,
     super.key,
   });
 
   final DeviceModel device;
   final bool value;
   final void Function({bool? value}) onChanged;
+  final bool online;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       spacing: 16,
       children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: online ? Colors.green : Colors.red,
+            shape: BoxShape.circle,
+          ),
+        ),
         HugeIcon(
           icon: IconHelper.getIconByName(device.icon),
           size: 28,
+          strokeWidth: 2,
         ),
         Expanded(
           child: Column(

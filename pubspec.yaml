@@ -22,7 +22,6 @@ dependencies:
   hugeicons: ^1.1.1
   intl: ^0.20.2
   mqtt_client: ^10.11.1
-  shared_preferences: ^2.5.3
   user_api:
     path: packages/user_api
   user_api_remote:
@@ -32,10 +31,8 @@ dependencies:
 
 dev_dependencies:
   bloc_test: ^10.0.0
-  build_runner: ^2.4.13
   flutter_test:
     sdk: flutter
-  hive_generator: ^2.0.1
   mockito: ^5.4.4
   mocktail: ^1.0.4
   test_coverage_badge: ^0.3.2

@@ -9,7 +9,7 @@ class IconHelper {
         'THERMOMETER': HugeIcons.strokeRoundedThermometer,
         'THERMOSTAT': HugeIcons.strokeRoundedTemperature,
         'AIR_CONDITIONER': HugeIcons.strokeRoundedAirbnb,
-        'SMART_TV': HugeIcons.strokeRoundedSmartWatch01,
+        'SMART_TV': HugeIcons.strokeRoundedTv01,
         'CAMERA': HugeIcons.strokeRoundedCamera01,
         'SECURITY_CAMERA': HugeIcons.strokeRoundedCctvCamera,
         'DOOR_LOCK': HugeIcons.strokeRoundedDoorLock,

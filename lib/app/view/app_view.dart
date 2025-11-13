@@ -39,7 +39,7 @@ class _AppViewState extends State<AppView> {
         darkTheme: AppThemes.darkTheme(baseColor: state.baseColor),
         themeAnimationCurve: Curves.easeInOut,
         themeAnimationDuration: const Duration(milliseconds: 400),
-        themeMode: state.darkTheme ? ThemeMode.dark : ThemeMode.light,
+        themeMode: ThemeHelper.getThemeByName(state.theme),
       ),
     );
   }

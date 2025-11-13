@@ -12,7 +12,7 @@ class _MockUserApi extends IUserApi {
   String? getBaseColor() => null;
 
   @override
-  bool? getDarkTheme() => null;
+  String? getTheme() => null;
 
   @override
   String? getLanguage() => null;
@@ -21,10 +21,22 @@ class _MockUserApi extends IUserApi {
   Future<void> saveBaseColor({String baseColor = 'INDIGO'}) async {}
 
   @override
-  Future<void> saveDarkTheme({required bool darkTheme}) async {}
+  Future<void> saveTheme({String theme = 'DARK'}) async {}
 
   @override
   Future<void> saveLanguage({String language = 'es_ES'}) async {}
+
+  @override
+  Future<void> saveGroup({required GroupModel group}) async {}
+
+  @override
+  List<GroupModel> getGroups() => [];
+
+  @override
+  Future<void> updateGroup({required GroupModel group}) async {}
+
+  @override
+  Future<void> deleteGroup({required int groupId}) async {}
 }
 
 void main() {

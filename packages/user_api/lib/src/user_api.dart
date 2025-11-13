@@ -1,3 +1,5 @@
+import 'package:user_api/user_api.dart';
+
 /// {@template user_api}
 /// User API Package
 /// {@endtemplate}
@@ -11,15 +13,27 @@ abstract class IUserApi {
   /// Get language from local storage
   String? getLanguage();
 
-  /// Save dark theme preference in local storage
-  Future<void> saveDarkTheme({required bool darkTheme});
+  /// Save theme preference in local storage
+  Future<void> saveTheme({required String theme});
 
-  /// Get dark theme preference from local storage
-  bool? getDarkTheme();
+  /// Get theme preference from local storage
+  String? getTheme();
 
   /// Save base color in local storage
   Future<void> saveBaseColor({required String baseColor});
 
   /// Get base color from local storage
   String? getBaseColor();
+
+  /// Save a group to the box
+  Future<void> saveGroup({required GroupModel group});
+
+  /// Get all groups in order
+  List<GroupModel> getGroups();
+
+  /// Update a group by its id
+  Future<void> updateGroup({required GroupModel group});
+
+  /// Delete a group by its id
+  Future<void> deleteGroup({required int groupId});
 }

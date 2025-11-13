@@ -12,6 +12,12 @@ class AppThemes {
       colorScheme: ColorScheme.fromSeed(
         seedColor: color,
       ),
+      cardTheme: CardThemeData(
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
     );
   }
 
@@ -24,6 +30,12 @@ class AppThemes {
       colorScheme: ColorScheme.fromSeed(
         seedColor: color,
         brightness: Brightness.dark,
+      ),
+      cardTheme: CardThemeData(
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
       ),
     );
   }

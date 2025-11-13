@@ -16,12 +16,12 @@ class UserRepository {
   /// Get language from local storage
   String? getLanguage() => _userApi.getLanguage();
 
-  /// Save dark theme preference in local storage
-  Future<void> saveDarkTheme({required bool darkTheme}) =>
-      _userApi.saveDarkTheme(darkTheme: darkTheme);
+  /// Save theme preference in local storage
+  Future<void> saveTheme({required String theme}) =>
+      _userApi.saveTheme(theme: theme);
 
-  /// Get dark theme preference from local storage
-  bool? getDarkTheme() => _userApi.getDarkTheme();
+  /// Get theme preference from local storage
+  String? getTheme() => _userApi.getTheme();
 
   /// Save base color in local storage
   Future<void> saveBaseColor({required String baseColor}) =>
@@ -29,4 +29,19 @@ class UserRepository {
 
   /// Get save color from local storage
   String? getBaseColor() => _userApi.getBaseColor();
+
+  /// Save a group to the box
+  Future<void> saveGroup({required GroupModel group}) =>
+      _userApi.saveGroup(group: group);
+
+  /// Get all groups in order
+  List<GroupModel> getGroups() => _userApi.getGroups();
+
+  /// Update a group by its id
+  Future<void> updateGroup({required GroupModel group}) =>
+      _userApi.updateGroup(group: group);
+
+  /// Delete a group by its id
+  Future<void> deleteGroup({required int groupId}) =>
+      _userApi.deleteGroup(groupId: groupId);
 }

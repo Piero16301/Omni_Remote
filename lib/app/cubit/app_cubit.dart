@@ -23,14 +23,14 @@ class AppCubit extends Cubit<AppState> {
     emit(state.copyWith(language: userRepository.getLanguage()));
 
     // Setting the theme to the device theme if it's not set
-    final darkTheme = userRepository.getDarkTheme();
-    if (darkTheme == null) {
+    final theme = userRepository.getTheme();
+    if (theme == null) {
       final deviceBrightness = PlatformDispatcher.instance.platformBrightness;
-      await userRepository.saveDarkTheme(
-        darkTheme: deviceBrightness == Brightness.dark,
+      await userRepository.saveTheme(
+        theme: deviceBrightness == Brightness.dark ? 'DARK' : 'LIGHT',
       );
     }
-    emit(state.copyWith(darkTheme: userRepository.getDarkTheme()));
+    emit(state.copyWith(theme: userRepository.getTheme()));
 
     // Setting the base color to INDIGO if it's not set
     final baseColor = userRepository.getBaseColor();
@@ -47,9 +47,9 @@ class AppCubit extends Cubit<AppState> {
     emit(state.copyWith(language: language));
   }
 
-  Future<void> changeTheme({required bool darkTheme}) async {
-    await userRepository.saveDarkTheme(darkTheme: darkTheme);
-    emit(state.copyWith(darkTheme: darkTheme));
+  Future<void> changeTheme({required String theme}) async {
+    await userRepository.saveTheme(theme: theme);
+    emit(state.copyWith(theme: theme));
   }
 
   Future<void> changeBaseColor({required String baseColor}) async {

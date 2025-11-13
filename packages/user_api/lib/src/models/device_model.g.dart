@@ -6,6 +6,7 @@ part of 'device_model.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
+/// Adapter for DeviceModel
 class DeviceModelAdapter extends TypeAdapter<DeviceModel> {
   @override
   final int typeId = 1;
@@ -66,6 +67,7 @@ class DeviceModelAdapter extends TypeAdapter<DeviceModel> {
           typeId == other.typeId;
 }
 
+/// Adapter for DeviceTileType enum
 class DeviceTileTypeAdapter extends TypeAdapter<DeviceTileType> {
   @override
   final int typeId = 0;
