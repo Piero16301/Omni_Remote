@@ -36,7 +36,7 @@ class UserApiRemote implements IUserApi {
       await Hive.openBox<String>(kSettingsBoxName);
     }
     if (!Hive.isBoxOpen(kGroupsBoxName)) {
-      await Hive.openBox<dynamic>(kGroupsBoxName);
+      await Hive.openBox<GroupModel>(kGroupsBoxName);
     }
   }
 

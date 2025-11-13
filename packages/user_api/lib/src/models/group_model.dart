@@ -33,7 +33,7 @@ class GroupModel {
   final String icon;
 
   /// Indicates if the group is enabled
-  @HiveField(4, defaultValue: false)
+  @HiveField(4, defaultValue: true)
   final bool enabled;
 
   /// List of devices in the group

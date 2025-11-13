@@ -1,7 +1,33 @@
 import 'package:hugeicons/hugeicons.dart';
 
 class IconHelper {
+  static const String getGroupFirstIcon = 'BEDROOM';
+  static const String getDeviceFirstIcon = 'LIGHT';
+
   static const Map<String, List<List<dynamic>>> iconMap =
+      <String, List<List<dynamic>>>{
+        // Icons for Devices
+        ...deviceIcons,
+
+        // Icons for Groups
+        ...groupIcons,
+      };
+
+  static const Map<String, List<List<dynamic>>> groupIcons =
+      <String, List<List<dynamic>>>{
+        'BEDROOM': HugeIcons.strokeRoundedBed,
+        'LIVING_ROOM': HugeIcons.strokeRoundedSofa01,
+        'KITCHEN': HugeIcons.strokeRoundedKitchenUtensils,
+        'BATHROOM': HugeIcons.strokeRoundedBathtub01,
+        'OFFICE': HugeIcons.strokeRoundedOfficeChair,
+        'GARAGE': HugeIcons.strokeRoundedGarage,
+        'GARDEN': HugeIcons.strokeRoundedPlant01,
+        'DINING_ROOM': HugeIcons.strokeRoundedDiningTable,
+        'KIDS_ROOM': HugeIcons.strokeRoundedKid,
+        'BASEMENT': HugeIcons.strokeRoundedHome01,
+      };
+
+  static const Map<String, List<List<dynamic>>> deviceIcons =
       <String, List<List<dynamic>>>{
         'LIGHT': HugeIcons.strokeRoundedLamp,
         'BULB': HugeIcons.strokeRoundedBulb,

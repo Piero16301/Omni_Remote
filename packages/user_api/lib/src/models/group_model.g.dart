@@ -6,7 +6,7 @@ part of 'group_model.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-/// Adapter for GroupModel
+/// A [TypeAdapter] for the [GroupModel] class.
 class GroupModelAdapter extends TypeAdapter<GroupModel> {
   @override
   final int typeId = 2;
@@ -21,7 +21,7 @@ class GroupModelAdapter extends TypeAdapter<GroupModel> {
       title: fields[1] == null ? '' : fields[1] as String,
       subtitle: fields[2] == null ? '' : fields[2] as String,
       icon: fields[3] == null ? '' : fields[3] as String,
-      enabled: !(fields[4] == null) && fields[4] as bool,
+      enabled: fields[4] == null || fields[4] as bool,
       id: fields[0] == null ? 0 : fields[0] as int,
       devices: fields[5] == null ? [] : (fields[5] as List).cast<DeviceModel>(),
     );

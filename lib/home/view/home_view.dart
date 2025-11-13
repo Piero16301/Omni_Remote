@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:omni_remote/home/widgets/widgets.dart';
+import 'package:omni_remote/modify_group/modify_group.dart';
 import 'package:user_api/user_api.dart';
 
 class HomeView extends StatefulWidget {
@@ -127,7 +129,7 @@ class _HomeViewState extends State<HomeView> {
           ),
           Card(
             child: InkWell(
-              onTap: () {},
+              onTap: () => context.pushNamed(ModifyGroupPage.pageName),
               borderRadius: BorderRadius.circular(16),
               child: const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
