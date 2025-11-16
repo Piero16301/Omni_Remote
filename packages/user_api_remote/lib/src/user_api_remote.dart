@@ -1,4 +1,5 @@
-import 'package:hive/hive.dart';
+import 'package:flutter/foundation.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:user_api/user_api.dart';
 
 /// {@template user_api_remote}
@@ -71,7 +72,12 @@ class UserApiRemote implements IUserApi {
   }
 
   @override
-  Future<void> saveGroup({required GroupModel group}) async {
+  ValueListenable<Box<GroupModel>> getGroupsListenable() {
+    return _groupsBox.listenable();
+  }
+
+  @override
+  Future<void> createGroup({required GroupModel group}) async {
     final index = await _groupsBox.add(group);
     await _groupsBox.putAt(index, group.copyWith(id: index));
   }

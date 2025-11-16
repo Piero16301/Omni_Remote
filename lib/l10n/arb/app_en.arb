@@ -1,7 +1,36 @@
 {
     "@@locale": "en",
-    "counterAppBarTitle": "Counter",
-    "@counterAppBarTitle": {
-        "description": "Text shown in the AppBar of the Counter Page"
-    }
+    "homeAppBarTitle": "Home",
+    "@homeAppBarTitle": {},
+    "homeNewGroupButton": "New group",
+    "@homeNewGroupButton": {},
+
+    "modifyGroupPageTitleEdit": "Edit group",
+    "@modifyGroupPageTitleEdit": {},
+    "modifyGroupPageTitleCreate": "New group",
+    "@modifyGroupPageTitleCreate": {},
+    "modifyGroupTitleLabel": "Title",
+    "@modifyGroupTitleLabel": {},
+    "modifyGroupTitleHint": "E.g., Living Room",
+    "@modifyGroupTitleHint": {},
+    "modifyGroupTitleErrorEmpty": "Title cannot be empty",
+    "@modifyGroupTitleErrorEmpty": {},
+    "modifyGroupSubtitleLabel": "Subtitle (optional)",
+    "@modifyGroupSubtitleLabel": {},
+    "modifyGroupSubtitleHint": "E.g., Lights and TV",
+    "@modifyGroupSubtitleHint": {},
+    "modifyGroupSelectIcon": "Select Icon",
+    "@modifyGroupSelectIcon": {},
+    "modifyGroupPreview": "Preview",
+    "@modifyGroupPreview": {},
+    "modifyGroupGroupTitle": "Group title",
+    "@modifyGroupGroupTitle": {},
+    "modifyGroupGroupSubtitle": "Group subtitle",
+    "@modifyGroupGroupSubtitle": {},
+    "modifyGroupSaveButton": "Save",
+    "@modifyGroupSaveButton": {},
+    "modifyGroupSaveSuccessSnackbar": "Group saved successfully",
+    "@modifyGroupSaveSuccessSnackbar": {},
+    "modifyGroupSaveFailureSnackbar": "Failed to save group. Please try again.",
+    "@modifyGroupSaveFailureSnackbar": {}
 }

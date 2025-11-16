@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
 import 'package:user_api/user_api.dart';
 
 /// {@template user_api}
@@ -25,8 +27,11 @@ abstract class IUserApi {
   /// Get base color from local storage
   String? getBaseColor();
 
-  /// Save a group to the box
-  Future<void> saveGroup({required GroupModel group});
+  /// Get a ValueListenable for groups box
+  ValueListenable<Box<GroupModel>> getGroupsListenable();
+
+  /// Create a group to the box
+  Future<void> createGroup({required GroupModel group});
 
   /// Get all groups in order
   List<GroupModel> getGroups();

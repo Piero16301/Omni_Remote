@@ -1,7 +1,36 @@
 {
     "@@locale": "es",
-    "counterAppBarTitle": "Contador",
-    "@counterAppBarTitle": {
-        "description": "Texto mostrado en la AppBar de la página del contador"
-    }
+    "homeAppBarTitle": "Inicio",
+    "@homeAppBarTitle": {},
+    "homeNewGroupButton": "Nuevo grupo",
+    "@homeNewGroupButton": {},
+
+    "modifyGroupPageTitleEdit": "Editar grupo",
+    "@modifyGroupPageTitleEdit": {},
+    "modifyGroupPageTitleCreate": "Nuevo grupo",
+    "@modifyGroupPageTitleCreate": {},
+    "modifyGroupTitleLabel": "Título",
+    "@modifyGroupTitleLabel": {},
+    "modifyGroupTitleHint": "Ej., Sala de estar",
+    "@modifyGroupTitleHint": {},
+    "modifyGroupTitleErrorEmpty": "El título no puede estar vacío",
+    "@modifyGroupTitleErrorEmpty": {},
+    "modifyGroupSubtitleLabel": "Subtítulo (opcional)",
+    "@modifyGroupSubtitleLabel": {},
+    "modifyGroupSubtitleHint": "Ej., Luces y TV",
+    "@modifyGroupSubtitleHint": {},
+    "modifyGroupSelectIcon": "Seleccionar ícono",
+    "@modifyGroupSelectIcon": {},
+    "modifyGroupPreview": "Vista previa",
+    "@modifyGroupPreview": {},
+    "modifyGroupGroupTitle": "Título del grupo",
+    "@modifyGroupGroupTitle": {},
+    "modifyGroupGroupSubtitle": "Subtítulo del grupo",
+    "@modifyGroupGroupSubtitle": {},
+    "modifyGroupSaveButton": "Guardar",
+    "@modifyGroupSaveButton": {},
+    "modifyGroupSaveSuccessSnackbar": "Grupo guardado con éxito",
+    "@modifyGroupSaveSuccessSnackbar": {},
+    "modifyGroupSaveFailureSnackbar": "Error al guardar el grupo. Por favor, inténtalo de nuevo.",
+    "@modifyGroupSaveFailureSnackbar": {}
 }

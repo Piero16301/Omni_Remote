@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  hive: ^2.2.3
   user_api:
     path: ../user_api
 

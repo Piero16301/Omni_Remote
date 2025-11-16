@@ -1,7 +1,9 @@
 // Not required for test files
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive/hive.dart';
 import 'package:user_api/user_api.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -27,7 +29,12 @@ class _MockUserApi extends IUserApi {
   Future<void> saveLanguage({String language = 'es_ES'}) async {}
 
   @override
-  Future<void> saveGroup({required GroupModel group}) async {}
+  ValueListenable<Box<GroupModel>> getGroupsListenable() {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> createGroup({required GroupModel group}) async {}
 
   @override
   List<GroupModel> getGroups() => [];

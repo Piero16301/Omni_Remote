@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
 import 'package:user_api/user_api.dart';
 
 /// {@template user_repository}
@@ -30,9 +32,13 @@ class UserRepository {
   /// Get save color from local storage
   String? getBaseColor() => _userApi.getBaseColor();
 
-  /// Save a group to the box
-  Future<void> saveGroup({required GroupModel group}) =>
-      _userApi.saveGroup(group: group);
+  /// Get a ValueListenable for groups box
+  ValueListenable<Box<GroupModel>> getGroupsListenable() =>
+      _userApi.getGroupsListenable();
+
+  /// Create a group to the box
+  Future<void> createGroup({required GroupModel group}) =>
+      _userApi.createGroup(group: group);
 
   /// Get all groups in order
   List<GroupModel> getGroups() => _userApi.getGroups();
