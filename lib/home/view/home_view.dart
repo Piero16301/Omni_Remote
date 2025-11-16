@@ -38,6 +38,11 @@ class HomeView extends StatelessWidget {
                   onEnable: () =>
                       context.read<HomeCubit>().toggleGroupEnabled(group),
                   devices: const [],
+                  onEdit: () => context.pushNamed(
+                    ModifyGroupPage.pageName,
+                    extra: group,
+                  ),
+                  onDelete: () => context.read<HomeCubit>().deleteGroup(group),
                 ),
               ),
               Card(

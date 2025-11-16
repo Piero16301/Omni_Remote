@@ -18,10 +18,10 @@ class IconSelector extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.modifyGroupSelectIcon,
-          textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),

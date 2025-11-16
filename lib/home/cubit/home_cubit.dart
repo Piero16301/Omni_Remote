@@ -20,4 +20,8 @@ class HomeCubit extends Cubit<HomeState> {
     final updatedGroup = group.copyWith(enabled: !group.enabled);
     await userRepository.updateGroup(group: updatedGroup);
   }
+
+  Future<void> deleteGroup(GroupModel group) async {
+    await userRepository.deleteGroup(groupId: group.id);
+  }
 }

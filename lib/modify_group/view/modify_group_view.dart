@@ -20,7 +20,6 @@ class ModifyGroupView extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(l10n.modifyGroupSaveSuccessSnackbar),
-              backgroundColor: Theme.of(context).colorScheme.onPrimary,
             ),
           );
           context.pop();
@@ -29,7 +28,6 @@ class ModifyGroupView extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(l10n.modifyGroupSaveFailureSnackbar),
-              backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
           context.read<ModifyGroupCubit>().resetSaveStatus();
@@ -85,7 +83,7 @@ class ModifyGroupView extends StatelessWidget {
                 selectedIcon: state.icon,
                 onIconSelected: context.read<ModifyGroupCubit>().changeIcon,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 48),
               GroupPreview(
                 title: state.title,
                 subtitle: state.subtitle,
@@ -94,11 +92,11 @@ class ModifyGroupView extends StatelessWidget {
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton.extended(
+        floatingActionButton: FloatingActionButton(
           onPressed: context.read<ModifyGroupCubit>().saveGroupModel,
-          label: Text(l10n.modifyGroupSaveButton),
-          icon: const HugeIcon(
+          child: const HugeIcon(
             icon: HugeIcons.strokeRoundedFloppyDisk,
+            size: 28,
             strokeWidth: 2,
           ),
         ),

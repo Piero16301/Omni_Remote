@@ -80,10 +80,6 @@ class GroupPreview extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Switch(
-                        value: true,
-                        onChanged: (value) {},
-                      ),
                     ],
                   ),
                 ),

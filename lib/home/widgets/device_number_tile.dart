@@ -68,7 +68,10 @@ class DeviceNumberTile extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: onDecrement,
-                  icon: const Icon(Icons.remove),
+                  icon: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedRemove01,
+                    strokeWidth: 2,
+                  ),
                 ),
                 Text(
                   value.toStringAsFixed(1),
@@ -79,7 +82,10 @@ class DeviceNumberTile extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: onIncrement,
-                  icon: const Icon(Icons.add),
+                  icon: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedAdd01,
+                    strokeWidth: 2,
+                  ),
                 ),
               ],
             ),
