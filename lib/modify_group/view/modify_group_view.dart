@@ -27,7 +27,7 @@ class ModifyGroupView extends StatelessWidget {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(l10n.modifyGroupSaveFailureSnackbar),
+              content: Text(getFailureMessage(state.modifyGroupError, l10n)),
             ),
           );
           context.read<ModifyGroupCubit>().resetSaveStatus();
@@ -102,5 +102,16 @@ class ModifyGroupView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String getFailureMessage(ModifyGroupError error, AppLocalizations l10n) {
+    switch (error) {
+      case ModifyGroupError.duplicateGroupName:
+        return l10n.modifyGroupSaveDuplicateError;
+      case ModifyGroupError.unknown:
+        return l10n.modifyGroupSaveDefaultError;
+      case ModifyGroupError.none:
+        return '';
+    }
   }
 }

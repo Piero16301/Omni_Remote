@@ -43,7 +43,7 @@ class _MockUserApi extends IUserApi {
   Future<void> updateGroup({required GroupModel group}) async {}
 
   @override
-  Future<void> deleteGroup({required int groupId}) async {}
+  Future<void> deleteGroup({required String groupId}) async {}
 }
 
 void main() {

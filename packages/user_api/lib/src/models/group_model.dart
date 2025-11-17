@@ -12,13 +12,13 @@ class GroupModel {
     required this.subtitle,
     required this.icon,
     required this.enabled,
-    this.id = 0,
+    this.id = '',
     this.devices = const <DeviceModel>[],
   });
 
   /// Unique identifier for the group
-  @HiveField(0, defaultValue: 0)
-  final int id;
+  @HiveField(0, defaultValue: '')
+  final String id;
 
   /// Title of the group
   @HiveField(1, defaultValue: '')
@@ -42,7 +42,7 @@ class GroupModel {
 
   /// Creates a copy of the current GroupModel with optional new values
   GroupModel copyWith({
-    int? id,
+    String? id,
     String? title,
     String? subtitle,
     String? icon,

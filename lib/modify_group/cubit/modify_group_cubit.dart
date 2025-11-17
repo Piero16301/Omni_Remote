@@ -58,7 +58,7 @@ class ModifyGroupCubit extends Cubit<ModifyGroupState> {
         emit(state.copyWith(saveStatus: ModifyGroupStatus.success));
       } else {
         final newGroup = GroupModel(
-          id: state.groupModel?.id ?? 0,
+          id: state.groupModel?.id ?? '',
           title: state.title,
           subtitle: state.subtitle,
           icon: state.icon,
@@ -67,8 +67,20 @@ class ModifyGroupCubit extends Cubit<ModifyGroupState> {
         await userRepository.createGroup(group: newGroup);
         emit(state.copyWith(saveStatus: ModifyGroupStatus.success));
       }
-    } on Exception {
-      emit(state.copyWith(saveStatus: ModifyGroupStatus.failure));
+    } on Exception catch (e) {
+      ModifyGroupError modifyGroupError;
+      switch (e.toString()) {
+        case 'Exception: DUPLICATE_GROUP_NAME':
+          modifyGroupError = ModifyGroupError.duplicateGroupName;
+        default:
+          modifyGroupError = ModifyGroupError.unknown;
+      }
+      emit(
+        state.copyWith(
+          saveStatus: ModifyGroupStatus.failure,
+          modifyGroupError: modifyGroupError,
+        ),
+      );
     }
   }
 }

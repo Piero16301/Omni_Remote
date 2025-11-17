@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:user_api/user_api.dart';
+import 'package:uuid/uuid.dart';
 
 /// {@template user_api_remote}
 /// User API Remote Package
@@ -78,8 +80,24 @@ class UserApiRemote implements IUserApi {
 
   @override
   Future<void> createGroup({required GroupModel group}) async {
-    final index = await _groupsBox.add(group);
-    await _groupsBox.putAt(index, group.copyWith(id: index));
+    final normalizedName = group.title.toLowerCase().replaceAll(' ', '-');
+    final existingGroups = _groupsBox.values.toList();
+
+    final isDuplicate = existingGroups.any(
+      (existingGroup) =>
+          existingGroup.title.toLowerCase().replaceAll(' ', '-') ==
+          normalizedName,
+    );
+
+    if (isDuplicate) {
+      throw Exception('DUPLICATE_GROUP_NAME');
+    }
+
+    const uuid = Uuid();
+    final dateTime = DateFormat('yyyy-MM-dd-HH-mm-ss').format(DateTime.now());
+    final newId = '$dateTime-${uuid.v4()}';
+    final groupWithId = group.copyWith(id: newId);
+    await _groupsBox.put(newId, groupWithId);
   }
 
   @override
@@ -89,15 +107,29 @@ class UserApiRemote implements IUserApi {
 
   @override
   Future<void> updateGroup({required GroupModel group}) async {
-    if (group.id >= 0 && group.id < _groupsBox.length) {
-      await _groupsBox.putAt(group.id, group);
+    final normalizedName = group.title.toLowerCase().replaceAll(' ', '-');
+    final existingGroups = _groupsBox.values.toList();
+
+    final isDuplicate = existingGroups.any(
+      (existingGroup) =>
+          existingGroup.id != group.id &&
+          existingGroup.title.toLowerCase().replaceAll(' ', '-') ==
+              normalizedName,
+    );
+
+    if (isDuplicate) {
+      throw Exception('DUPLICATE_GROUP_NAME');
+    }
+
+    if (_groupsBox.containsKey(group.id)) {
+      await _groupsBox.put(group.id, group);
     }
   }
 
   @override
-  Future<void> deleteGroup({required int groupId}) async {
-    if (groupId >= 0 && groupId < _groupsBox.length) {
-      await _groupsBox.deleteAt(groupId);
+  Future<void> deleteGroup({required String groupId}) async {
+    if (_groupsBox.containsKey(groupId)) {
+      await _groupsBox.delete(groupId);
     }
   }
 }

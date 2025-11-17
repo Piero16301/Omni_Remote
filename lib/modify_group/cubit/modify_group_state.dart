@@ -12,6 +12,8 @@ enum ModifyGroupStatus {
   bool get isFailure => this == ModifyGroupStatus.failure;
 }
 
+enum ModifyGroupError { none, duplicateGroupName, unknown }
+
 class ModifyGroupState extends Equatable {
   const ModifyGroupState({
     this.title = '',
@@ -20,6 +22,7 @@ class ModifyGroupState extends Equatable {
     this.formKey = const GlobalObjectKey<FormState>('modify_group_form'),
     this.groupModel,
     this.saveStatus = ModifyGroupStatus.initial,
+    this.modifyGroupError = ModifyGroupError.none,
   });
 
   final String title;
@@ -28,6 +31,7 @@ class ModifyGroupState extends Equatable {
   final GlobalKey<FormState> formKey;
   final GroupModel? groupModel;
   final ModifyGroupStatus saveStatus;
+  final ModifyGroupError modifyGroupError;
 
   ModifyGroupState copyWith({
     String? title,
@@ -36,6 +40,7 @@ class ModifyGroupState extends Equatable {
     GlobalKey<FormState>? formKey,
     GroupModel? groupModel,
     ModifyGroupStatus? saveStatus,
+    ModifyGroupError? modifyGroupError,
   }) {
     return ModifyGroupState(
       title: title ?? this.title,
@@ -44,6 +49,7 @@ class ModifyGroupState extends Equatable {
       formKey: formKey ?? this.formKey,
       groupModel: groupModel ?? this.groupModel,
       saveStatus: saveStatus ?? this.saveStatus,
+      modifyGroupError: modifyGroupError ?? this.modifyGroupError,
     );
   }
 
@@ -55,5 +61,6 @@ class ModifyGroupState extends Equatable {
     formKey,
     groupModel,
     saveStatus,
+    modifyGroupError,
   ];
 }

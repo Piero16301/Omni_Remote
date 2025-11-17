@@ -40,5 +40,5 @@ abstract class IUserApi {
   Future<void> updateGroup({required GroupModel group});
 
   /// Delete a group by its id
-  Future<void> deleteGroup({required int groupId});
+  Future<void> deleteGroup({required String groupId});
 }

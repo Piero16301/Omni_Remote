@@ -45,6 +45,22 @@ class HomeView extends StatelessWidget {
                   onDelete: () => context.read<HomeCubit>().deleteGroup(group),
                 ),
               ),
+              Visibility(
+                visible: groups.isEmpty,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                  child: Center(
+                    child: Text(
+                      l10n.homeEmptyGroupsMessage,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ),
+                ),
+              ),
               Card(
                 child: InkWell(
                   onTap: () => context.pushNamed(ModifyGroupPage.pageName),

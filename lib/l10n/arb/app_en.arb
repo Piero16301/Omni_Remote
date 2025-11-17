@@ -45,6 +45,8 @@
     "@modifyGroupGroupSubtitle": {},
     "modifyGroupSaveSuccessSnackbar": "Group saved successfully",
     "@modifyGroupSaveSuccessSnackbar": {},
-    "modifyGroupSaveFailureSnackbar": "Failed to save group. Please try again.",
-    "@modifyGroupSaveFailureSnackbar": {}
+    "modifyGroupSaveDefaultError": "Failed to save group, please try again",
+    "@modifyGroupSaveDefaultError": {},
+    "modifyGroupSaveDuplicateError": "A group with this name already exists",
+    "@modifyGroupSaveDuplicateError": {}
 }

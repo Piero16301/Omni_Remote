@@ -48,6 +48,6 @@ class UserRepository {
       _userApi.updateGroup(group: group);
 
   /// Delete a group by its id
-  Future<void> deleteGroup({required int groupId}) =>
+  Future<void> deleteGroup({required String groupId}) =>
       _userApi.deleteGroup(groupId: groupId);
 }
