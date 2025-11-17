@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:omni_remote/app/helpers/icon_helper.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 
-class IconSelector extends StatelessWidget {
-  const IconSelector({
+class AppIconSelector extends StatelessWidget {
+  const AppIconSelector({
+    required this.iconOptions,
     required this.selectedIcon,
     required this.onIconSelected,
     super.key,
   });
 
+  final Map<String, List<List<dynamic>>> iconOptions;
   final String selectedIcon;
   final ValueChanged<String> onIconSelected;
 
@@ -38,9 +39,9 @@ class IconSelector extends StatelessWidget {
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),
-            itemCount: IconHelper.groupIcons.length,
+            itemCount: iconOptions.length,
             itemBuilder: (context, index) {
-              final entry = IconHelper.groupIcons.entries.elementAt(index);
+              final entry = iconOptions.entries.elementAt(index);
               final iconName = entry.key;
               final iconData = entry.value;
               final isSelected = selectedIcon == iconName;

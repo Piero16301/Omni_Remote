@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 import 'package:omni_remote/modify_group/cubit/modify_group_cubit.dart';
 import 'package:omni_remote/modify_group/widgets/widgets.dart';
@@ -57,7 +58,7 @@ class ModifyGroupView extends StatelessWidget {
               vertical: 12,
             ),
             children: [
-              GroupTextField(
+              AppTextField(
                 initialValue: state.title,
                 onChanged: context.read<ModifyGroupCubit>().changeTitle,
                 labelText: l10n.modifyGroupTitleLabel,
@@ -67,11 +68,15 @@ class ModifyGroupView extends StatelessWidget {
                   if (value == null || value.isEmpty) {
                     return l10n.modifyGroupTitleErrorEmpty;
                   }
+                  final alphanumericRegex = RegExp(r'^[a-zA-Z0-9]+$');
+                  if (!alphanumericRegex.hasMatch(value)) {
+                    return l10n.modifyGroupTitleErrorInvalidFormat;
+                  }
                   return null;
                 },
               ),
               const SizedBox(height: 16),
-              GroupTextField(
+              AppTextField(
                 initialValue: state.subtitle,
                 onChanged: context.read<ModifyGroupCubit>().changeSubtitle,
                 labelText: l10n.modifyGroupSubtitleLabel,
@@ -79,7 +84,8 @@ class ModifyGroupView extends StatelessWidget {
                 prefixIcon: HugeIcons.strokeRoundedNote,
               ),
               const SizedBox(height: 24),
-              IconSelector(
+              AppIconSelector(
+                iconOptions: IconHelper.groupIcons,
                 selectedIcon: state.icon,
                 onIconSelected: context.read<ModifyGroupCubit>().changeIcon,
               ),

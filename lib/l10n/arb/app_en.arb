@@ -31,6 +31,8 @@
     "@modifyGroupTitleHint": {},
     "modifyGroupTitleErrorEmpty": "Title cannot be empty",
     "@modifyGroupTitleErrorEmpty": {},
+    "modifyGroupTitleErrorInvalidFormat": "Title can only contain letters and numbers",
+    "@modifyGroupTitleErrorInvalidFormat": {},
     "modifyGroupSubtitleLabel": "Subtitle (optional)",
     "@modifyGroupSubtitleLabel": {},
     "modifyGroupSubtitleHint": "E.g., Lights and TV",

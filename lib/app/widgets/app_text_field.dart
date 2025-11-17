@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 
-class GroupTextField extends StatelessWidget {
-  const GroupTextField({
+class AppTextField extends StatelessWidget {
+  const AppTextField({
     required this.initialValue,
     required this.onChanged,
     required this.labelText,

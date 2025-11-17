@@ -31,6 +31,8 @@
     "@modifyGroupTitleHint": {},
     "modifyGroupTitleErrorEmpty": "El título no puede estar vacío",
     "@modifyGroupTitleErrorEmpty": {},
+    "modifyGroupTitleErrorInvalidFormat": "El título solo puede contener letras y números",
+    "@modifyGroupTitleErrorInvalidFormat": {},
     "modifyGroupSubtitleLabel": "Subtítulo (opcional)",
     "@modifyGroupSubtitleLabel": {},
     "modifyGroupSubtitleHint": "Ej., Luces y TV",
