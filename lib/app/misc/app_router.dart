@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:omni_remote/home/home.dart';
+import 'package:omni_remote/modify_device/modify_device.dart';
 import 'package:omni_remote/modify_group/modify_group.dart';
 import 'package:user_api/user_api.dart';
 
@@ -14,14 +15,24 @@ class AppRouter {
         name: HomePage.pageName,
         path: HomePage.pagePath,
         builder: (context, state) => const HomePage(),
-      ),
-      GoRoute(
-        name: ModifyGroupPage.pageName,
-        path: ModifyGroupPage.pagePath,
-        builder: (context, state) {
-          final group = state.extra as GroupModel?;
-          return ModifyGroupPage(group: group);
-        },
+        routes: [
+          GoRoute(
+            name: ModifyGroupPage.pageName,
+            path: ModifyGroupPage.pagePath,
+            builder: (context, state) {
+              final group = state.extra as GroupModel?;
+              return ModifyGroupPage(group: group);
+            },
+          ),
+          GoRoute(
+            name: ModifyDevicePage.pageName,
+            path: ModifyDevicePage.pagePath,
+            builder: (context, state) {
+              final device = state.extra as DeviceModel?;
+              return ModifyDevicePage(device: device);
+            },
+          ),
+        ],
       ),
     ],
   );

@@ -38,6 +38,23 @@ class _MockUserApi extends IUserApi {
 
   @override
   Future<void> deleteGroup({required String groupId}) async {}
+
+  @override
+  ValueListenable<Box<DeviceModel>> getDevicesListenable() {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> createDevice({required DeviceModel device}) async {}
+
+  @override
+  List<DeviceModel> getDevices() => [];
+
+  @override
+  Future<void> updateDevice({required DeviceModel device}) async {}
+
+  @override
+  Future<void> deleteDevice({required String deviceId}) async {}
 }
 
 void main() {

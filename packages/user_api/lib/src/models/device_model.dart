@@ -19,11 +19,12 @@ enum DeviceTileType {
 class DeviceModel {
   /// Constructor for DeviceModel
   DeviceModel({
-    required this.id,
     required this.title,
     required this.subtitle,
     required this.icon,
     required this.tileType,
+    required this.groupId,
+    this.id = '',
     this.rangeMin = 0,
     this.rangeMax = 0,
     this.divisions = 0,
@@ -50,20 +51,24 @@ class DeviceModel {
   @HiveField(4, defaultValue: DeviceTileType.boolean)
   final DeviceTileType tileType;
 
+  /// Identifier of the group this device belongs to
+  @HiveField(5, defaultValue: '')
+  final String groupId;
+
   /// Minimum range value for number type devices
-  @HiveField(5, defaultValue: 0)
+  @HiveField(6, defaultValue: 0)
   final double rangeMin;
 
   /// Maximum range value for number type devices
-  @HiveField(6, defaultValue: 0)
+  @HiveField(7, defaultValue: 0)
   final double rangeMax;
 
   /// Number of divisions for number type devices
-  @HiveField(7, defaultValue: 0)
+  @HiveField(8, defaultValue: 0)
   final int divisions;
 
   /// Interval value for number type devices
-  @HiveField(8, defaultValue: 0)
+  @HiveField(9, defaultValue: 0)
   final double interval;
 
   /// Creates a copy of the current DeviceModel with optional new values
@@ -73,6 +78,7 @@ class DeviceModel {
     String? subtitle,
     String? icon,
     DeviceTileType? tileType,
+    String? groupId,
     double? rangeMin,
     double? rangeMax,
     int? divisions,
@@ -84,6 +90,7 @@ class DeviceModel {
       subtitle: subtitle ?? this.subtitle,
       icon: icon ?? this.icon,
       tileType: tileType ?? this.tileType,
+      groupId: groupId ?? this.groupId,
       rangeMin: rangeMin ?? this.rangeMin,
       rangeMax: rangeMax ?? this.rangeMax,
       divisions: divisions ?? this.divisions,

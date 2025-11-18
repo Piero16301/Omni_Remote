@@ -50,4 +50,23 @@ class UserRepository {
   /// Delete a group by its id
   Future<void> deleteGroup({required String groupId}) =>
       _userApi.deleteGroup(groupId: groupId);
+
+  /// Get a ValueListenable for devices box
+  ValueListenable<Box<DeviceModel>> getDevicesListenable() =>
+      _userApi.getDevicesListenable();
+
+  /// Create a device to the box
+  Future<void> createDevice({required DeviceModel device}) =>
+      _userApi.createDevice(device: device);
+
+  /// Get all devices in order
+  List<DeviceModel> getDevices() => _userApi.getDevices();
+
+  /// Update a device by its id
+  Future<void> updateDevice({required DeviceModel device}) =>
+      _userApi.updateDevice(device: device);
+
+  /// Delete a device by its id
+  Future<void> deleteDevice({required String deviceId}) =>
+      _userApi.deleteDevice(deviceId: deviceId);
 }

@@ -6,7 +6,7 @@ part of 'group_model.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-/// Adapter for GroupModel
+///
 class GroupModelAdapter extends TypeAdapter<GroupModel> {
   @override
   final int typeId = 2;
@@ -23,14 +23,13 @@ class GroupModelAdapter extends TypeAdapter<GroupModel> {
       icon: fields[3] == null ? '' : fields[3] as String,
       enabled: fields[4] == null || fields[4] as bool,
       id: fields[0] == null ? '' : fields[0] as String,
-      devices: fields[5] == null ? [] : (fields[5] as List).cast<DeviceModel>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, GroupModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -40,9 +39,7 @@ class GroupModelAdapter extends TypeAdapter<GroupModel> {
       ..writeByte(3)
       ..write(obj.icon)
       ..writeByte(4)
-      ..write(obj.enabled)
-      ..writeByte(5)
-      ..write(obj.devices);
+      ..write(obj.enabled);
   }
 
   @override

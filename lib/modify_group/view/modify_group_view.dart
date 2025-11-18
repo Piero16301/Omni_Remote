@@ -20,7 +20,7 @@ class ModifyGroupView extends StatelessWidget {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(l10n.modifyGroupSaveSuccessSnackbar),
+              content: Text(l10n.modifyGroupSaveSuccessSnackbar(state.title)),
             ),
           );
           context.pop();
@@ -28,7 +28,9 @@ class ModifyGroupView extends StatelessWidget {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(getFailureMessage(state.modifyGroupError, l10n)),
+              content: Text(
+                getFailureMessage(state.modifyGroupError, state.title, l10n),
+              ),
             ),
           );
           context.read<ModifyGroupCubit>().resetSaveStatus();
@@ -68,9 +70,12 @@ class ModifyGroupView extends StatelessWidget {
                   if (value == null || value.isEmpty) {
                     return l10n.modifyGroupTitleErrorEmpty;
                   }
-                  final alphanumericRegex = RegExp(r'^[a-zA-Z0-9]+$');
+                  final alphanumericRegex = RegExp(r'^[a-zA-Z0-9\s]+$');
                   if (!alphanumericRegex.hasMatch(value)) {
                     return l10n.modifyGroupTitleErrorInvalidFormat;
+                  }
+                  if (value.contains(RegExp(r'\s{2,}'))) {
+                    return l10n.modifyGroupTitleErrorMultipleSpaces;
                   }
                   return null;
                 },
@@ -85,6 +90,7 @@ class ModifyGroupView extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               AppIconSelector(
+                label: l10n.modifyGroupSelectIcon,
                 iconOptions: IconHelper.groupIcons,
                 selectedIcon: state.icon,
                 onIconSelected: context.read<ModifyGroupCubit>().changeIcon,
@@ -110,12 +116,16 @@ class ModifyGroupView extends StatelessWidget {
     );
   }
 
-  String getFailureMessage(ModifyGroupError error, AppLocalizations l10n) {
+  String getFailureMessage(
+    ModifyGroupError error,
+    String title,
+    AppLocalizations l10n,
+  ) {
     switch (error) {
       case ModifyGroupError.duplicateGroupName:
-        return l10n.modifyGroupSaveDuplicateError;
+        return l10n.modifyGroupSaveDuplicateError(title);
       case ModifyGroupError.unknown:
-        return l10n.modifyGroupSaveDefaultError;
+        return l10n.modifyGroupSaveDefaultError(title);
       case ModifyGroupError.none:
         return '';
     }

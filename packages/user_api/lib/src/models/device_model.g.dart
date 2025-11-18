@@ -18,24 +18,25 @@ class DeviceModelAdapter extends TypeAdapter<DeviceModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return DeviceModel(
-      id: fields[0] == null ? '' : fields[0] as String,
       title: fields[1] == null ? '' : fields[1] as String,
       subtitle: fields[2] == null ? '' : fields[2] as String,
       icon: fields[3] == null ? '' : fields[3] as String,
       tileType: fields[4] == null
           ? DeviceTileType.boolean
           : fields[4] as DeviceTileType,
-      rangeMin: fields[5] == null ? 0 : fields[5] as double,
-      rangeMax: fields[6] == null ? 0 : fields[6] as double,
-      divisions: fields[7] == null ? 0 : fields[7] as int,
-      interval: fields[8] == null ? 0 : fields[8] as double,
+      groupId: fields[5] == null ? '' : fields[5] as String,
+      id: fields[0] == null ? '' : fields[0] as String,
+      rangeMin: fields[6] == null ? 0 : fields[6] as double,
+      rangeMax: fields[7] == null ? 0 : fields[7] as double,
+      divisions: fields[8] == null ? 0 : fields[8] as int,
+      interval: fields[9] == null ? 0 : fields[9] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, DeviceModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,12 +48,14 @@ class DeviceModelAdapter extends TypeAdapter<DeviceModel> {
       ..writeByte(4)
       ..write(obj.tileType)
       ..writeByte(5)
-      ..write(obj.rangeMin)
+      ..write(obj.groupId)
       ..writeByte(6)
-      ..write(obj.rangeMax)
+      ..write(obj.rangeMin)
       ..writeByte(7)
-      ..write(obj.divisions)
+      ..write(obj.rangeMax)
       ..writeByte(8)
+      ..write(obj.divisions)
+      ..writeByte(9)
       ..write(obj.interval);
   }
 

@@ -41,4 +41,19 @@ abstract class IUserApi {
 
   /// Delete a group by its id
   Future<void> deleteGroup({required String groupId});
+
+  /// Get a ValueListenable for devices box
+  ValueListenable<Box<DeviceModel>> getDevicesListenable();
+
+  /// Create a device to the box
+  Future<void> createDevice({required DeviceModel device});
+
+  /// Get all devices in order
+  List<DeviceModel> getDevices();
+
+  /// Update a device by its id
+  Future<void> updateDevice({required DeviceModel device});
+
+  /// Delete a device by its id
+  Future<void> deleteDevice({required String deviceId});
 }

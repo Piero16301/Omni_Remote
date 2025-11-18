@@ -16,12 +16,40 @@ class HomeCubit extends Cubit<HomeState> {
     return userRepository.getGroupsListenable();
   }
 
+  ValueListenable<Box<DeviceModel>> getDevicesListenable() {
+    return userRepository.getDevicesListenable();
+  }
+
   Future<void> toggleGroupEnabled(GroupModel group) async {
     final updatedGroup = group.copyWith(enabled: !group.enabled);
     await userRepository.updateGroup(group: updatedGroup);
   }
 
+  void resetDeleteStatus() {
+    emit(state.copyWith(deleteStatus: HomeStatus.initial));
+  }
+
   Future<void> deleteGroup(GroupModel group) async {
-    await userRepository.deleteGroup(groupId: group.id);
+    emit(state.copyWith(deleteStatus: HomeStatus.loading));
+    try {
+      await userRepository.deleteGroup(groupId: group.id);
+      emit(state.copyWith(deleteStatus: HomeStatus.success));
+    } on Exception catch (e) {
+      GroupDeleteError groupDeleteError;
+      switch (e.toString()) {
+        case 'Exception: GROUP_NOT_EMPTY':
+          groupDeleteError = GroupDeleteError.groupNotEmpty;
+        case 'Exception: GROUP_NOT_FOUND':
+          groupDeleteError = GroupDeleteError.groupNotFound;
+        default:
+          groupDeleteError = GroupDeleteError.unknown;
+      }
+      emit(
+        state.copyWith(
+          deleteStatus: HomeStatus.failure,
+          groupDeleteError: groupDeleteError,
+        ),
+      );
+    }
   }
 }

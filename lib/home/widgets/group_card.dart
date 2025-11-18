@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:omni_remote/app/app.dart';
+import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 import 'package:user_api/user_api.dart';
 
@@ -12,7 +14,6 @@ class GroupCard extends StatelessWidget {
     required this.onEnable,
     required this.onEdit,
     required this.onDelete,
-    required this.devices,
     super.key,
   });
 
@@ -20,7 +21,6 @@ class GroupCard extends StatelessWidget {
   final void Function() onEnable;
   final void Function() onEdit;
   final void Function() onDelete;
-  final List<Widget> devices;
 
   @override
   Widget build(BuildContext context) {
@@ -104,25 +104,37 @@ class GroupCard extends StatelessWidget {
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
             child: group.enabled
-                ? Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      spacing: 18,
-                      children: group.devices.isEmpty
-                          ? [
-                              Text(
-                                l10n.homeGroupEmptyDevicesMessage,
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(
-                                      fontStyle: FontStyle.italic,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSurfaceVariant,
-                                    ),
-                              ),
-                            ]
-                          : devices,
-                    ),
+                ? ValueListenableBuilder(
+                    valueListenable: context
+                        .read<HomeCubit>()
+                        .getDevicesListenable(),
+                    builder: (context, box, widget) {
+                      final devices = box.values
+                          .where((device) => device.groupId == group.id)
+                          .toList();
+                      return Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          spacing: 18,
+                          children: devices.isEmpty
+                              ? [
+                                  Text(
+                                    l10n.homeGroupEmptyDevicesMessage,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          fontStyle: FontStyle.italic,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurfaceVariant,
+                                        ),
+                                  ),
+                                ]
+                              : getDevicesTiles(devices: devices),
+                        ),
+                      );
+                    },
                   )
                 : const SizedBox.shrink(),
           ),
@@ -199,5 +211,32 @@ class GroupCard extends StatelessWidget {
         },
       ),
     );
+  }
+
+  List<Widget> getDevicesTiles({required List<DeviceModel> devices}) {
+    final deviceTiles = <Widget>[];
+    for (final device in devices) {
+      switch (device.tileType) {
+        case DeviceTileType.boolean:
+          deviceTiles.add(
+            DeviceBooleanTile(
+              device: device,
+              value: false,
+              onChanged: ({value}) {},
+            ),
+          );
+        case DeviceTileType.number:
+          deviceTiles.add(
+            DeviceNumberTile(
+              device: device,
+              value: 0,
+              onChanged: (value) {},
+              onIncrement: () {},
+              onDecrement: () {},
+            ),
+          );
+      }
+    }
+    return deviceTiles;
   }
 }

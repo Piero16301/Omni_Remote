@@ -12,6 +12,7 @@ class UserApiRemote implements IUserApi {
   UserApiRemote() {
     _settingsBox = Hive.box(kSettingsBoxName);
     _groupsBox = Hive.box(kGroupsBoxName);
+    _devicesBox = Hive.box(kDevicesBoxName);
   }
 
   /// Box name for settings
@@ -19,6 +20,9 @@ class UserApiRemote implements IUserApi {
 
   /// Box name for groups
   static const kGroupsBoxName = '__groups__';
+
+  /// Box name for devices
+  static const kDevicesBoxName = '__devices__';
 
   /// The key used to store the user's language
   static const kUserLanguage = '__user_language__';
@@ -32,6 +36,7 @@ class UserApiRemote implements IUserApi {
   // Hive boxes used in the API
   late final Box<String> _settingsBox;
   late final Box<GroupModel> _groupsBox;
+  late final Box<DeviceModel> _devicesBox;
 
   /// Initialize and open the settings box
   static Future<void> init() async {
@@ -40,6 +45,9 @@ class UserApiRemote implements IUserApi {
     }
     if (!Hive.isBoxOpen(kGroupsBoxName)) {
       await Hive.openBox<GroupModel>(kGroupsBoxName);
+    }
+    if (!Hive.isBoxOpen(kDevicesBoxName)) {
+      await Hive.openBox<DeviceModel>(kDevicesBoxName);
     }
   }
 
@@ -128,8 +136,82 @@ class UserApiRemote implements IUserApi {
 
   @override
   Future<void> deleteGroup({required String groupId}) async {
+    final groupDevices = _devicesBox.values
+        .where((device) => device.groupId == groupId)
+        .toList();
+    if (groupDevices.isNotEmpty) {
+      throw Exception('GROUP_NOT_EMPTY');
+    }
     if (_groupsBox.containsKey(groupId)) {
       await _groupsBox.delete(groupId);
+    } else {
+      throw Exception('GROUP_NOT_FOUND');
+    }
+  }
+
+  @override
+  ValueListenable<Box<DeviceModel>> getDevicesListenable() {
+    return _devicesBox.listenable();
+  }
+
+  @override
+  Future<void> createDevice({required DeviceModel device}) async {
+    final groupDevices = _devicesBox.values
+        .where((d) => d.groupId == device.groupId)
+        .toList();
+    final normalizedName = device.title.toLowerCase().replaceAll(' ', '-');
+
+    final isDuplicate = groupDevices.any(
+      (existingDevice) =>
+          existingDevice.title.toLowerCase().replaceAll(' ', '-') ==
+          normalizedName,
+    );
+
+    if (isDuplicate) {
+      throw Exception('DUPLICATE_DEVICE_NAME');
+    }
+
+    const uuid = Uuid();
+    final dateTime = DateFormat('yyyy-MM-dd-HH-mm-ss').format(DateTime.now());
+    final newId = '$dateTime-${uuid.v4()}';
+    final deviceWithId = device.copyWith(id: newId);
+    await _devicesBox.put(newId, deviceWithId);
+  }
+
+  @override
+  List<DeviceModel> getDevices() {
+    return _devicesBox.values.toList();
+  }
+
+  @override
+  Future<void> updateDevice({required DeviceModel device}) async {
+    final groupDevices = _devicesBox.values
+        .where((d) => d.groupId == device.groupId)
+        .toList();
+    final normalizedName = device.title.toLowerCase().replaceAll(' ', '-');
+
+    final isDuplicate = groupDevices.any(
+      (existingDevice) =>
+          existingDevice.id != device.id &&
+          existingDevice.title.toLowerCase().replaceAll(' ', '-') ==
+              normalizedName,
+    );
+
+    if (isDuplicate) {
+      throw Exception('DUPLICATE_DEVICE_NAME');
+    }
+
+    if (_devicesBox.containsKey(device.id)) {
+      await _devicesBox.put(device.id, device);
+    }
+  }
+
+  @override
+  Future<void> deleteDevice({required String deviceId}) async {
+    if (_devicesBox.containsKey(deviceId)) {
+      await _devicesBox.delete(deviceId);
+    } else {
+      throw Exception('DEVICE_NOT_FOUND');
     }
   }
 }

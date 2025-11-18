@@ -52,7 +52,6 @@ class ModifyGroupCubit extends Cubit<ModifyGroupState> {
           subtitle: state.subtitle,
           icon: state.icon,
           enabled: state.groupModel!.enabled,
-          devices: state.groupModel!.devices,
         );
         await userRepository.updateGroup(group: updatedGroup);
         emit(state.copyWith(saveStatus: ModifyGroupStatus.success));

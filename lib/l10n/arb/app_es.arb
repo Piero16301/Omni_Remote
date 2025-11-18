@@ -20,6 +20,14 @@
     "@homeGroupDeleteDialogCancel": {},
     "homeGroupDeleteDialogConfirm": "Eliminar",
     "@homeGroupDeleteDialogConfirm": {},
+    "homeDeleteGroupSuccessSnackbar": "Grupo eliminado exitosamente",
+    "@homeDeleteGroupSuccessSnackbar": {},
+    "homeDeleteGroupErrorNotEmpty": "No se puede eliminar el grupo porque contiene dispositivos",
+    "@homeDeleteGroupErrorNotEmpty": {},
+    "homeDeleteGroupErrorNotFound": "Grupo no encontrado",
+    "@homeDeleteGroupErrorNotFound": {},
+    "homeDeleteGroupErrorUnknown": "Ocurrió un error desconocido al eliminar el grupo",
+    "@homeDeleteGroupErrorUnknown": {},
 
     "modifyGroupPageTitleEdit": "Editar grupo",
     "@modifyGroupPageTitleEdit": {},
@@ -33,6 +41,8 @@
     "@modifyGroupTitleErrorEmpty": {},
     "modifyGroupTitleErrorInvalidFormat": "El título solo puede contener letras y números",
     "@modifyGroupTitleErrorInvalidFormat": {},
+    "modifyGroupTitleErrorMultipleSpaces": "El título no puede contener múltiples espacios consecutivos",
+    "@modifyGroupTitleErrorMultipleSpaces": {},
     "modifyGroupSubtitleLabel": "Subtítulo (opcional)",
     "@modifyGroupSubtitleLabel": {},
     "modifyGroupSubtitleHint": "Ej., Luces y TV",
@@ -45,10 +55,109 @@
     "@modifyGroupGroupTitle": {},
     "modifyGroupGroupSubtitle": "Subtítulo del grupo",
     "@modifyGroupGroupSubtitle": {},
-    "modifyGroupSaveSuccessSnackbar": "Grupo guardado con éxito",
-    "@modifyGroupSaveSuccessSnackbar": {},
-    "modifyGroupSaveDefaultError": "Error al guardar el grupo, por favor intenta de nuevo",
-    "@modifyGroupSaveDefaultError": {},
-    "modifyGroupSaveDuplicateError": "Ya existe un grupo con este nombre",
-    "@modifyGroupSaveDuplicateError": {}
+    "modifyGroupSaveSuccessSnackbar": "Grupo \"{groupName}\" guardado exitosamente",
+    "@modifyGroupSaveSuccessSnackbar": {
+        "placeholders": {
+            "groupName": {
+                "type": "String"
+            }
+        }
+    },
+    "modifyGroupSaveDefaultError": "Error al guardar el grupo \"{groupName}\", por favor intenta de nuevo",
+    "@modifyGroupSaveDefaultError": {
+        "placeholders": {
+            "groupName": {
+                "type": "String"
+            }
+        }
+    },
+    "modifyGroupSaveDuplicateError": "Ya existe un grupo con el nombre \"{groupName}\"",
+    "@modifyGroupSaveDuplicateError": {
+        "placeholders": {
+            "groupName": {
+                "type": "String"
+            }
+        }
+    },
+
+    "modifyDevicePageTitleEdit": "Editar dispositivo",
+    "@modifyDevicePageTitleEdit": {},
+    "modifyDevicePageTitleCreate": "Nuevo dispositivo",
+    "@modifyDevicePageTitleCreate": {},
+    "modifyDeviceTitleLabel": "Título",
+    "@modifyDeviceTitleLabel": {},
+    "modifyDeviceTitleHint": "Ej., Luz Principal",
+    "@modifyDeviceTitleHint": {},
+    "modifyDeviceTitleErrorEmpty": "El título no puede estar vacío",
+    "@modifyDeviceTitleErrorEmpty": {},
+    "modifyDeviceTitleErrorInvalidFormat": "El título solo puede contener letras y números",
+    "@modifyDeviceTitleErrorInvalidFormat": {},
+    "modifyDeviceTitleErrorMultipleSpaces": "El título no puede contener múltiples espacios consecutivos",
+    "@modifyDeviceTitleErrorMultipleSpaces": {},
+    "modifyDeviceSubtitleLabel": "Subtítulo (opcional)",
+    "@modifyDeviceSubtitleLabel": {},
+    "modifyDeviceSubtitleHint": "Ej., Techo de la sala",
+    "@modifyDeviceSubtitleHint": {},
+    "modifyDeviceSelectIcon": "Seleccionar ícono",
+    "@modifyDeviceSelectIcon": {},
+    "modifyDeviceTileTypeLabel": "Tipo de dispositivo",
+    "@modifyDeviceTileTypeLabel": {},
+    "modifyDeviceTileTypeBoolean": "Booleano",
+    "@modifyDeviceTileTypeBoolean": {},
+    "modifyDeviceTileTypeNumber": "Número",
+    "@modifyDeviceTileTypeNumber": {},
+    "modifyDeviceRangeConfigurationLabel": "Configuración de rango",
+    "@modifyDeviceRangeConfigurationLabel": {},
+    "modifyDeviceRangeMinLabel": "Valor mínimo",
+    "@modifyDeviceRangeMinLabel": {},
+    "modifyDeviceRangeMinHint": "Ej., 0",
+    "@modifyDeviceRangeMinHint": {},
+    "modifyDeviceRangeMaxLabel": "Valor máximo",
+    "@modifyDeviceRangeMaxLabel": {},
+    "modifyDeviceRangeMaxHint": "Ej., 100",
+    "@modifyDeviceRangeMaxHint": {},
+    "modifyDeviceDivisionsLabel": "Divisiones",
+    "@modifyDeviceDivisionsLabel": {},
+    "modifyDeviceDivisionsHint": "Ej., 10",
+    "@modifyDeviceDivisionsHint": {},
+    "modifyDeviceIntervalLabel": "Intervalo",
+    "@modifyDeviceIntervalLabel": {},
+    "modifyDeviceIntervalHint": "Ej., 5",
+    "@modifyDeviceIntervalHint": {},
+    "modifyDeviceRangeErrorEmpty": "Este campo no puede estar vacío",
+    "@modifyDeviceRangeErrorEmpty": {},
+    "modifyDeviceRangeErrorInvalid": "Por favor ingresa un número válido",
+    "@modifyDeviceRangeErrorInvalid": {},
+    "modifyDeviceRangeMinMaxError": "El valor mínimo debe ser menor que el valor máximo",
+    "@modifyDeviceRangeMinMaxError": {},
+    "modifyDevicePreview": "Vista previa",
+    "@modifyDevicePreview": {},
+    "modifyDeviceDeviceTitle": "Título del dispositivo",
+    "@modifyDeviceDeviceTitle": {},
+    "modifyDeviceDeviceSubtitle": "Subtítulo del dispositivo",
+    "@modifyDeviceDeviceSubtitle": {},
+    "modifyDeviceSaveSuccessSnackbar": "Dispositivo \"{deviceName}\" guardado exitosamente",
+    "@modifyDeviceSaveSuccessSnackbar": {
+        "placeholders": {
+            "deviceName": {
+                "type": "String"
+            }
+        }
+    },
+    "modifyDeviceSaveDefaultError": "Error al guardar el dispositivo \"{deviceName}\", por favor intenta de nuevo",
+    "@modifyDeviceSaveDefaultError": {
+        "placeholders": {
+            "deviceName": {
+                "type": "String"
+            }
+        }
+    },
+    "modifyDeviceSaveDuplicateError": "Ya existe un dispositivo con el ID \"{deviceId}\"",
+    "@modifyDeviceSaveDuplicateError": {
+        "placeholders": {
+            "deviceId": {
+                "type": "String"
+            }
+        }
+    }
 }

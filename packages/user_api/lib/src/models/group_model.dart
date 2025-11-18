@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import 'package:user_api/src/models/models.dart';
 
 part 'group_model.g.dart';
 
@@ -13,7 +12,6 @@ class GroupModel {
     required this.icon,
     required this.enabled,
     this.id = '',
-    this.devices = const <DeviceModel>[],
   });
 
   /// Unique identifier for the group
@@ -36,10 +34,6 @@ class GroupModel {
   @HiveField(4, defaultValue: true)
   final bool enabled;
 
-  /// List of devices in the group
-  @HiveField(5, defaultValue: <DeviceModel>[])
-  final List<DeviceModel> devices;
-
   /// Creates a copy of the current GroupModel with optional new values
   GroupModel copyWith({
     String? id,
@@ -47,7 +41,6 @@ class GroupModel {
     String? subtitle,
     String? icon,
     bool? enabled,
-    List<DeviceModel>? devices,
   }) {
     return GroupModel(
       id: id ?? this.id,
@@ -55,7 +48,6 @@ class GroupModel {
       subtitle: subtitle ?? this.subtitle,
       icon: icon ?? this.icon,
       enabled: enabled ?? this.enabled,
-      devices: devices ?? this.devices,
     );
   }
 }

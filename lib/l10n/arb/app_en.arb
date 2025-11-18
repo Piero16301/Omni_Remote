@@ -20,6 +20,14 @@
     "@homeGroupDeleteDialogCancel": {},
     "homeGroupDeleteDialogConfirm": "Delete",
     "@homeGroupDeleteDialogConfirm": {},
+    "homeDeleteGroupSuccessSnackbar": "Group deleted successfully",
+    "@homeDeleteGroupSuccessSnackbar": {},
+    "homeDeleteGroupErrorNotEmpty": "Cannot delete group because it contains devices",
+    "@homeDeleteGroupErrorNotEmpty": {},
+    "homeDeleteGroupErrorNotFound": "Group not found",
+    "@homeDeleteGroupErrorNotFound": {},
+    "homeDeleteGroupErrorUnknown": "An unknown error occurred while deleting the group",
+    "@homeDeleteGroupErrorUnknown": {},
 
     "modifyGroupPageTitleEdit": "Edit group",
     "@modifyGroupPageTitleEdit": {},
@@ -33,6 +41,8 @@
     "@modifyGroupTitleErrorEmpty": {},
     "modifyGroupTitleErrorInvalidFormat": "Title can only contain letters and numbers",
     "@modifyGroupTitleErrorInvalidFormat": {},
+    "modifyGroupTitleErrorMultipleSpaces": "Title cannot contain multiple consecutive spaces",
+    "@modifyGroupTitleErrorMultipleSpaces": {},
     "modifyGroupSubtitleLabel": "Subtitle (optional)",
     "@modifyGroupSubtitleLabel": {},
     "modifyGroupSubtitleHint": "E.g., Lights and TV",
@@ -45,10 +55,109 @@
     "@modifyGroupGroupTitle": {},
     "modifyGroupGroupSubtitle": "Group subtitle",
     "@modifyGroupGroupSubtitle": {},
-    "modifyGroupSaveSuccessSnackbar": "Group saved successfully",
-    "@modifyGroupSaveSuccessSnackbar": {},
-    "modifyGroupSaveDefaultError": "Failed to save group, please try again",
-    "@modifyGroupSaveDefaultError": {},
-    "modifyGroupSaveDuplicateError": "A group with this name already exists",
-    "@modifyGroupSaveDuplicateError": {}
+    "modifyGroupSaveSuccessSnackbar": "Group \"{groupName}\" saved successfully",
+    "@modifyGroupSaveSuccessSnackbar": {
+        "placeholders": {
+            "groupName": {
+                "type": "String"
+            }
+        }
+    },
+    "modifyGroupSaveDefaultError": "Failed to save group \"{groupName}\", please try again",
+    "@modifyGroupSaveDefaultError": {
+        "placeholders": {
+            "groupName": {
+                "type": "String"
+            }
+        }
+    },
+    "modifyGroupSaveDuplicateError": "A group with the name \"{groupName}\" already exists",
+    "@modifyGroupSaveDuplicateError": {
+        "placeholders": {
+            "groupName": {
+                "type": "String"
+            }
+        }
+    },
+
+    "modifyDevicePageTitleEdit": "Edit device",
+    "@modifyDevicePageTitleEdit": {},
+    "modifyDevicePageTitleCreate": "New device",
+    "@modifyDevicePageTitleCreate": {},
+    "modifyDeviceTitleLabel": "Title",
+    "@modifyDeviceTitleLabel": {},
+    "modifyDeviceTitleHint": "E.g., Main Light",
+    "@modifyDeviceTitleHint": {},
+    "modifyDeviceTitleErrorEmpty": "Title cannot be empty",
+    "@modifyDeviceTitleErrorEmpty": {},
+    "modifyDeviceTitleErrorInvalidFormat": "Title can only contain letters and numbers",
+    "@modifyDeviceTitleErrorInvalidFormat": {},
+    "modifyDeviceTitleErrorMultipleSpaces": "Title cannot contain multiple consecutive spaces",
+    "@modifyDeviceTitleErrorMultipleSpaces": {},
+    "modifyDeviceSubtitleLabel": "Subtitle (optional)",
+    "@modifyDeviceSubtitleLabel": {},
+    "modifyDeviceSubtitleHint": "E.g., Living room ceiling",
+    "@modifyDeviceSubtitleHint": {},
+    "modifyDeviceSelectIcon": "Select Icon",
+    "@modifyDeviceSelectIcon": {},
+    "modifyDeviceTileTypeLabel": "Device Type",
+    "@modifyDeviceTileTypeLabel": {},
+    "modifyDeviceTileTypeBoolean": "Boolean",
+    "@modifyDeviceTileTypeBoolean": {},
+    "modifyDeviceTileTypeNumber": "Number",
+    "@modifyDeviceTileTypeNumber": {},
+    "modifyDeviceRangeConfigurationLabel": "Range Configuration",
+    "@modifyDeviceRangeConfigurationLabel": {},
+    "modifyDeviceRangeMinLabel": "Minimum Value",
+    "@modifyDeviceRangeMinLabel": {},
+    "modifyDeviceRangeMinHint": "E.g., 0",
+    "@modifyDeviceRangeMinHint": {},
+    "modifyDeviceRangeMaxLabel": "Maximum Value",
+    "@modifyDeviceRangeMaxLabel": {},
+    "modifyDeviceRangeMaxHint": "E.g., 100",
+    "@modifyDeviceRangeMaxHint": {},
+    "modifyDeviceDivisionsLabel": "Divisions",
+    "@modifyDeviceDivisionsLabel": {},
+    "modifyDeviceDivisionsHint": "E.g., 10",
+    "@modifyDeviceDivisionsHint": {},
+    "modifyDeviceIntervalLabel": "Interval",
+    "@modifyDeviceIntervalLabel": {},
+    "modifyDeviceIntervalHint": "E.g., 5",
+    "@modifyDeviceIntervalHint": {},
+    "modifyDeviceRangeErrorEmpty": "This field cannot be empty",
+    "@modifyDeviceRangeErrorEmpty": {},
+    "modifyDeviceRangeErrorInvalid": "Please enter a valid number",
+    "@modifyDeviceRangeErrorInvalid": {},
+    "modifyDeviceRangeMinMaxError": "Minimum value must be less than maximum value",
+    "@modifyDeviceRangeMinMaxError": {},
+    "modifyDevicePreview": "Preview",
+    "@modifyDevicePreview": {},
+    "modifyDeviceDeviceTitle": "Device title",
+    "@modifyDeviceDeviceTitle": {},
+    "modifyDeviceDeviceSubtitle": "Device subtitle",
+    "@modifyDeviceDeviceSubtitle": {},
+    "modifyDeviceSaveSuccessSnackbar": "Device \"{deviceName}\" saved successfully",
+    "@modifyDeviceSaveSuccessSnackbar": {
+        "placeholders": {
+            "deviceName": {
+                "type": "String"
+            }
+        }
+    },
+    "modifyDeviceSaveDefaultError": "Failed to save device \"{deviceName}\", please try again",
+    "@modifyDeviceSaveDefaultError": {
+        "placeholders": {
+            "deviceName": {
+                "type": "String"
+            }
+        }
+    },
+    "modifyDeviceSaveDuplicateError": "A device with the ID \"{deviceId}\" already exists",
+    "@modifyDeviceSaveDuplicateError": {
+        "placeholders": {
+            "deviceId": {
+                "type": "String"
+            }
+        }
+    }
 }
