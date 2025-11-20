@@ -10,6 +10,10 @@ class DevicePreview extends StatelessWidget {
     required this.subtitle,
     required this.iconName,
     required this.tileType,
+    required this.rangeMin,
+    required this.rangeMax,
+    required this.divisions,
+    required this.interval,
     super.key,
   });
 
@@ -17,6 +21,10 @@ class DevicePreview extends StatelessWidget {
   final String subtitle;
   final String iconName;
   final DeviceTileType tileType;
+  final double rangeMin;
+  final double rangeMax;
+  final int divisions;
+  final double interval;
 
   @override
   Widget build(BuildContext context) {
@@ -32,76 +40,249 @@ class DevicePreview extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        Card(
-          margin: EdgeInsets.zero,
-          child: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(16),
-                  ),
-                  color: Theme.of(context).colorScheme.primary.withValues(
-                    alpha: 0.1,
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    spacing: 16,
-                    children: [
-                      HugeIcon(
-                        icon: IconHelper.getIconByName(iconName),
-                        size: 32,
-                        strokeWidth: 2,
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 4,
-                          children: [
-                            Text(
-                              title.isEmpty
-                                  ? l10n.modifyDeviceDeviceTitle
-                                  : title,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Visibility(
-                              visible: subtitle.isNotEmpty,
-                              child: Text(
-                                subtitle.isEmpty
-                                    ? l10n.modifyDeviceDeviceSubtitle
-                                    : subtitle,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Mock control based on tile type
-                      if (tileType == DeviceTileType.boolean)
-                        const Switch(
-                          value: false,
-                          onChanged: null,
-                        )
-                      else
-                        const Icon(
-                          Icons.tune,
-                          size: 32,
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+        DevicePreviewTile(
+          key: Key('$rangeMin$rangeMax$divisions$interval'),
+          title: title,
+          subtitle: subtitle,
+          iconName: iconName,
+          tileType: tileType,
+          rangeMin: rangeMin,
+          rangeMax: rangeMax,
+          divisions: divisions,
+          interval: interval,
         ),
       ],
     );
+  }
+}
+
+class DevicePreviewTile extends StatefulWidget {
+  const DevicePreviewTile({
+    required this.title,
+    required this.subtitle,
+    required this.iconName,
+    required this.tileType,
+    required this.rangeMin,
+    required this.rangeMax,
+    required this.divisions,
+    required this.interval,
+    super.key,
+  });
+
+  final String title;
+  final String subtitle;
+  final String iconName;
+  final DeviceTileType tileType;
+  final double rangeMin;
+  final double rangeMax;
+  final int divisions;
+  final double interval;
+
+  @override
+  State<DevicePreviewTile> createState() => _DevicePreviewTileState();
+}
+
+class _DevicePreviewTileState extends State<DevicePreviewTile> {
+  bool _boolValue = true;
+  late double _numberValue;
+  late double? _minValue;
+  late double? _maxValue;
+  int? _divisions;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.tileType == DeviceTileType.number) {
+      if (widget.rangeMin >= widget.rangeMax) {
+        _minValue = 0;
+        _maxValue = 10;
+      } else {
+        _minValue = widget.rangeMin;
+        _maxValue = widget.rangeMax;
+      }
+
+      _numberValue = (_minValue! + _maxValue!) / 2;
+
+      if (_numberValue < _minValue! || _numberValue > _maxValue!) {
+        _numberValue = (_minValue! + _maxValue!) / 2;
+      }
+
+      // Finalmente inicializar las divisiones
+      if (widget.divisions == 0 || _divisions == null) {
+        _divisions = 1;
+      }
+      if (widget.divisions > 0) {
+        _divisions = widget.divisions;
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    switch (widget.tileType) {
+      case DeviceTileType.boolean:
+        return Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              spacing: 16,
+              children: [
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                HugeIcon(
+                  icon: IconHelper.getIconByName(widget.iconName),
+                  size: 28,
+                  strokeWidth: 2,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 4,
+                    children: [
+                      Text(
+                        widget.title.isEmpty
+                            ? l10n.modifyDeviceDeviceTitle
+                            : widget.title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Visibility(
+                        visible: widget.subtitle.isNotEmpty,
+                        child: Text(
+                          widget.subtitle.isEmpty
+                              ? l10n.modifyDeviceDeviceSubtitle
+                              : widget.subtitle,
+                          style: const TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Switch(
+                  value: _boolValue,
+                  onChanged: (value) {
+                    setState(() {
+                      _boolValue = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      case DeviceTileType.number:
+        return Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Row(
+                  spacing: 16,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    HugeIcon(
+                      icon: IconHelper.getIconByName(widget.iconName),
+                      size: 28,
+                      strokeWidth: 2,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 4,
+                        children: [
+                          Text(
+                            widget.title.isEmpty
+                                ? l10n.modifyDeviceDeviceTitle
+                                : widget.title,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            widget.subtitle.isEmpty
+                                ? l10n.modifyDeviceDeviceSubtitle
+                                : widget.subtitle,
+                            style: const TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 8,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _numberValue = _numberValue - widget.interval;
+                            });
+                          },
+                          icon: const HugeIcon(
+                            icon: HugeIcons.strokeRoundedRemove01,
+                            strokeWidth: 2,
+                          ),
+                        ),
+                        Text(
+                          _numberValue.toStringAsFixed(1),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _numberValue = _numberValue + widget.interval;
+                            });
+                          },
+                          icon: const HugeIcon(
+                            icon: HugeIcons.strokeRoundedAdd01,
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Slider(
+                  min: _minValue!,
+                  max: _maxValue!,
+                  divisions: _divisions,
+                  value: _numberValue,
+                  onChanged: (value) {
+                    setState(() {
+                      _numberValue = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+    }
   }
 }

@@ -47,10 +47,13 @@ class DeviceBooleanTile extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(
-                device.subtitle,
-                style: const TextStyle(
-                  fontSize: 14,
+              Visibility(
+                visible: device.subtitle.isNotEmpty,
+                child: Text(
+                  device.subtitle,
+                  style: const TextStyle(
+                    fontSize: 14,
+                  ),
                 ),
               ),
             ],

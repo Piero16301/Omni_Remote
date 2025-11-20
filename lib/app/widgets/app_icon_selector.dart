@@ -31,32 +31,25 @@ class AppIconSelector extends StatelessWidget {
           margin: EdgeInsets.zero,
           child: LayoutBuilder(
             builder: (context, constraints) {
-              const crossAxisCount = 5;
+              const crossAxisCount = 3;
               const crossAxisSpacing = 12.0;
               const mainAxisSpacing = 12.0;
               const padding = 16.0;
-
-              final cellWidth =
-                  (constraints.maxWidth -
-                      (padding * 2) -
-                      (crossAxisSpacing * (crossAxisCount - 1))) /
-                  crossAxisCount;
-              final cellHeight = cellWidth;
-
-              const maxRows = 3;
-              final maxHeight =
-                  (cellHeight * maxRows) +
-                  (mainAxisSpacing * (maxRows - 1)) +
-                  (padding * 2);
+              const cellSize = 55.0;
 
               return SizedBox(
-                height: maxHeight,
+                height:
+                    (cellSize * crossAxisCount) +
+                    (crossAxisSpacing * (crossAxisCount - 1)) +
+                    (padding * 2),
                 child: GridView.builder(
+                  scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.all(padding),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: crossAxisCount,
                     crossAxisSpacing: crossAxisSpacing,
                     mainAxisSpacing: mainAxisSpacing,
+                    mainAxisExtent: cellSize,
                   ),
                   itemCount: iconOptions.length,
                   itemBuilder: (context, index) {

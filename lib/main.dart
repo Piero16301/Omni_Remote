@@ -13,7 +13,8 @@ Future<void> main() async {
   await Hive.initFlutter();
   Hive
     ..registerAdapter(GroupModelAdapter())
-    ..registerAdapter(DeviceModelAdapter());
+    ..registerAdapter(DeviceModelAdapter())
+    ..registerAdapter(DeviceTileTypeAdapter());
 
   // Initialize User API
   await UserApiRemote.init();

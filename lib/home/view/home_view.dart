@@ -57,19 +57,6 @@ class HomeView extends StatelessWidget {
             ),
             body: ListView(
               children: [
-                ...groups.map(
-                  (group) => GroupCard(
-                    group: group,
-                    onEnable: () =>
-                        context.read<HomeCubit>().toggleGroupEnabled(group),
-                    onEdit: () => context.pushNamed(
-                      ModifyGroupPage.pageName,
-                      extra: group,
-                    ),
-                    onDelete: () =>
-                        context.read<HomeCubit>().deleteGroup(group),
-                  ),
-                ),
                 Visibility(
                   visible: groups.isEmpty,
                   child: Padding(
@@ -84,6 +71,19 @@ class HomeView extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
+                  ),
+                ),
+                ...groups.map(
+                  (group) => GroupCard(
+                    group: group,
+                    onEnable: () =>
+                        context.read<HomeCubit>().toggleGroupEnabled(group),
+                    onEdit: () => context.pushNamed(
+                      ModifyGroupPage.pageName,
+                      extra: group,
+                    ),
+                    onDelete: () =>
+                        context.read<HomeCubit>().deleteGroup(group),
                   ),
                 ),
                 Card(

@@ -7,8 +7,9 @@ class AppTextField extends StatelessWidget {
     required this.onChanged,
     required this.labelText,
     required this.hintText,
-    required this.prefixIcon,
+    this.prefixIcon,
     this.validator,
+    this.keyboardType,
     super.key,
   });
 
@@ -18,27 +19,32 @@ class AppTextField extends StatelessWidget {
   final String hintText;
   final dynamic prefixIcon;
   final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: initialValue,
       onChanged: onChanged,
+      keyboardType: keyboardType,
       textCapitalization: TextCapitalization.sentences,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
-        prefixIcon: SizedBox(
-          width: 24,
-          height: 24,
-          child: Center(
-            child: HugeIcon(
-              icon: prefixIcon as List<List<dynamic>>,
-              strokeWidth: 2,
-            ),
-          ),
-        ),
+        prefixIcon: prefixIcon != null
+            ? SizedBox(
+                width: 24,
+                height: 24,
+                child: Center(
+                  child: HugeIcon(
+                    icon: prefixIcon as List<List<dynamic>>,
+                    strokeWidth: 2,
+                  ),
+                ),
+              )
+            : null,
+        errorMaxLines: 3,
       ),
       validator: validator,
     );

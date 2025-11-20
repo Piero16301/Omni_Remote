@@ -30,7 +30,7 @@ class GroupCard extends StatelessWidget {
       child: Column(
         children: [
           InkWell(
-            onLongPress: () => _showGroupOptions(context),
+            onLongPress: () => _showGroupOptions(context, group),
             borderRadius: BorderRadius.only(
               topLeft: const Radius.circular(16),
               topRight: const Radius.circular(16),
@@ -143,7 +143,7 @@ class GroupCard extends StatelessWidget {
     );
   }
 
-  void _showGroupOptions(BuildContext context) {
+  void _showGroupOptions(BuildContext context, GroupModel group) {
     final l10n = AppLocalizations.of(context);
 
     unawaited(
@@ -154,6 +154,33 @@ class GroupCard extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 16,
+                    bottom: 8,
+                    left: 24,
+                    right: 24,
+                  ),
+                  child: Column(
+                    spacing: 4,
+                    children: [
+                      Text(
+                        group.title,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (group.subtitle.isNotEmpty)
+                        Text(
+                          group.subtitle,
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
                 ListTile(
                   leading: const HugeIcon(
                     icon: HugeIcons.strokeRoundedEdit02,
@@ -173,7 +200,7 @@ class GroupCard extends StatelessWidget {
                   title: Text(l10n.homeGroupDeleteOption),
                   onTap: () {
                     Navigator.pop(context);
-                    _showDeleteConfirmation(context);
+                    _showDeleteConfirmation(context, group);
                   },
                 ),
               ],
@@ -184,7 +211,7 @@ class GroupCard extends StatelessWidget {
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context) {
+  void _showDeleteConfirmation(BuildContext context, GroupModel group) {
     final l10n = AppLocalizations.of(context);
 
     unawaited(
@@ -192,8 +219,8 @@ class GroupCard extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(l10n.homeGroupDeleteDialogTitle),
-            content: Text(l10n.homeGroupDeleteDialogContent),
+            title: Text(l10n.homeGroupDeleteDialogTitle(group.title)),
+            content: Text(l10n.homeGroupDeleteDialogContent(group.title)),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),

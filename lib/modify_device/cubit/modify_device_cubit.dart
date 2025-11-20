@@ -24,6 +24,7 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
         divisions: device?.divisions,
         interval: device?.interval,
         deviceModel: device,
+        selectedGroupId: device?.groupId,
       ),
     );
   }
@@ -60,9 +61,15 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
     emit(state.copyWith(interval: interval));
   }
 
+  void changeSelectedGroup(String? groupId) {
+    emit(state.copyWith(selectedGroupId: groupId));
+  }
+
   void resetSaveStatus() {
     emit(state.copyWith(saveStatus: ModifyDeviceStatus.initial));
   }
+
+  List<GroupModel> get groups => userRepository.getGroups();
 
   Future<void> saveDeviceModel() async {
     if (!state.formKey.currentState!.validate()) {
@@ -70,12 +77,49 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
     }
     emit(state.copyWith(saveStatus: ModifyDeviceStatus.loading));
     try {
-      // TODO: Implement save logic
-    } on Exception {
+      if (state.deviceModel != null) {
+        final updatedDevice = state.deviceModel!.copyWith(
+          id: state.deviceModel!.id,
+          title: state.title,
+          subtitle: state.subtitle,
+          icon: state.icon,
+          tileType: state.tileType,
+          groupId: state.selectedGroupId,
+          rangeMin: state.rangeMin,
+          rangeMax: state.rangeMax,
+          divisions: state.divisions,
+          interval: state.interval,
+        );
+        await userRepository.updateDevice(device: updatedDevice);
+        emit(state.copyWith(saveStatus: ModifyDeviceStatus.success));
+      } else {
+        final newDevice = DeviceModel(
+          id: state.deviceModel?.id ?? '',
+          title: state.title,
+          subtitle: state.subtitle,
+          icon: state.icon,
+          tileType: state.tileType,
+          groupId: state.selectedGroupId ?? '',
+          rangeMin: state.rangeMin,
+          rangeMax: state.rangeMax,
+          divisions: state.divisions,
+          interval: state.interval,
+        );
+        await userRepository.createDevice(device: newDevice);
+        emit(state.copyWith(saveStatus: ModifyDeviceStatus.success));
+      }
+    } on Exception catch (e) {
+      ModifyDeviceError modifyDeviceError;
+      switch (e.toString()) {
+        case 'Exception: DUPLICATE_DEVICE_NAME':
+          modifyDeviceError = ModifyDeviceError.duplicateDeviceName;
+        default:
+          modifyDeviceError = ModifyDeviceError.unknown;
+      }
       emit(
         state.copyWith(
           saveStatus: ModifyDeviceStatus.failure,
-          modifyDeviceError: ModifyDeviceError.unknown,
+          modifyDeviceError: modifyDeviceError,
         ),
       );
     }

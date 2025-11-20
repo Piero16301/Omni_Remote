@@ -30,7 +30,13 @@ class ModifyDeviceView extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                getFailureMessage(state.modifyDeviceError, state.title, l10n),
+                getFailureMessage(
+                  error: state.modifyDeviceError,
+                  title: state.title,
+                  selectedGroupId: state.selectedGroupId ?? '',
+                  l10n: l10n,
+                  groups: context.read<ModifyDeviceCubit>().groups,
+                ),
               ),
             ),
           );
@@ -56,9 +62,11 @@ class ModifyDeviceView extends StatelessWidget {
         body: Form(
           key: state.formKey,
           child: ListView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 12,
+            padding: const EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 12,
+              bottom: 120,
             ),
             children: [
               AppTextField(
@@ -71,7 +79,9 @@ class ModifyDeviceView extends StatelessWidget {
                   if (value == null || value.isEmpty) {
                     return l10n.modifyDeviceTitleErrorEmpty;
                   }
-                  final alphanumericRegex = RegExp(r'^[a-zA-Z0-9\s]+$');
+                  final alphanumericRegex = RegExp(
+                    r'^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+$',
+                  );
                   if (!alphanumericRegex.hasMatch(value)) {
                     return l10n.modifyDeviceTitleErrorInvalidFormat;
                   }
@@ -88,6 +98,14 @@ class ModifyDeviceView extends StatelessWidget {
                 labelText: l10n.modifyDeviceSubtitleLabel,
                 hintText: l10n.modifyDeviceSubtitleHint,
                 prefixIcon: HugeIcons.strokeRoundedNote,
+              ),
+              const SizedBox(height: 16),
+              GroupSelector(
+                groups: context.read<ModifyDeviceCubit>().groups,
+                selectedGroupId: state.selectedGroupId,
+                onGroupSelected: context
+                    .read<ModifyDeviceCubit>()
+                    .changeSelectedGroup,
               ),
               const SizedBox(height: 24),
               AppIconSelector(
@@ -113,10 +131,11 @@ class ModifyDeviceView extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 16,
                   children: [
                     Expanded(
-                      child: TextFormField(
+                      child: AppTextField(
                         initialValue: state.rangeMin.toString(),
                         onChanged: (value) {
                           final doubleValue = double.tryParse(value);
@@ -129,10 +148,8 @@ class ModifyDeviceView extends StatelessWidget {
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
-                        decoration: InputDecoration(
-                          labelText: l10n.modifyDeviceRangeMinLabel,
-                          hintText: l10n.modifyDeviceRangeMinHint,
-                        ),
+                        labelText: l10n.modifyDeviceRangeMinLabel,
+                        hintText: l10n.modifyDeviceRangeMinHint,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return l10n.modifyDeviceRangeErrorEmpty;
@@ -149,7 +166,7 @@ class ModifyDeviceView extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: TextFormField(
+                      child: AppTextField(
                         initialValue: state.rangeMax.toString(),
                         onChanged: (value) {
                           final doubleValue = double.tryParse(value);
@@ -162,10 +179,8 @@ class ModifyDeviceView extends StatelessWidget {
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
-                        decoration: InputDecoration(
-                          labelText: l10n.modifyDeviceRangeMaxLabel,
-                          hintText: l10n.modifyDeviceRangeMaxHint,
-                        ),
+                        labelText: l10n.modifyDeviceRangeMaxLabel,
+                        hintText: l10n.modifyDeviceRangeMaxHint,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return l10n.modifyDeviceRangeErrorEmpty;
@@ -182,10 +197,11 @@ class ModifyDeviceView extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 16,
                   children: [
                     Expanded(
-                      child: TextFormField(
+                      child: AppTextField(
                         initialValue: state.divisions.toString(),
                         onChanged: (value) {
                           final intValue = int.tryParse(value);
@@ -196,10 +212,8 @@ class ModifyDeviceView extends StatelessWidget {
                           }
                         },
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: l10n.modifyDeviceDivisionsLabel,
-                          hintText: l10n.modifyDeviceDivisionsHint,
-                        ),
+                        labelText: l10n.modifyDeviceDivisionsLabel,
+                        hintText: l10n.modifyDeviceDivisionsHint,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return l10n.modifyDeviceRangeErrorEmpty;
@@ -213,7 +227,7 @@ class ModifyDeviceView extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: TextFormField(
+                      child: AppTextField(
                         initialValue: state.interval.toString(),
                         onChanged: (value) {
                           final doubleValue = double.tryParse(value);
@@ -226,10 +240,8 @@ class ModifyDeviceView extends StatelessWidget {
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
-                        decoration: InputDecoration(
-                          labelText: l10n.modifyDeviceIntervalLabel,
-                          hintText: l10n.modifyDeviceIntervalHint,
-                        ),
+                        labelText: l10n.modifyDeviceIntervalLabel,
+                        hintText: l10n.modifyDeviceIntervalHint,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return l10n.modifyDeviceRangeErrorEmpty;
@@ -251,6 +263,10 @@ class ModifyDeviceView extends StatelessWidget {
                 subtitle: state.subtitle,
                 iconName: state.icon,
                 tileType: state.tileType,
+                rangeMin: state.rangeMin,
+                rangeMax: state.rangeMax,
+                divisions: state.divisions,
+                interval: state.interval,
               ),
             ],
           ),
@@ -267,14 +283,25 @@ class ModifyDeviceView extends StatelessWidget {
     );
   }
 
-  String getFailureMessage(
-    ModifyDeviceError error,
-    String title,
-    AppLocalizations l10n,
-  ) {
+  String getFailureMessage({
+    required ModifyDeviceError error,
+    required String title,
+    required String selectedGroupId,
+    required AppLocalizations l10n,
+    required List<GroupModel> groups,
+  }) {
+    final group = groups.firstWhere(
+      (g) => g.id == selectedGroupId,
+      orElse: () => GroupModel(
+        title: '',
+        subtitle: '',
+        icon: '',
+        enabled: true,
+      ),
+    );
     switch (error) {
-      case ModifyDeviceError.duplicateDeviceId:
-        return l10n.modifyDeviceSaveDuplicateError(title);
+      case ModifyDeviceError.duplicateDeviceName:
+        return l10n.modifyDeviceSaveDuplicateError(title, group.title);
       case ModifyDeviceError.unknown:
         return l10n.modifyDeviceSaveDefaultError(title);
       case ModifyDeviceError.none:

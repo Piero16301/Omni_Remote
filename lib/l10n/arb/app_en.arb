@@ -12,10 +12,22 @@
     "@homeGroupEditOption": {},
     "homeGroupDeleteOption": "Delete",
     "@homeGroupDeleteOption": {},
-    "homeGroupDeleteDialogTitle": "Delete group",
-    "@homeGroupDeleteDialogTitle": {},
-    "homeGroupDeleteDialogContent": "Are you sure you want to delete this group? This action cannot be undone.",
-    "@homeGroupDeleteDialogContent": {},
+    "homeGroupDeleteDialogTitle": "Delete \"{groupName}\"?",
+    "@homeGroupDeleteDialogTitle": {
+        "placeholders": {
+            "groupName": {
+                "type": "String"
+            }
+        }
+    },
+    "homeGroupDeleteDialogContent": "Are you sure you want to delete \"{groupName}\"? This action cannot be undone.",
+    "@homeGroupDeleteDialogContent": {
+        "placeholders": {
+            "groupName": {
+                "type": "String"
+            }
+        }
+    },
     "homeGroupDeleteDialogCancel": "Cancel",
     "@homeGroupDeleteDialogCancel": {},
     "homeGroupDeleteDialogConfirm": "Delete",
@@ -100,6 +112,14 @@
     "@modifyDeviceSubtitleHint": {},
     "modifyDeviceSelectIcon": "Select Icon",
     "@modifyDeviceSelectIcon": {},
+    "modifyDeviceSelectGroup": "Select Group",
+    "@modifyDeviceSelectGroup": {},
+    "modifyDeviceGroupLabel": "Group",
+    "@modifyDeviceGroupLabel": {},
+    "modifyDeviceGroupHint": "Select a group",
+    "@modifyDeviceGroupHint": {},
+    "modifyDeviceNoGroup": "No group",
+    "@modifyDeviceNoGroup": {},
     "modifyDeviceTileTypeLabel": "Device Type",
     "@modifyDeviceTileTypeLabel": {},
     "modifyDeviceTileTypeBoolean": "Boolean",
@@ -152,10 +172,13 @@
             }
         }
     },
-    "modifyDeviceSaveDuplicateError": "A device with the ID \"{deviceId}\" already exists",
+    "modifyDeviceSaveDuplicateError": "A device with the name \"{deviceName}\" already exists in the group \"{groupName}\"",
     "@modifyDeviceSaveDuplicateError": {
         "placeholders": {
-            "deviceId": {
+            "deviceName": {
+                "type": "String"
+            },
+            "groupName": {
                 "type": "String"
             }
         }

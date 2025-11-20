@@ -70,7 +70,9 @@ class ModifyGroupView extends StatelessWidget {
                   if (value == null || value.isEmpty) {
                     return l10n.modifyGroupTitleErrorEmpty;
                   }
-                  final alphanumericRegex = RegExp(r'^[a-zA-Z0-9\s]+$');
+                  final alphanumericRegex = RegExp(
+                    r'^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+$',
+                  );
                   if (!alphanumericRegex.hasMatch(value)) {
                     return l10n.modifyGroupTitleErrorInvalidFormat;
                   }

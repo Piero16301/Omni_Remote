@@ -12,10 +12,22 @@
     "@homeGroupEditOption": {},
     "homeGroupDeleteOption": "Eliminar",
     "@homeGroupDeleteOption": {},
-    "homeGroupDeleteDialogTitle": "Eliminar grupo",
-    "@homeGroupDeleteDialogTitle": {},
-    "homeGroupDeleteDialogContent": "¿Estás seguro de que deseas eliminar este grupo? Esta acción no se puede deshacer.",
-    "@homeGroupDeleteDialogContent": {},
+    "homeGroupDeleteDialogTitle": "¿Eliminar \"{groupName}\"?",
+    "@homeGroupDeleteDialogTitle": {
+        "placeholders": {
+            "groupName": {
+                "type": "String"
+            }
+        }
+    },
+    "homeGroupDeleteDialogContent": "¿Estás seguro de que quieres eliminar \"{groupName}\"? Esta acción no se puede deshacer.",
+    "@homeGroupDeleteDialogContent": {
+        "placeholders": {
+            "groupName": {
+                "type": "String"
+            }
+        }
+    },
     "homeGroupDeleteDialogCancel": "Cancelar",
     "@homeGroupDeleteDialogCancel": {},
     "homeGroupDeleteDialogConfirm": "Eliminar",
@@ -100,6 +112,14 @@
     "@modifyDeviceSubtitleHint": {},
     "modifyDeviceSelectIcon": "Seleccionar ícono",
     "@modifyDeviceSelectIcon": {},
+    "modifyDeviceSelectGroup": "Seleccionar grupo",
+    "@modifyDeviceSelectGroup": {},
+    "modifyDeviceGroupLabel": "Grupo",
+    "@modifyDeviceGroupLabel": {},
+    "modifyDeviceGroupHint": "Selecciona un grupo",
+    "@modifyDeviceGroupHint": {},
+    "modifyDeviceNoGroup": "Sin grupo",
+    "@modifyDeviceNoGroup": {},
     "modifyDeviceTileTypeLabel": "Tipo de dispositivo",
     "@modifyDeviceTileTypeLabel": {},
     "modifyDeviceTileTypeBoolean": "Booleano",
@@ -152,10 +172,13 @@
             }
         }
     },
-    "modifyDeviceSaveDuplicateError": "Ya existe un dispositivo con el ID \"{deviceId}\"",
+    "modifyDeviceSaveDuplicateError": "Ya existe un dispositivo con el nombre \"{deviceName}\" en el grupo \"{groupName}\"",
     "@modifyDeviceSaveDuplicateError": {
         "placeholders": {
-            "deviceId": {
+            "deviceName": {
+                "type": "String"
+            },
+            "groupName": {
                 "type": "String"
             }
         }

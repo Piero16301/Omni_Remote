@@ -12,7 +12,7 @@ enum ModifyDeviceStatus {
   bool get isFailure => this == ModifyDeviceStatus.failure;
 }
 
-enum ModifyDeviceError { none, duplicateDeviceId, unknown }
+enum ModifyDeviceError { none, duplicateDeviceName, unknown }
 
 class ModifyDeviceState extends Equatable {
   const ModifyDeviceState({
@@ -28,6 +28,7 @@ class ModifyDeviceState extends Equatable {
     this.deviceModel,
     this.saveStatus = ModifyDeviceStatus.initial,
     this.modifyDeviceError = ModifyDeviceError.none,
+    this.selectedGroupId,
   });
 
   final String title;
@@ -42,6 +43,7 @@ class ModifyDeviceState extends Equatable {
   final DeviceModel? deviceModel;
   final ModifyDeviceStatus saveStatus;
   final ModifyDeviceError modifyDeviceError;
+  final String? selectedGroupId;
 
   ModifyDeviceState copyWith({
     String? title,
@@ -56,6 +58,7 @@ class ModifyDeviceState extends Equatable {
     DeviceModel? deviceModel,
     ModifyDeviceStatus? saveStatus,
     ModifyDeviceError? modifyDeviceError,
+    String? selectedGroupId,
   }) {
     return ModifyDeviceState(
       title: title ?? this.title,
@@ -70,6 +73,7 @@ class ModifyDeviceState extends Equatable {
       deviceModel: deviceModel ?? this.deviceModel,
       saveStatus: saveStatus ?? this.saveStatus,
       modifyDeviceError: modifyDeviceError ?? this.modifyDeviceError,
+      selectedGroupId: selectedGroupId,
     );
   }
 
@@ -87,5 +91,6 @@ class ModifyDeviceState extends Equatable {
     deviceModel,
     saveStatus,
     modifyDeviceError,
+    selectedGroupId,
   ];
 }
