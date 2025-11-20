@@ -8,30 +8,30 @@
     "@homeEmptyGroupsMessage": {},
     "homeGroupEmptyDevicesMessage": "No devices in this group",
     "@homeGroupEmptyDevicesMessage": {},
-    "homeGroupEditOption": "Edit",
-    "@homeGroupEditOption": {},
-    "homeGroupDeleteOption": "Delete",
-    "@homeGroupDeleteOption": {},
-    "homeGroupDeleteDialogTitle": "Delete \"{groupName}\"?",
-    "@homeGroupDeleteDialogTitle": {
+    "homeEditOption": "Edit",
+    "@homeEditOption": {},
+    "homeDeleteOption": "Delete",
+    "@homeDeleteOption": {},
+    "homeDeleteDialogTitle": "Delete \"{groupName}\"?",
+    "@homeDeleteDialogTitle": {
         "placeholders": {
             "groupName": {
                 "type": "String"
             }
         }
     },
-    "homeGroupDeleteDialogContent": "Are you sure you want to delete \"{groupName}\"? This action cannot be undone.",
-    "@homeGroupDeleteDialogContent": {
+    "homeDeleteDialogContent": "Are you sure you want to delete \"{groupName}\"? This action cannot be undone.",
+    "@homeDeleteDialogContent": {
         "placeholders": {
             "groupName": {
                 "type": "String"
             }
         }
     },
-    "homeGroupDeleteDialogCancel": "Cancel",
-    "@homeGroupDeleteDialogCancel": {},
-    "homeGroupDeleteDialogConfirm": "Delete",
-    "@homeGroupDeleteDialogConfirm": {},
+    "homeDeleteDialogCancel": "Cancel",
+    "@homeDeleteDialogCancel": {},
+    "homeDeleteDialogConfirm": "Delete",
+    "@homeDeleteDialogConfirm": {},
     "homeDeleteGroupSuccessSnackbar": "Group deleted successfully",
     "@homeDeleteGroupSuccessSnackbar": {},
     "homeDeleteGroupErrorNotEmpty": "Cannot delete group because it contains devices",
@@ -40,6 +40,12 @@
     "@homeDeleteGroupErrorNotFound": {},
     "homeDeleteGroupErrorUnknown": "An unknown error occurred while deleting the group",
     "@homeDeleteGroupErrorUnknown": {},
+    "homeDeleteDeviceSuccessSnackbar": "Device deleted successfully",
+    "@homeDeleteDeviceSuccessSnackbar": {},
+    "homeDeleteDeviceErrorNotFound": "Device not found",
+    "@homeDeleteDeviceErrorNotFound": {},
+    "homeDeleteDeviceErrorUnknown": "An unknown error occurred while deleting the device",
+    "@homeDeleteDeviceErrorUnknown": {},
 
     "modifyGroupPageTitleEdit": "Edit group",
     "@modifyGroupPageTitleEdit": {},
@@ -182,5 +188,7 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "modifyDeviceSaveNoGroupSelectedError": "Please select a group for the device",
+    "@modifyDeviceSaveNoGroupSelectedError": {}
 }

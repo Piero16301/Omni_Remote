@@ -16,14 +16,15 @@ class HomeView extends StatelessWidget {
 
     return BlocConsumer<HomeCubit, HomeState>(
       listener: (context, state) {
-        if (state.deleteStatus.isSuccess) {
+        // Handle delete group status changes
+        if (state.deleteGroupStatus.isSuccess) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(l10n.homeDeleteGroupSuccessSnackbar),
             ),
           );
-        } else if (state.deleteStatus.isFailure) {
+        } else if (state.deleteGroupStatus.isFailure) {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -35,7 +36,30 @@ class HomeView extends StatelessWidget {
               ),
             ),
           );
-          context.read<HomeCubit>().resetDeleteStatus();
+          context.read<HomeCubit>().resetDeleteGroupStatus();
+        }
+
+        // Handle delete device status changes
+        if (state.deleteDeviceStatus.isSuccess) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.homeDeleteDeviceSuccessSnackbar),
+            ),
+          );
+        } else if (state.deleteDeviceStatus.isFailure) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                getDeviceDeleteFailureMessage(
+                  state.deviceDeleteError,
+                  l10n,
+                ),
+              ),
+            ),
+          );
+          context.read<HomeCubit>().resetDeleteDeviceStatus();
         }
       },
       builder: (context, state) => ValueListenableBuilder(
@@ -137,6 +161,20 @@ class HomeView extends StatelessWidget {
       case GroupDeleteError.unknown:
         return l10n.homeDeleteGroupErrorUnknown;
       case GroupDeleteError.none:
+        return '';
+    }
+  }
+
+  String getDeviceDeleteFailureMessage(
+    DeviceDeleteError error,
+    AppLocalizations l10n,
+  ) {
+    switch (error) {
+      case DeviceDeleteError.deviceNotFound:
+        return l10n.homeDeleteDeviceErrorNotFound;
+      case DeviceDeleteError.unknown:
+        return l10n.homeDeleteDeviceErrorUnknown;
+      case DeviceDeleteError.none:
         return '';
     }
   }

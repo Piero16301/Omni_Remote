@@ -93,13 +93,22 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
         await userRepository.updateDevice(device: updatedDevice);
         emit(state.copyWith(saveStatus: ModifyDeviceStatus.success));
       } else {
+        if (state.selectedGroupId == null) {
+          emit(
+            state.copyWith(
+              saveStatus: ModifyDeviceStatus.failure,
+              modifyDeviceError: ModifyDeviceError.noGroupSelected,
+            ),
+          );
+          return;
+        }
         final newDevice = DeviceModel(
           id: state.deviceModel?.id ?? '',
           title: state.title,
           subtitle: state.subtitle,
           icon: state.icon,
           tileType: state.tileType,
-          groupId: state.selectedGroupId ?? '',
+          groupId: state.selectedGroupId!,
           rangeMin: state.rangeMin,
           rangeMax: state.rangeMax,
           divisions: state.divisions,

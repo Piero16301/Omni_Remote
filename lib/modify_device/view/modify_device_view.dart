@@ -103,9 +103,9 @@ class ModifyDeviceView extends StatelessWidget {
               GroupSelector(
                 groups: context.read<ModifyDeviceCubit>().groups,
                 selectedGroupId: state.selectedGroupId,
-                onGroupSelected: context
+                onGroupSelected: (selected) => context
                     .read<ModifyDeviceCubit>()
-                    .changeSelectedGroup,
+                    .changeSelectedGroup(selected),
               ),
               const SizedBox(height: 24),
               AppIconSelector(
@@ -136,7 +136,11 @@ class ModifyDeviceView extends StatelessWidget {
                   children: [
                     Expanded(
                       child: AppTextField(
-                        initialValue: state.rangeMin.toString(),
+                        initialValue: state.deviceModel != null
+                            ? state.rangeMin.toString()
+                            : (state.rangeMin != 0
+                                  ? state.rangeMin.toString()
+                                  : ''),
                         onChanged: (value) {
                           final doubleValue = double.tryParse(value);
                           if (doubleValue != null) {
@@ -167,7 +171,9 @@ class ModifyDeviceView extends StatelessWidget {
                     ),
                     Expanded(
                       child: AppTextField(
-                        initialValue: state.rangeMax.toString(),
+                        initialValue: state.rangeMax != 0
+                            ? state.rangeMax.toString()
+                            : '',
                         onChanged: (value) {
                           final doubleValue = double.tryParse(value);
                           if (doubleValue != null) {
@@ -202,7 +208,9 @@ class ModifyDeviceView extends StatelessWidget {
                   children: [
                     Expanded(
                       child: AppTextField(
-                        initialValue: state.divisions.toString(),
+                        initialValue: state.divisions != 0
+                            ? state.divisions.toString()
+                            : '',
                         onChanged: (value) {
                           final intValue = int.tryParse(value);
                           if (intValue != null) {
@@ -222,13 +230,18 @@ class ModifyDeviceView extends StatelessWidget {
                           if (intValue == null) {
                             return l10n.modifyDeviceRangeErrorInvalid;
                           }
+                          if (intValue <= 0) {
+                            return l10n.modifyDeviceRangeErrorInvalid;
+                          }
                           return null;
                         },
                       ),
                     ),
                     Expanded(
                       child: AppTextField(
-                        initialValue: state.interval.toString(),
+                        initialValue: state.interval != 0
+                            ? state.interval.toString()
+                            : '',
                         onChanged: (value) {
                           final doubleValue = double.tryParse(value);
                           if (doubleValue != null) {
@@ -300,6 +313,8 @@ class ModifyDeviceView extends StatelessWidget {
       ),
     );
     switch (error) {
+      case ModifyDeviceError.noGroupSelected:
+        return l10n.modifyDeviceSaveNoGroupSelectedError;
       case ModifyDeviceError.duplicateDeviceName:
         return l10n.modifyDeviceSaveDuplicateError(title, group.title);
       case ModifyDeviceError.unknown:

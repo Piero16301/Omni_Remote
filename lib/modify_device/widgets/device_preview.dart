@@ -235,33 +235,49 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
                       mainAxisSize: MainAxisSize.min,
                       spacing: 8,
                       children: [
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _numberValue = _numberValue - widget.interval;
-                            });
-                          },
-                          icon: const HugeIcon(
-                            icon: HugeIcons.strokeRoundedRemove01,
-                            strokeWidth: 2,
+                        Visibility(
+                          visible: widget.interval > 0,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                if (_numberValue - widget.interval <
+                                    _minValue!) {
+                                  _numberValue = _minValue!;
+                                } else {
+                                  _numberValue = _numberValue - widget.interval;
+                                }
+                              });
+                            },
+                            icon: const HugeIcon(
+                              icon: HugeIcons.strokeRoundedRemove01,
+                              strokeWidth: 2,
+                            ),
                           ),
                         ),
                         Text(
                           _numberValue.toStringAsFixed(1),
-                          style: const TextStyle(
-                            fontSize: 16,
+                          style: TextStyle(
+                            fontSize: widget.interval > 0 ? 16 : 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _numberValue = _numberValue + widget.interval;
-                            });
-                          },
-                          icon: const HugeIcon(
-                            icon: HugeIcons.strokeRoundedAdd01,
-                            strokeWidth: 2,
+                        Visibility(
+                          visible: widget.interval > 0,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                if (_numberValue + widget.interval >
+                                    _maxValue!) {
+                                  _numberValue = _maxValue!;
+                                } else {
+                                  _numberValue = _numberValue + widget.interval;
+                                }
+                              });
+                            },
+                            icon: const HugeIcon(
+                              icon: HugeIcons.strokeRoundedAdd01,
+                              strokeWidth: 2,
+                            ),
                           ),
                         ),
                       ],

@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/l10n/l10n.dart';
+import 'package:omni_remote/modify_device/modify_device.dart';
 import 'package:user_api/user_api.dart';
 
 class GroupCard extends StatelessWidget {
@@ -108,7 +110,7 @@ class GroupCard extends StatelessWidget {
                     valueListenable: context
                         .read<HomeCubit>()
                         .getDevicesListenable(),
-                    builder: (context, box, widget) {
+                    builder: (builderContext, box, widget) {
                       final devices = box.values
                           .where((device) => device.groupId == group.id)
                           .toList();
@@ -131,7 +133,10 @@ class GroupCard extends StatelessWidget {
                                         ),
                                   ),
                                 ]
-                              : getDevicesTiles(devices: devices),
+                              : getDevicesTiles(
+                                  context: context,
+                                  devices: devices,
+                                ),
                         ),
                       );
                     },
@@ -186,7 +191,7 @@ class GroupCard extends StatelessWidget {
                     icon: HugeIcons.strokeRoundedEdit02,
                     strokeWidth: 2,
                   ),
-                  title: Text(l10n.homeGroupEditOption),
+                  title: Text(l10n.homeEditOption),
                   onTap: () {
                     Navigator.pop(context);
                     onEdit();
@@ -197,7 +202,7 @@ class GroupCard extends StatelessWidget {
                     icon: HugeIcons.strokeRoundedDelete02,
                     strokeWidth: 2,
                   ),
-                  title: Text(l10n.homeGroupDeleteOption),
+                  title: Text(l10n.homeDeleteOption),
                   onTap: () {
                     Navigator.pop(context);
                     _showDeleteConfirmation(context, group);
@@ -219,19 +224,19 @@ class GroupCard extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(l10n.homeGroupDeleteDialogTitle(group.title)),
-            content: Text(l10n.homeGroupDeleteDialogContent(group.title)),
+            title: Text(l10n.homeDeleteDialogTitle(group.title)),
+            content: Text(l10n.homeDeleteDialogContent(group.title)),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text(l10n.homeGroupDeleteDialogCancel),
+                child: Text(l10n.homeDeleteDialogCancel),
               ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
                   onDelete();
                 },
-                child: Text(l10n.homeGroupDeleteDialogConfirm),
+                child: Text(l10n.homeDeleteDialogConfirm),
               ),
             ],
           );
@@ -240,7 +245,10 @@ class GroupCard extends StatelessWidget {
     );
   }
 
-  List<Widget> getDevicesTiles({required List<DeviceModel> devices}) {
+  List<Widget> getDevicesTiles({
+    required BuildContext context,
+    required List<DeviceModel> devices,
+  }) {
     final deviceTiles = <Widget>[];
     for (final device in devices) {
       switch (device.tileType) {
@@ -250,6 +258,11 @@ class GroupCard extends StatelessWidget {
               device: device,
               value: false,
               onChanged: ({value}) {},
+              onEdit: () => context.pushNamed(
+                ModifyDevicePage.pageName,
+                extra: device,
+              ),
+              onDelete: () => context.read<HomeCubit>().deleteDevice(device),
             ),
           );
         case DeviceTileType.number:
@@ -260,6 +273,11 @@ class GroupCard extends StatelessWidget {
               onChanged: (value) {},
               onIncrement: () {},
               onDecrement: () {},
+              onEdit: () => context.pushNamed(
+                ModifyDevicePage.pageName,
+                extra: device,
+              ),
+              onDelete: () => context.read<HomeCubit>().deleteDevice(device),
             ),
           );
       }

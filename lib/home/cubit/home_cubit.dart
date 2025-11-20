@@ -25,15 +25,19 @@ class HomeCubit extends Cubit<HomeState> {
     await userRepository.updateGroup(group: updatedGroup);
   }
 
-  void resetDeleteStatus() {
-    emit(state.copyWith(deleteStatus: HomeStatus.initial));
+  void resetDeleteGroupStatus() {
+    emit(state.copyWith(deleteGroupStatus: HomeStatus.initial));
+  }
+
+  void resetDeleteDeviceStatus() {
+    emit(state.copyWith(deleteDeviceStatus: HomeStatus.initial));
   }
 
   Future<void> deleteGroup(GroupModel group) async {
-    emit(state.copyWith(deleteStatus: HomeStatus.loading));
+    emit(state.copyWith(deleteGroupStatus: HomeStatus.loading));
     try {
       await userRepository.deleteGroup(groupId: group.id);
-      emit(state.copyWith(deleteStatus: HomeStatus.success));
+      emit(state.copyWith(deleteGroupStatus: HomeStatus.success));
     } on Exception catch (e) {
       GroupDeleteError groupDeleteError;
       switch (e.toString()) {
@@ -46,8 +50,30 @@ class HomeCubit extends Cubit<HomeState> {
       }
       emit(
         state.copyWith(
-          deleteStatus: HomeStatus.failure,
+          deleteGroupStatus: HomeStatus.failure,
           groupDeleteError: groupDeleteError,
+        ),
+      );
+    }
+  }
+
+  Future<void> deleteDevice(DeviceModel device) async {
+    emit(state.copyWith(deleteDeviceStatus: HomeStatus.loading));
+    try {
+      await userRepository.deleteDevice(deviceId: device.id);
+      emit(state.copyWith(deleteDeviceStatus: HomeStatus.success));
+    } on Exception catch (e) {
+      DeviceDeleteError deviceDeleteError;
+      switch (e.toString()) {
+        case 'Exception: DEVICE_NOT_FOUND':
+          deviceDeleteError = DeviceDeleteError.deviceNotFound;
+        default:
+          deviceDeleteError = DeviceDeleteError.unknown;
+      }
+      emit(
+        state.copyWith(
+          deleteDeviceStatus: HomeStatus.failure,
+          deviceDeleteError: deviceDeleteError,
         ),
       );
     }

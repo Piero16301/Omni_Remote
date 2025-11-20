@@ -12,7 +12,7 @@ enum ModifyDeviceStatus {
   bool get isFailure => this == ModifyDeviceStatus.failure;
 }
 
-enum ModifyDeviceError { none, duplicateDeviceName, unknown }
+enum ModifyDeviceError { none, noGroupSelected, duplicateDeviceName, unknown }
 
 class ModifyDeviceState extends Equatable {
   const ModifyDeviceState({
@@ -73,7 +73,7 @@ class ModifyDeviceState extends Equatable {
       deviceModel: deviceModel ?? this.deviceModel,
       saveStatus: saveStatus ?? this.saveStatus,
       modifyDeviceError: modifyDeviceError ?? this.modifyDeviceError,
-      selectedGroupId: selectedGroupId,
+      selectedGroupId: selectedGroupId ?? this.selectedGroupId,
     );
   }
 

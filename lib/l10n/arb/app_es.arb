@@ -8,30 +8,30 @@
     "@homeEmptyGroupsMessage": {},
     "homeGroupEmptyDevicesMessage": "No hay dispositivos en este grupo",
     "@homeGroupEmptyDevicesMessage": {},
-    "homeGroupEditOption": "Editar",
-    "@homeGroupEditOption": {},
-    "homeGroupDeleteOption": "Eliminar",
-    "@homeGroupDeleteOption": {},
-    "homeGroupDeleteDialogTitle": "¿Eliminar \"{groupName}\"?",
-    "@homeGroupDeleteDialogTitle": {
+    "homeEditOption": "Editar",
+    "@homeEditOption": {},
+    "homeDeleteOption": "Eliminar",
+    "@homeDeleteOption": {},
+    "homeDeleteDialogTitle": "¿Eliminar \"{groupName}\"?",
+    "@homeDeleteDialogTitle": {
         "placeholders": {
             "groupName": {
                 "type": "String"
             }
         }
     },
-    "homeGroupDeleteDialogContent": "¿Estás seguro de que quieres eliminar \"{groupName}\"? Esta acción no se puede deshacer.",
-    "@homeGroupDeleteDialogContent": {
+    "homeDeleteDialogContent": "¿Estás seguro de que deseas eliminar \"{groupName}\"? Esta acción no se puede deshacer.",
+    "@homeDeleteDialogContent": {
         "placeholders": {
             "groupName": {
                 "type": "String"
             }
         }
     },
-    "homeGroupDeleteDialogCancel": "Cancelar",
-    "@homeGroupDeleteDialogCancel": {},
-    "homeGroupDeleteDialogConfirm": "Eliminar",
-    "@homeGroupDeleteDialogConfirm": {},
+    "homeDeleteDialogCancel": "Cancelar",
+    "@homeDeleteDialogCancel": {},
+    "homeDeleteDialogConfirm": "Eliminar",
+    "@homeDeleteDialogConfirm": {},
     "homeDeleteGroupSuccessSnackbar": "Grupo eliminado exitosamente",
     "@homeDeleteGroupSuccessSnackbar": {},
     "homeDeleteGroupErrorNotEmpty": "No se puede eliminar el grupo porque contiene dispositivos",
@@ -40,6 +40,12 @@
     "@homeDeleteGroupErrorNotFound": {},
     "homeDeleteGroupErrorUnknown": "Ocurrió un error desconocido al eliminar el grupo",
     "@homeDeleteGroupErrorUnknown": {},
+    "homeDeleteDeviceSuccessSnackbar": "Dispositivo eliminado exitosamente",
+    "@homeDeleteDeviceSuccessSnackbar": {},
+    "homeDeleteDeviceErrorNotFound": "Dispositivo no encontrado",
+    "@homeDeleteDeviceErrorNotFound": {},
+    "homeDeleteDeviceErrorUnknown": "Ocurrió un error desconocido al eliminar el dispositivo",
+    "@homeDeleteDeviceErrorUnknown": {},
 
     "modifyGroupPageTitleEdit": "Editar grupo",
     "@modifyGroupPageTitleEdit": {},
@@ -182,5 +188,7 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "modifyDeviceSaveNoGroupSelectedError": "Por favor selecciona un grupo para el dispositivo",
+    "@modifyDeviceSaveNoGroupSelectedError": {}
 }

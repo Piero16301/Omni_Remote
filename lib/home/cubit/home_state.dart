@@ -18,22 +18,26 @@ enum DeviceDeleteError { none, deviceNotFound, unknown }
 
 class HomeState extends Equatable {
   const HomeState({
-    this.deleteStatus = HomeStatus.initial,
+    this.deleteGroupStatus = HomeStatus.initial,
+    this.deleteDeviceStatus = HomeStatus.initial,
     this.groupDeleteError = GroupDeleteError.none,
     this.deviceDeleteError = DeviceDeleteError.none,
   });
 
-  final HomeStatus deleteStatus;
+  final HomeStatus deleteGroupStatus;
+  final HomeStatus deleteDeviceStatus;
   final GroupDeleteError groupDeleteError;
   final DeviceDeleteError deviceDeleteError;
 
   HomeState copyWith({
-    HomeStatus? deleteStatus,
+    HomeStatus? deleteGroupStatus,
+    HomeStatus? deleteDeviceStatus,
     GroupDeleteError? groupDeleteError,
     DeviceDeleteError? deviceDeleteError,
   }) {
     return HomeState(
-      deleteStatus: deleteStatus ?? this.deleteStatus,
+      deleteGroupStatus: deleteGroupStatus ?? this.deleteGroupStatus,
+      deleteDeviceStatus: deleteDeviceStatus ?? this.deleteDeviceStatus,
       groupDeleteError: groupDeleteError ?? this.groupDeleteError,
       deviceDeleteError: deviceDeleteError ?? this.deviceDeleteError,
     );
@@ -41,7 +45,8 @@ class HomeState extends Equatable {
 
   @override
   List<Object> get props => [
-    deleteStatus,
+    deleteGroupStatus,
+    deleteDeviceStatus,
     groupDeleteError,
     deviceDeleteError,
   ];
