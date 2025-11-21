@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/modify_device/modify_device.dart';
 import 'package:omni_remote/modify_group/modify_group.dart';
+import 'package:omni_remote/settings/settings.dart';
 import 'package:user_api/user_api.dart';
 
 class AppRouter {
@@ -16,6 +17,11 @@ class AppRouter {
         path: HomePage.pagePath,
         builder: (context, state) => const HomePage(),
         routes: [
+          GoRoute(
+            name: SettingsPage.pageName,
+            path: SettingsPage.pagePath,
+            builder: (context, state) => const SettingsPage(),
+          ),
           GoRoute(
             name: ModifyGroupPage.pageName,
             path: ModifyGroupPage.pagePath,

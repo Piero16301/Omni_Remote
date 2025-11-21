@@ -6,6 +6,7 @@ import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 import 'package:omni_remote/modify_device/modify_device.dart';
 import 'package:omni_remote/modify_group/modify_group.dart';
+import 'package:omni_remote/settings/settings.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -74,10 +75,19 @@ class HomeView extends StatelessWidget {
               leading: IconButton(
                 onPressed: () {},
                 icon: const HugeIcon(
-                  icon: HugeIcons.strokeRoundedSettings01,
+                  icon: HugeIcons.strokeRoundedSmartphoneWifi,
                   strokeWidth: 2,
                 ),
               ),
+              actions: [
+                IconButton(
+                  onPressed: () => context.pushNamed(SettingsPage.pageName),
+                  icon: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedSettings01,
+                    strokeWidth: 2,
+                  ),
+                ),
+              ],
             ),
             body: ListView(
               children: [
