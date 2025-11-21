@@ -190,5 +190,31 @@
         }
     },
     "modifyDeviceSaveNoGroupSelectedError": "Por favor selecciona un grupo para el dispositivo",
-    "@modifyDeviceSaveNoGroupSelectedError": {}
+    "@modifyDeviceSaveNoGroupSelectedError": {},
+    "modifyDeviceMqttTopics": "Tópicos MQTT",
+    "@modifyDeviceMqttTopics": {},
+    "modifyDeviceMqttTopicOnline": "En línea",
+    "@modifyDeviceMqttTopicOnline": {},
+    "modifyDeviceMqttTopicStatus": "Estado",
+    "@modifyDeviceMqttTopicStatus": {},
+    "modifyDeviceMqttTopicCommand": "Comando",
+    "@modifyDeviceMqttTopicCommand": {},
+    "modifyDeviceMqttSnackbarCopy": "Tópico MQTT para \"{topicType}\" copiado al portapapeles",
+    "@modifyDeviceMqttSnackbarCopy": {
+        "placeholders": {
+            "topicType": {
+                "type": "String"
+            }
+        }
+    },
+    "modifyDeviceMqttTopicOnlineDescription": "Recibe \"0\" cuando el dispositivo está desconectado y \"1\" cuando está conectado.",
+    "@modifyDeviceMqttTopicOnlineDescription": {},
+    "modifyDeviceMqttTopicStatusDescriptionBool": "Recibe el estado actual del dispositivo, \"0\" para apagado y \"1\" para encendido.",
+    "@modifyDeviceMqttTopicStatusDescriptionBool": {},
+    "modifyDeviceMqttTopicCommandDescriptionBool": "Envía \"0\" para apagar el dispositivo y \"1\" para encenderlo.",
+    "@modifyDeviceMqttTopicCommandDescriptionBool": {},
+    "modifyDeviceMqttTopicStatusDescriptionNumber": "Recibe el valor actual del dispositivo dentro del rango configurado (Ej., \"3.5\").",
+    "@modifyDeviceMqttTopicStatusDescriptionNumber": {},
+    "modifyDeviceMqttTopicCommandDescriptionNumber": "Envía un valor dentro del rango configurado para ajustar el dispositivo (Ej., \"7.3\").",
+    "@modifyDeviceMqttTopicCommandDescriptionNumber": {}
 }

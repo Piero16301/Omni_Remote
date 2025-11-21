@@ -281,6 +281,26 @@ class ModifyDeviceView extends StatelessWidget {
                 divisions: state.divisions,
                 interval: state.interval,
               ),
+              if (state.selectedGroupId != null && state.title.isNotEmpty)
+                const SizedBox(height: 48),
+              if (state.selectedGroupId != null && state.title.isNotEmpty)
+                MqttTopicsInfo(
+                  groupTitle: context
+                      .read<ModifyDeviceCubit>()
+                      .groups
+                      .firstWhere(
+                        (g) => g.id == state.selectedGroupId,
+                        orElse: () => GroupModel(
+                          title: '',
+                          subtitle: '',
+                          icon: '',
+                          enabled: true,
+                        ),
+                      )
+                      .title,
+                  deviceTitle: state.title,
+                  tileType: state.tileType,
+                ),
             ],
           ),
         ),
