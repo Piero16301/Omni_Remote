@@ -135,6 +135,7 @@ class GroupCard extends StatelessWidget {
                                 ]
                               : getDevicesTiles(
                                   context: context,
+                                  group: group,
                                   devices: devices,
                                 ),
                         ),
@@ -247,6 +248,7 @@ class GroupCard extends StatelessWidget {
 
   List<Widget> getDevicesTiles({
     required BuildContext context,
+    required GroupModel group,
     required List<DeviceModel> devices,
   }) {
     final deviceTiles = <Widget>[];
@@ -256,8 +258,7 @@ class GroupCard extends StatelessWidget {
           deviceTiles.add(
             DeviceBooleanTile(
               device: device,
-              value: false,
-              onChanged: ({value}) {},
+              group: group,
               onEdit: () => context.pushNamed(
                 ModifyDevicePage.pageName,
                 extra: device,

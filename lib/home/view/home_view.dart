@@ -125,7 +125,7 @@ class HomeView extends StatelessWidget {
                 leading: IconButton(
                   onPressed: () => context.pushNamed(ConnectionPage.pageName),
                   icon: const HugeIcon(
-                    icon: HugeIcons.strokeRoundedSmartphoneWifi,
+                    icon: HugeIcons.strokeRoundedWifi01,
                     strokeWidth: 2,
                   ),
                 ),

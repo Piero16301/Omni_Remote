@@ -195,6 +195,22 @@ class ConnectionView extends StatelessWidget {
                               ),
                             ],
                           ),
+                          if (connectionStatus.isConnected)
+                            TextButton.icon(
+                              onPressed: connectionStatus.isConnected
+                                  ? () => context
+                                        .read<ConnectionCubit>()
+                                        .disconnectBroker(context: context)
+                                  : null,
+                              icon: const HugeIcon(
+                                icon: HugeIcons.strokeRoundedCancelCircle,
+                                size: 20,
+                              ),
+                              label: const Text('Desconectar'),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.red,
+                              ),
+                            ),
                         ],
                       ),
                     ),

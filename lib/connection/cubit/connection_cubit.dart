@@ -61,4 +61,8 @@ class ConnectionCubit extends Cubit<ConnectionState> {
     // ignore: use_build_context_synchronously
     await context.read<AppCubit>().reconnectWithNewSettings();
   }
+
+  void disconnectBroker({required BuildContext context}) {
+    context.read<AppCubit>().disconnectMqtt();
+  }
 }

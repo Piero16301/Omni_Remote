@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 import 'package:user_api/user_api.dart';
 
@@ -17,32 +18,6 @@ class MqttTopicsInfo extends StatelessWidget {
   final String groupTitle;
   final String deviceTitle;
   final DeviceTileType tileType;
-
-  String _normalizeText(String text) {
-    // Convertir a minúsculas
-    var normalized = text.toLowerCase();
-
-    // Reemplazar tildes por vocales normales
-    normalized = normalized
-        .replaceAll('á', 'a')
-        .replaceAll('é', 'e')
-        .replaceAll('í', 'i')
-        .replaceAll('ó', 'o')
-        .replaceAll('ú', 'u')
-        .replaceAll('ü', 'u')
-        .replaceAll('ñ', 'n');
-
-    // Reemplazar espacios por guiones medios
-    normalized = normalized.replaceAll(RegExp(r'\s+'), '-');
-
-    return normalized;
-  }
-
-  String _buildTopic(String suffix) {
-    final normalizedGroup = _normalizeText(groupTitle);
-    final normalizedDevice = _normalizeText(deviceTitle);
-    return '$normalizedGroup/$normalizedDevice/$suffix';
-  }
 
   void _copyToClipboard(BuildContext context, String message, String text) {
     unawaited(Clipboard.setData(ClipboardData(text: text)));
@@ -62,9 +37,21 @@ class MqttTopicsInfo extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final onlineTopic = _buildTopic('online');
-    final statusTopic = _buildTopic('status');
-    final commandTopic = _buildTopic('command');
+    final onlineTopic = AppVariables.buildDeviceTopic(
+      groupTitle: groupTitle,
+      deviceTitle: deviceTitle,
+      suffix: AppVariables.onlineSuffix,
+    );
+    final statusTopic = AppVariables.buildDeviceTopic(
+      groupTitle: groupTitle,
+      deviceTitle: deviceTitle,
+      suffix: AppVariables.statusSuffix,
+    );
+    final commandTopic = AppVariables.buildDeviceTopic(
+      groupTitle: groupTitle,
+      deviceTitle: deviceTitle,
+      suffix: AppVariables.commandSuffix,
+    );
 
     return Column(
       children: [
