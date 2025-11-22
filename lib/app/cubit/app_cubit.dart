@@ -108,6 +108,8 @@ class AppCubit extends Cubit<AppState> {
 
     final connMessage = MqttConnectMessage()
         .authenticateAs(username, password)
+        .withWillTopic(AppVariables.lastWillTopic)
+        .withWillMessage(AppVariables.lastWillMessage)
         .startClean()
         .withWillQos(MqttQos.atLeastOnce);
 

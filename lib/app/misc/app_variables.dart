@@ -2,6 +2,9 @@ class AppVariables {
   static const String appName = 'Omni Remote';
   static const String defaultBaseColor = 'INDIGO';
 
+  static const String lastWillTopic = 'application/lastwill';
+  static const String lastWillMessage = 'Client disconnected unexpectedly';
+
   static const String onlineSuffix = 'online';
   static const String statusSuffix = 'status';
   static const String commandSuffix = 'command';
