@@ -28,6 +28,7 @@ dependencies:
     path: packages/user_api_remote
   user_repository:
     path: packages/user_repository
+  uuid: ^4.5.2
 
 dev_dependencies:
   bloc_test: ^10.0.0

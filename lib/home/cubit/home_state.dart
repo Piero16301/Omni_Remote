@@ -4,7 +4,8 @@ enum HomeStatus {
   initial,
   loading,
   success,
-  failure;
+  failure
+  ;
 
   bool get isInitial => this == HomeStatus.initial;
   bool get isLoading => this == HomeStatus.loading;

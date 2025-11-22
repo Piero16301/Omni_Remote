@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:omni_remote/connection/connection.dart';
 import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/modify_device/modify_device.dart';
 import 'package:omni_remote/modify_group/modify_group.dart';
@@ -17,6 +18,11 @@ class AppRouter {
         path: HomePage.pagePath,
         builder: (context, state) => const HomePage(),
         routes: [
+          GoRoute(
+            name: ConnectionPage.pageName,
+            path: ConnectionPage.pagePath,
+            builder: (context, state) => const ConnectionPage(),
+          ),
           GoRoute(
             name: SettingsPage.pageName,
             path: SettingsPage.pagePath,

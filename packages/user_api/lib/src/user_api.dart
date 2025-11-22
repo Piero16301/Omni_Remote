@@ -27,6 +27,30 @@ abstract class IUserApi {
   /// Get base color from local storage
   String? getBaseColor();
 
+  /// Get Broker URL
+  String? getBrokerUrl();
+
+  /// Save Broker URL
+  Future<void> saveBrokerUrl({required String brokerUrl});
+
+  /// Get Broker Port
+  String? getBrokerPort();
+
+  /// Save Broker Port
+  Future<void> saveBrokerPort({required String brokerPort});
+
+  /// Get Broker Username
+  String? getBrokerUsername();
+
+  /// Save Broker Username
+  Future<void> saveBrokerUsername({required String brokerUsername});
+
+  /// Get Broker Password
+  String? getBrokerPassword();
+
+  /// Save Broker Password
+  Future<void> saveBrokerPassword({required String brokerPassword});
+
   /// Get a ValueListenable for groups box
   ValueListenable<Box<GroupModel>> getGroupsListenable();
 

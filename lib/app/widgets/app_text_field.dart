@@ -10,6 +10,7 @@ class AppTextField extends StatelessWidget {
     this.prefixIcon,
     this.validator,
     this.keyboardType,
+    this.obscureText = false,
     super.key,
   });
 
@@ -20,6 +21,7 @@ class AppTextField extends StatelessWidget {
   final dynamic prefixIcon;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
+  final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class AppTextField extends StatelessWidget {
       keyboardType: keyboardType,
       textCapitalization: TextCapitalization.sentences,
       autovalidateMode: AutovalidateMode.onUserInteraction,
+      obscureText: obscureText,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,

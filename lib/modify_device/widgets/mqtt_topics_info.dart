@@ -139,8 +139,8 @@ class MqttTopicsInfo extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.info_outline,
+                  HugeIcon(
+                    icon: HugeIcons.strokeRoundedInformationCircle,
                     size: 16,
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -166,8 +166,8 @@ class MqttTopicsInfo extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.info_outline,
+                  HugeIcon(
+                    icon: HugeIcons.strokeRoundedInformationCircle,
                     size: 16,
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -193,8 +193,8 @@ class MqttTopicsInfo extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.info_outline,
+                  HugeIcon(
+                    icon: HugeIcons.strokeRoundedInformationCircle,
                     size: 16,
                     color: Theme.of(context).colorScheme.primary,
                   ),

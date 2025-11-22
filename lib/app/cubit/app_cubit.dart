@@ -3,8 +3,11 @@ import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:user_repository/user_repository.dart';
+import 'package:uuid/uuid.dart';
 
 part 'app_state.dart';
 
@@ -12,6 +15,9 @@ class AppCubit extends Cubit<AppState> {
   AppCubit(this.userRepository) : super(const AppState());
 
   final UserRepository userRepository;
+  MqttServerClient? _mqttClient;
+
+  MqttServerClient? get mqttClient => _mqttClient;
 
   Future<void> initialLoad() async {
     // Setting the language to the device language if it's not set
@@ -40,6 +46,9 @@ class AppCubit extends Cubit<AppState> {
       );
     }
     emit(state.copyWith(baseColor: userRepository.getBaseColor()));
+
+    // Initialize MQTT Client
+    await _initializeMqttClient();
   }
 
   Future<void> changeLanguage({required String language}) async {
@@ -55,5 +64,150 @@ class AppCubit extends Cubit<AppState> {
   Future<void> changeBaseColor({required String baseColor}) async {
     await userRepository.saveBaseColor(baseColor: baseColor);
     emit(state.copyWith(baseColor: baseColor));
+  }
+
+  Future<void> _initializeMqttClient() async {
+    final brokerUrl = userRepository.getBrokerUrl();
+    final brokerPort = userRepository.getBrokerPort();
+    final username = userRepository.getBrokerUsername();
+    final password = userRepository.getBrokerPassword();
+
+    if (brokerUrl == null ||
+        brokerUrl.isEmpty ||
+        brokerPort == null ||
+        brokerPort.isEmpty) {
+      return;
+    }
+
+    const uuid = Uuid();
+    final port = int.parse(brokerPort);
+
+    _mqttClient = MqttServerClient.withPort(
+      brokerUrl,
+      uuid.v4(),
+      port,
+    );
+
+    // Configurar TLS/SSL para puerto 8883 (MQTT seguro)
+    if (port == 8883) {
+      _mqttClient!.secure = true;
+      _mqttClient!.securityContext = SecurityContext.defaultContext;
+      // Para HiveMQ Cloud y otros servicios, validar certificados correctamente
+      _mqttClient!.onBadCertificate = (dynamic cert) => true;
+    }
+
+    _mqttClient!
+      ..keepAlivePeriod = 60
+      ..connectTimeoutPeriod = 5000
+      ..autoReconnect = true
+      ..logging(on: true)
+      ..onConnected = _onMqttConnected
+      ..onDisconnected = _onMqttDisconnected
+      ..onAutoReconnect = _onMqttAutoReconnect
+      ..onAutoReconnected = _onMqttAutoReconnected;
+
+    final connMessage = MqttConnectMessage()
+        .authenticateAs(username, password)
+        .withWillTopic('willtopic')
+        .withWillMessage('Will message')
+        .startClean()
+        .withWillQos(MqttQos.atLeastOnce);
+
+    _mqttClient!.connectionMessage = connMessage;
+
+    await connectMqtt();
+  }
+
+  Future<void> connectMqtt() async {
+    if (_mqttClient == null) return;
+
+    try {
+      emit(
+        state.copyWith(
+          brokerConnectionStatus: BrokerConnectionStatus.connecting,
+        ),
+      );
+
+      await _mqttClient!.connect(
+        userRepository.getBrokerUsername(),
+        userRepository.getBrokerPassword(),
+      );
+
+      if (_mqttClient!.connectionStatus?.state ==
+          MqttConnectionState.connected) {
+        emit(
+          state.copyWith(
+            brokerConnectionStatus: BrokerConnectionStatus.connected,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            brokerConnectionStatus: BrokerConnectionStatus.disconnected,
+          ),
+        );
+        _mqttClient?.disconnect();
+      }
+    } on Exception {
+      emit(
+        state.copyWith(
+          brokerConnectionStatus: BrokerConnectionStatus.disconnected,
+        ),
+      );
+      _mqttClient?.disconnect();
+    }
+  }
+
+  void disconnectMqtt() {
+    if (_mqttClient == null) return;
+    emit(
+      state.copyWith(
+        brokerConnectionStatus: BrokerConnectionStatus.disconnecting,
+      ),
+    );
+    _mqttClient?.disconnect();
+  }
+
+  Future<void> reconnectWithNewSettings() async {
+    // Desconectar el cliente actual si existe
+    if (_mqttClient != null) {
+      _mqttClient?.disconnect();
+      _mqttClient = null;
+    }
+
+    // Reinicializar con los nuevos datos
+    await _initializeMqttClient();
+  }
+
+  void _onMqttConnected() {
+    emit(
+      state.copyWith(brokerConnectionStatus: BrokerConnectionStatus.connected),
+    );
+  }
+
+  void _onMqttDisconnected() {
+    emit(
+      state.copyWith(
+        brokerConnectionStatus: BrokerConnectionStatus.disconnected,
+      ),
+    );
+  }
+
+  void _onMqttAutoReconnect() {
+    emit(
+      state.copyWith(brokerConnectionStatus: BrokerConnectionStatus.connecting),
+    );
+  }
+
+  void _onMqttAutoReconnected() {
+    emit(
+      state.copyWith(brokerConnectionStatus: BrokerConnectionStatus.connected),
+    );
+  }
+
+  @override
+  Future<void> close() {
+    _mqttClient?.disconnect();
+    return super.close();
   }
 }

@@ -15,9 +15,9 @@ const char* mqtt_user = "pmorales";
 const char* mqtt_password = "qweASD123*";
 
 // --- 4. TOPIC DEFINITIONS ---
-const char* command_topic = "legos/camp_nou/command";
-const char* status_topic = "legos/camp_nou/status";
-const char* online_topic = "legos/camp_nou/online";
+const char* command_topic = "legos/prueba/command";
+const char* status_topic = "legos/prueba/status";
+const char* online_topic = "legos/prueba/online";
 
 // --- 5. HARDWARE CONFIGURATION ---
 const int RELAY_PIN = 5;

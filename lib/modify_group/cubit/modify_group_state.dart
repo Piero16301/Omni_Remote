@@ -4,7 +4,8 @@ enum ModifyGroupStatus {
   initial,
   loading,
   success,
-  failure;
+  failure
+  ;
 
   bool get isInitial => this == ModifyGroupStatus.initial;
   bool get isLoading => this == ModifyGroupStatus.loading;

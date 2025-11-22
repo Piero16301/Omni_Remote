@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:user_api/user_api.dart';
+import 'package:user_api_remote/user_api_remote.dart';
 import 'package:uuid/uuid.dart';
 
 /// {@template user_api_remote}
@@ -13,6 +14,7 @@ class UserApiRemote implements IUserApi {
     _settingsBox = Hive.box(kSettingsBoxName);
     _groupsBox = Hive.box(kGroupsBoxName);
     _devicesBox = Hive.box(kDevicesBoxName);
+    _brokerBox = Hive.box(kBrokerBoxName);
   }
 
   /// Box name for settings
@@ -24,6 +26,9 @@ class UserApiRemote implements IUserApi {
   /// Box name for devices
   static const kDevicesBoxName = '__devices__';
 
+  /// Box name for encrypted broker credentials
+  static const kBrokerBoxName = '__broker_credentials__';
+
   /// The key used to store the user's language
   static const kUserLanguage = '__user_language__';
 
@@ -33,13 +38,29 @@ class UserApiRemote implements IUserApi {
   /// The key used to store the user's base color preference
   static const kUserBaseColor = '__user_base_color__';
 
+  /// The key used to store the broker URL
+  static const kBrokerUrl = '__broker_url__';
+
+  /// The key used to store the broker port
+  static const kBrokerPort = '__broker_port__';
+
+  /// The key used to store the broker username
+  static const kBrokerUsername = '__broker_username__';
+
+  /// The key used to store the broker password
+  static const kBrokerPassword = '__broker_password__';
+
   // Hive boxes used in the API
   late final Box<String> _settingsBox;
   late final Box<GroupModel> _groupsBox;
   late final Box<DeviceModel> _devicesBox;
+  late final Box<String> _brokerBox;
 
   /// Initialize and open the settings box
   static Future<void> init() async {
+    // Initialize encryption helper
+    await EncryptionHelper().init();
+
     if (!Hive.isBoxOpen(kSettingsBoxName)) {
       await Hive.openBox<String>(kSettingsBoxName);
     }
@@ -48,6 +69,13 @@ class UserApiRemote implements IUserApi {
     }
     if (!Hive.isBoxOpen(kDevicesBoxName)) {
       await Hive.openBox<DeviceModel>(kDevicesBoxName);
+    }
+    // Open encrypted box for broker credentials
+    if (!Hive.isBoxOpen(kBrokerBoxName)) {
+      await Hive.openBox<String>(
+        kBrokerBoxName,
+        encryptionCipher: EncryptionHelper().cipher,
+      );
     }
   }
 
@@ -79,6 +107,46 @@ class UserApiRemote implements IUserApi {
   @override
   String? getBaseColor() {
     return _settingsBox.get(kUserBaseColor);
+  }
+
+  @override
+  String? getBrokerUrl() {
+    return _brokerBox.get(kBrokerUrl);
+  }
+
+  @override
+  Future<void> saveBrokerUrl({required String brokerUrl}) async {
+    await _brokerBox.put(kBrokerUrl, brokerUrl);
+  }
+
+  @override
+  String? getBrokerPort() {
+    return _brokerBox.get(kBrokerPort);
+  }
+
+  @override
+  Future<void> saveBrokerPort({required String brokerPort}) async {
+    await _brokerBox.put(kBrokerPort, brokerPort);
+  }
+
+  @override
+  String? getBrokerUsername() {
+    return _brokerBox.get(kBrokerUsername);
+  }
+
+  @override
+  Future<void> saveBrokerUsername({required String brokerUsername}) async {
+    await _brokerBox.put(kBrokerUsername, brokerUsername);
+  }
+
+  @override
+  String? getBrokerPassword() {
+    return _brokerBox.get(kBrokerPassword);
+  }
+
+  @override
+  Future<void> saveBrokerPassword({required String brokerPassword}) async {
+    await _brokerBox.put(kBrokerPassword, brokerPassword);
   }
 
   @override

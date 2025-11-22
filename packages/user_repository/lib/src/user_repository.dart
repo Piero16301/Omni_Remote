@@ -32,6 +32,34 @@ class UserRepository {
   /// Get save color from local storage
   String? getBaseColor() => _userApi.getBaseColor();
 
+  /// Get Broker URL
+  String? getBrokerUrl() => _userApi.getBrokerUrl();
+
+  /// Save Broker URL
+  Future<void> saveBrokerUrl({required String brokerUrl}) =>
+      _userApi.saveBrokerUrl(brokerUrl: brokerUrl);
+
+  /// Get Broker Port
+  String? getBrokerPort() => _userApi.getBrokerPort();
+
+  /// Save Broker Port
+  Future<void> saveBrokerPort({required String brokerPort}) =>
+      _userApi.saveBrokerPort(brokerPort: brokerPort);
+
+  /// Get Broker Username
+  String? getBrokerUsername() => _userApi.getBrokerUsername();
+
+  /// Save Broker Username
+  Future<void> saveBrokerUsername({required String brokerUsername}) =>
+      _userApi.saveBrokerUsername(brokerUsername: brokerUsername);
+
+  /// Get Broker Password
+  String? getBrokerPassword() => _userApi.getBrokerPassword();
+
+  /// Save Broker Password
+  Future<void> saveBrokerPassword({required String brokerPassword}) =>
+      _userApi.saveBrokerPassword(brokerPassword: brokerPassword);
+
   /// Get a ValueListenable for groups box
   ValueListenable<Box<GroupModel>> getGroupsListenable() =>
       _userApi.getGroupsListenable();

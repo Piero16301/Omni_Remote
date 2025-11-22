@@ -4,7 +4,8 @@ enum ModifyDeviceStatus {
   initial,
   loading,
   success,
-  failure;
+  failure
+  ;
 
   bool get isInitial => this == ModifyDeviceStatus.initial;
   bool get isLoading => this == ModifyDeviceStatus.loading;

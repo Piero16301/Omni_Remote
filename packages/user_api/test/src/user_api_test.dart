@@ -23,6 +23,30 @@ class _MockUserApi extends IUserApi {
   Future<void> saveLanguage({String language = 'es_ES'}) async {}
 
   @override
+  String? getBrokerUrl() => null;
+
+  @override
+  Future<void> saveBrokerUrl({required String brokerUrl}) async {}
+
+  @override
+  String? getBrokerPort() => null;
+
+  @override
+  Future<void> saveBrokerPort({required String brokerPort}) async {}
+
+  @override
+  String? getBrokerUsername() => null;
+
+  @override
+  Future<void> saveBrokerUsername({required String brokerUsername}) async {}
+
+  @override
+  String? getBrokerPassword() => null;
+
+  @override
+  Future<void> saveBrokerPassword({required String brokerPassword}) async {}
+
+  @override
   ValueListenable<Box<GroupModel>> getGroupsListenable() {
     throw UnimplementedError();
   }
