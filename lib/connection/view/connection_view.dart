@@ -20,51 +20,30 @@ class ConnectionView extends StatelessWidget {
       builder: (context, state) {
         String statusText;
         Color statusColor;
+        List<List<dynamic>> icon;
 
         switch (connectionStatus) {
           case BrokerConnectionStatus.connected:
             statusText = l10n.connectionStatusConnected;
             statusColor = Colors.green;
+            icon = HugeIcons.strokeRoundedCheckmarkCircle02;
           case BrokerConnectionStatus.disconnected:
             statusText = l10n.connectionStatusDisconnected;
             statusColor = Colors.red;
+            icon = HugeIcons.strokeRoundedCancelCircle;
           case BrokerConnectionStatus.connecting:
             statusText = l10n.connectionStatusConnecting;
             statusColor = Colors.orange;
+            icon = HugeIcons.strokeRoundedLink01;
           case BrokerConnectionStatus.disconnecting:
             statusText = l10n.connectionStatusDisconnecting;
             statusColor = Colors.grey;
+            icon = HugeIcons.strokeRoundedLink01;
         }
 
         return Scaffold(
           appBar: AppBar(
-            title: Column(
-              children: [
-                Text(l10n.connectionAppBarTitle),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: statusColor,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      statusText,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal,
-                        color: statusColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            title: Text(l10n.connectionAppBarTitle),
             centerTitle: true,
             leading: IconButton(
               onPressed: () => context.pop(),
@@ -147,11 +126,79 @@ class ConnectionView extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: () async => context
-                      .read<ConnectionCubit>()
-                      .saveAndConnect(context: context),
+                  onPressed:
+                      (connectionStatus.isConnecting ||
+                          connectionStatus.isDisconnecting)
+                      ? null
+                      : () async => context
+                            .read<ConnectionCubit>()
+                            .saveAndConnect(context: context),
                   child: Text(l10n.connectionSaveAndConnectButton),
                 ),
+                if (state.brokerUrl.isNotEmpty && state.brokerPort.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color:
+                            Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest.withValues(
+                              alpha: 0.5,
+                            ),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.outline.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Column(
+                        spacing: 12,
+                        children: [
+                          HugeIcon(
+                            icon: icon,
+                            color: statusColor,
+                            size: 48,
+                          ),
+                          Text(
+                            statusText,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(color: statusColor),
+                          ),
+                          Row(
+                            spacing: 8,
+                            children: [
+                              const HugeIcon(
+                                icon: HugeIcons.strokeRoundedLink01,
+                                size: 20,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  state.brokerUrl,
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            spacing: 8,
+                            children: [
+                              const HugeIcon(
+                                icon: HugeIcons.strokeRoundedGps01,
+                                size: 20,
+                              ),
+                              Text(
+                                state.brokerPort,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
