@@ -35,17 +35,19 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
-  mockito: ^5.4.4
+  mockito: ^5.6.1
   mocktail: ^1.0.4
   test_coverage_badge: ^0.3.2
   very_good_analysis: ^10.0.0
 
-flutter_icons:
-  image_path: "assets/images/app-main-logo.png"
-  android: "launcher_icon"
+flutter_launcher_icons:
+  android: true
+  image_path_android: "assets/images/app-main-logo-rounded.png"
+  adaptive_icon_background: "#145EB9"
+  adaptive_icon_foreground: "assets/images/app-main-logo-rounded.png"
   ios: true
+  image_path_ios: "assets/images/app-main-logo.png"
   remove_alpha_ios: true
-  min_sdk_android: 28
   web:
     generate: false
   windows:
