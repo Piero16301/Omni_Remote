@@ -93,10 +93,10 @@ class GroupCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Switch(
-                      value: group.enabled,
-                      onChanged: (_) => onEnable(),
-                    ),
+                    // Switch(
+                    //   value: group.enabled,
+                    //   onChanged: (_) => onEnable(),
+                    // ),
                   ],
                 ),
               ),
