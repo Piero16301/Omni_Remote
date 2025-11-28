@@ -48,6 +48,7 @@ flutter_launcher_icons:
   ios: true
   image_path_ios: "assets/images/app-main-logo.png"
   remove_alpha_ios: true
+  background_color_ios: "#145EB9"
   web:
     generate: false
   windows:
