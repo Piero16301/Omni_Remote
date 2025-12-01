@@ -4,8 +4,8 @@ version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: ^3.10.0
-  flutter: ^3.38.2
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.35.6"
 
 dependencies:
   bloc: ^9.1.0
@@ -19,7 +19,7 @@ dependencies:
   google_fonts: ^6.3.2
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  hugeicons: ^1.1.1
+  hugeicons: ^1.1.2
   intl: ^0.20.2
   mqtt_client: ^10.11.1
   user_api:

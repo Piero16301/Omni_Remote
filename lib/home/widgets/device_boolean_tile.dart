@@ -39,6 +39,16 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
   }
 
   @override
+  void didUpdateWidget(DeviceBooleanTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.device.id != widget.device.id ||
+        oldWidget.device.title != widget.device.title ||
+        oldWidget.group.title != widget.group.title) {
+      _verifyStatus();
+    }
+  }
+
+  @override
   void dispose() {
     unawaited(_subscription?.cancel());
     super.dispose();
@@ -100,6 +110,37 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
         }
       }
     });
+  }
+
+  void _verifyStatus() {
+    final appCubit = context.read<AppCubit>();
+    final mqttClient = appCubit.mqttClient;
+
+    if (mqttClient == null ||
+        mqttClient.connectionStatus?.state != MqttConnectionState.connected) {
+      return;
+    }
+
+    // Unsubscribe from current topics
+    final online = AppVariables.buildDeviceTopic(
+      groupTitle: widget.group.title,
+      deviceTitle: widget.device.title,
+      suffix: AppVariables.onlineSuffix,
+    );
+    final status = AppVariables.buildDeviceTopic(
+      groupTitle: widget.group.title,
+      deviceTitle: widget.device.title,
+      suffix: AppVariables.statusSuffix,
+    );
+
+    mqttClient
+      ..unsubscribe(online)
+      ..unsubscribe(status);
+
+    unawaited(_subscription?.cancel());
+    _isSubscribed = false;
+
+    _trySubscribeMqttTopics();
   }
 
   void _publishCommand(bool value) {
@@ -197,7 +238,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
             ),
             Switch(
               value: _isOn,
-              onChanged: _publishCommand,
+              onChanged: _isOnline ? _publishCommand : null,
             ),
           ],
         ),
@@ -242,6 +283,17 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
                         ),
                     ],
                   ),
+                ),
+                ListTile(
+                  leading: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedRefresh,
+                    strokeWidth: 2,
+                  ),
+                  title: Text(l10n.homeReconnectOption),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _verifyStatus();
+                  },
                 ),
                 ListTile(
                   leading: const HugeIcon(

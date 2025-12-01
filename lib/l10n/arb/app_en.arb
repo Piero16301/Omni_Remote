@@ -8,6 +8,8 @@
     "@homeEmptyGroupsMessage": {},
     "homeGroupEmptyDevicesMessage": "No devices in this group",
     "@homeGroupEmptyDevicesMessage": {},
+    "homeReconnectOption": "Reconnect",
+    "@homeReconnectOption": {},
     "homeEditOption": "Edit",
     "@homeEditOption": {},
     "homeDeleteOption": "Delete",

@@ -21,7 +21,7 @@ jobs:
       is_bot: ${{ steps.check_author.outputs.is_bot }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
       - name: Check commit author
@@ -59,7 +59,7 @@ jobs:
       contents: write
     steps:
       - name: 📚 Git Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: 🐦 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -85,3 +85,72 @@ jobs:
             git commit -m "Update coverage badge [skip ci]"
             git push origin main
           fi
+
+  build:
+    name: "🔨 Build Application"
+    needs: tests
+    runs-on: ubuntu-latest
+    env:
+      APP_PACKAGE_NAME: com.pmorales.omni.remote
+      AAB_PATH: build/app/outputs/bundle/productionRelease/app-production-release.aab
+      KEYSTORE_PATH: android/keystore.jks
+      KEY_PROPS_PATH: android/key.properties
+      SERVICE_ACCOUNT_PATH: service-account.json
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v6
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+
+      - name: 🔑 Decode Android Keystore
+        run: echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > ${{ env.KEYSTORE_PATH }}
+      - name: 🔑 Decode Android Key Properties
+        run: echo "${{ secrets.ANDROID_KEY_PROPERTIES }}" | base64 --decode > ${{ env.KEY_PROPS_PATH }}
+      - name: 🔑 Decode Service Account
+        run: echo "${{ secrets.ANDROID_RELEASE_SERVICE_ACCOUNT }}" | base64 --decode > ${{ env.SERVICE_ACCOUNT_PATH }}
+
+      - name: 📦 Install Dependencies
+        run: |
+          flutter pub global activate very_good_cli
+          very_good packages get --recursive
+      - name: 🛠️ Build the application (AAB)
+        run: |
+          flutter build appbundle --flavor production -t lib/main.dart
+      - name: ⬇️ Upload AAB to Artifacts
+        uses: actions/upload-artifact@master
+        with:
+          name: aab-stores
+          path: ${{ env.AAB_PATH }}
+
+  deploy:
+    name: "🚀 Deploy to Play Store"
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      APP_PACKAGE_NAME: com.pmorales.omni.remote
+      AAB_PATH: build/app/outputs/bundle/productionRelease/app-production-release.aab
+      SERVICE_ACCOUNT_PATH: service-account.json
+    steps:
+      - name: 📚 Checkout repo
+        uses: actions/checkout@v6
+      - name: ⬇️ Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: aab-stores
+          path: ./downloaded
+      - name: 📁 Crear estructura de directorios
+        run: |
+          mkdir -p build/app/outputs/bundle/productionRelease/
+          cp ./downloaded/* build/app/outputs/bundle/productionRelease/
+          ls -la build/app/outputs/bundle/productionRelease/
+      - name: 🔑 Decode Service Account
+        run: echo "${{ secrets.ANDROID_RELEASE_SERVICE_ACCOUNT }}" | base64 --decode > ${{ env.SERVICE_ACCOUNT_PATH }}          
+      - name: 🚀 Upload to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: ${{ env.SERVICE_ACCOUNT_PATH }}
+          packageName: ${{ env.APP_PACKAGE_NAME }}
+          releaseFiles: ${{ env.AAB_PATH }}
+          whatsNewDirectory: whatsnew
