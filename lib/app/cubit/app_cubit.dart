@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
@@ -16,8 +17,13 @@ class AppCubit extends Cubit<AppState> {
 
   final UserRepository userRepository;
   MqttServerClient? _mqttClient;
+  StreamSubscription<List<MqttReceivedMessage<MqttMessage>>>? _mqttSubscription;
+  final _messageController =
+      StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast();
 
   MqttServerClient? get mqttClient => _mqttClient;
+  Stream<List<MqttReceivedMessage<MqttMessage>>> get messageStream =>
+      _messageController.stream;
 
   Future<void> initialLoad() async {
     // Setting the language to the device language if it's not set
@@ -135,6 +141,9 @@ class AppCubit extends Cubit<AppState> {
 
       if (_mqttClient!.connectionStatus?.state ==
           MqttConnectionState.connected) {
+        // Setup the global MQTT listener
+        _setupMqttListener();
+
         emit(
           state.copyWith(
             brokerConnectionStatus: BrokerConnectionStatus.connected,
@@ -160,6 +169,7 @@ class AppCubit extends Cubit<AppState> {
 
   void disconnectMqtt() {
     if (_mqttClient == null) return;
+    unawaited(_mqttSubscription?.cancel());
     emit(
       state.copyWith(
         brokerConnectionStatus: BrokerConnectionStatus.disconnecting,
@@ -171,6 +181,7 @@ class AppCubit extends Cubit<AppState> {
   Future<void> reconnectWithNewSettings() async {
     // Desconectar el cliente actual si existe
     if (_mqttClient != null) {
+      unawaited(_mqttSubscription?.cancel());
       _mqttClient?.disconnect();
       _mqttClient = null;
     }
@@ -179,13 +190,22 @@ class AppCubit extends Cubit<AppState> {
     await _initializeMqttClient();
   }
 
+  void _setupMqttListener() {
+    unawaited(_mqttSubscription?.cancel());
+    _mqttSubscription = _mqttClient?.updates?.listen(
+      _messageController.add,
+    );
+  }
+
   void _onMqttConnected() {
+    _setupMqttListener();
     emit(
       state.copyWith(brokerConnectionStatus: BrokerConnectionStatus.connected),
     );
   }
 
   void _onMqttDisconnected() {
+    unawaited(_mqttSubscription?.cancel());
     emit(
       state.copyWith(
         brokerConnectionStatus: BrokerConnectionStatus.disconnected,
@@ -200,6 +220,7 @@ class AppCubit extends Cubit<AppState> {
   }
 
   void _onMqttAutoReconnected() {
+    _setupMqttListener();
     emit(
       state.copyWith(brokerConnectionStatus: BrokerConnectionStatus.connected),
     );
@@ -207,6 +228,8 @@ class AppCubit extends Cubit<AppState> {
 
   @override
   Future<void> close() {
+    unawaited(_mqttSubscription?.cancel());
+    unawaited(_messageController.close());
     _mqttClient?.disconnect();
     return super.close();
   }

@@ -64,7 +64,6 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
       return;
     }
 
-    // Subscribe to MQTT topics
     final online = AppVariables.buildDeviceTopic(
       groupTitle: widget.group.title,
       deviceTitle: widget.device.title,
@@ -76,12 +75,11 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
       suffix: AppVariables.statusSuffix,
     );
 
-    mqttClient
-      ..subscribe(online, MqttQos.atLeastOnce)
-      ..subscribe(status, MqttQos.atLeastOnce);
-    _isSubscribed = true;
+    // Cancel any existing subscription first
+    unawaited(_subscription?.cancel());
 
-    _subscription = mqttClient.updates?.listen((
+    // Listen to the broadcast stream from AppCubit FIRST
+    _subscription = appCubit.messageStream.listen((
       List<MqttReceivedMessage<MqttMessage>> messages,
     ) {
       for (final message in messages) {
@@ -110,6 +108,13 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
         }
       }
     });
+
+    // Now subscribe to MQTT topics - retained messages will be delivered
+    // immediately and broadcast to our listener above
+    mqttClient
+      ..subscribe(online, MqttQos.atLeastOnce)
+      ..subscribe(status, MqttQos.atLeastOnce);
+    _isSubscribed = true;
   }
 
   void _verifyStatus() {
