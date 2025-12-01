@@ -64,9 +64,6 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-      - name: 🔑 Create .env file
-        run: |
-          echo "GEN_API_KEY=${{ secrets.GEN_API_KEY }}" > .env
       - name: 📦 Install Dependencies
         run: |
           flutter pub global activate very_good_cli
