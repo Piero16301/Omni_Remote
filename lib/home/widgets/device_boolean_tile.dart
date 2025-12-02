@@ -30,7 +30,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
   StreamSubscription<List<MqttReceivedMessage<MqttMessage>>>? _subscription;
   bool _isSubscribed = false;
   bool _isOnline = false;
-  bool _isOn = false;
+  bool _value = false;
 
   @override
   void initState() {
@@ -44,6 +44,9 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
     if (oldWidget.device.id != widget.device.id ||
         oldWidget.device.title != widget.device.title ||
         oldWidget.group.title != widget.group.title) {
+      _isOnline = false;
+      _isSubscribed = false;
+      _value = false;
       _verifyStatus();
     }
   }
@@ -102,7 +105,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
 
           if (mounted) {
             setState(() {
-              _isOn = messageText == '1';
+              _value = messageText == '1';
             });
           }
         }
@@ -173,7 +176,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
 
     if (mounted) {
       setState(() {
-        _isOn = value;
+        _value = value;
       });
     }
   }
@@ -242,7 +245,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
               ),
             ),
             Switch(
-              value: _isOn,
+              value: _value,
               onChanged: _isOnline ? _publishCommand : null,
             ),
           ],
@@ -291,7 +294,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
                 ),
                 ListTile(
                   leading: const HugeIcon(
-                    icon: HugeIcons.strokeRoundedRefresh,
+                    icon: HugeIcons.strokeRoundedArrowReloadHorizontal,
                     strokeWidth: 2,
                   ),
                   title: Text(l10n.homeReconnectOption),

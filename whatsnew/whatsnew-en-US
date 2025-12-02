@@ -1,8 +1,8 @@
 🎯 What's new in this version:
 
-• Visual connection status indicator on devices (green/red dot)
-• New manual reconnection option for devices from the menu
-• Improvements in MQTT subscription management for better stability
-• Optimization in automatic device status updates
+• Numeric devices now retrieve their last state upon creation
+• Improved broadcast system for receiving retained MQTT messages
+• Enhancements in MQTT subscription management for greater stability
+• Optimization in the automatic update of device states
 
 Thank you for using Omni Remote!

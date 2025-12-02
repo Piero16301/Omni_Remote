@@ -36,28 +36,24 @@ class GroupCard extends StatelessWidget {
             borderRadius: BorderRadius.only(
               topLeft: const Radius.circular(16),
               topRight: const Radius.circular(16),
-              bottomLeft: group.enabled
-                  ? Radius.zero
-                  : const Radius.circular(16),
-              bottomRight: group.enabled
-                  ? Radius.zero
-                  : const Radius.circular(16),
+              bottomLeft:
+                  group.enabled ? Radius.zero : const Radius.circular(16),
+              bottomRight:
+                  group.enabled ? Radius.zero : const Radius.circular(16),
             ),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(16),
                   topRight: const Radius.circular(16),
-                  bottomLeft: group.enabled
-                      ? Radius.zero
-                      : const Radius.circular(16),
-                  bottomRight: group.enabled
-                      ? Radius.zero
-                      : const Radius.circular(16),
+                  bottomLeft:
+                      group.enabled ? Radius.zero : const Radius.circular(16),
+                  bottomRight:
+                      group.enabled ? Radius.zero : const Radius.circular(16),
                 ),
                 color: Theme.of(context).colorScheme.primary.withValues(
-                  alpha: 0.1,
-                ),
+                      alpha: 0.1,
+                    ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -107,9 +103,8 @@ class GroupCard extends StatelessWidget {
             curve: Curves.easeInOut,
             child: group.enabled
                 ? ValueListenableBuilder(
-                    valueListenable: context
-                        .read<HomeCubit>()
-                        .getDevicesListenable(),
+                    valueListenable:
+                        context.read<HomeCubit>().getDevicesListenable(),
                     builder: (builderContext, box, widget) {
                       final devices = box.values
                           .where((device) => device.groupId == group.id)
@@ -270,10 +265,7 @@ class GroupCard extends StatelessWidget {
           deviceTiles.add(
             DeviceNumberTile(
               device: device,
-              value: 0,
-              onChanged: (value) {},
-              onIncrement: () {},
-              onDecrement: () {},
+              group: group,
               onEdit: () => context.pushNamed(
                 ModifyDevicePage.pageName,
                 extra: device,

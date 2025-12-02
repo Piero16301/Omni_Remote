@@ -1,7 +1,7 @@
 🎯 Novedades en esta versión:
 
-• Indicador visual de estado de conexión en dispositivos (punto verde/rojo)
-• Nueva opción de reconexión manual para dispositivos desde el menú
+• Los dispositivos numéricos ahora obtienen su último estado al ser creados
+• Sistema de broadcast mejorado para recepción de mensajes MQTT retained
 • Mejoras en la gestión de suscripciones MQTT para mayor estabilidad
 • Optimización en la actualización automática de estados de dispositivos
 
