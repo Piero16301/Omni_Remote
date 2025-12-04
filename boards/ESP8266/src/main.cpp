@@ -15,24 +15,34 @@ const char* mqtt_user = "pmorales";
 const char* mqtt_password = "qweASD123*";
 
 // --- 4. TOPIC DEFINITIONS ---
-const char* command_topic = "legos/prueba/command";
-const char* status_topic = "legos/prueba/status";
-const char* online_topic = "legos/prueba/online";
+const char* switch_command_topic = "demo/switch/command";
+const char* switch_status_topic = "demo/switch/status";
+const char* switch_online_topic = "demo/switch/online";
+
+const char* number_command_topic = "demo/number/command";
+const char* number_status_topic = "demo/number/status";
+const char* number_online_topic = "demo/number/online";
 
 // --- 5. HARDWARE CONFIGURATION ---
-const int RELAY_PIN = 5;
-int led_state = LOW;
+const int SWITCH_PIN = 5;
+int switch_state = LOW;
+
+const int NUMBER_PIN_1 = 14;
+const int NUMBER_PIN_2 = 12;
+const int NUMBER_PIN_3 = 13;
+const int NUMBER_PIN_4 = 15;
+int number_value = 0;
 
 // WiFi and MQTT client objects
 WiFiClientSecure espClient;
-PubSubClient client(espClient);
+PubSubClient mqttClient(espClient);
 
 
 // =========================================================================
 // CONNECTION AND RECONNECTION FUNCTIONS
 // =========================================================================
 
-void setup_wifi() {
+void setupWifi() {
   delay(10);
   Serial.println();
   Serial.print("Connecting to network: ");
@@ -51,8 +61,8 @@ void setup_wifi() {
   Serial.println(WiFi.localIP());
 }
 
-void reconnect() {
-  while (!client.connected()) {
+void mqttReconnect() {
+  while (!mqttClient.connected()) {
     Serial.print("Attempting MQTT connection...");
 
     // Generate a unique Client ID
@@ -60,55 +70,71 @@ void reconnect() {
     clientId += String(random(0xffff), HEX);
 
     // Connection with authentication (Username and Password)
-    if (client.connect(
+    // Using switch_online_topic as the main LWT topic
+    if (mqttClient.connect(
       clientId.c_str(),
       mqtt_user,
       mqtt_password,
-      online_topic,
+      switch_online_topic,
       1,
       true,
       "0"
     )) {
       Serial.println("connected!");
 
-      // Publish "1" status
-      client.publish(online_topic, "1", true);
+      // Publish online status for both devices
+      mqttClient.publish(switch_online_topic, "1", true);
+      mqttClient.publish(number_online_topic, "1", true);
       
-      // Subscribe to command topic
-      if (client.subscribe(command_topic, 1)) {
+      // Subscribe to all topics
+      if (mqttClient.subscribe(switch_command_topic, 1)) {
         Serial.print("Subscribed to: ");
-        Serial.println(command_topic);
+        Serial.println(switch_command_topic);
       } else {
         Serial.print("ERROR: Failed to subscribe to: ");
-        Serial.println(command_topic);
+        Serial.println(switch_command_topic);
       }
 
-      // Subscribe to status topic
-      if (client.subscribe(status_topic, 1)) {
+      if (mqttClient.subscribe(switch_status_topic, 1)) {
         Serial.print("Subscribed to: ");
-        Serial.println(status_topic);
+        Serial.println(switch_status_topic);
       } else {
         Serial.print("ERROR: Failed to subscribe to: ");
-        Serial.println(status_topic);
+        Serial.println(switch_status_topic);
+      }
+
+      if (mqttClient.subscribe(number_command_topic, 1)) {
+        Serial.print("Subscribed to: ");
+        Serial.println(number_command_topic);
+      } else {
+        Serial.print("ERROR: Failed to subscribe to: ");
+        Serial.println(number_command_topic);
+      }
+
+      if (mqttClient.subscribe(number_status_topic, 1)) {
+        Serial.print("Subscribed to: ");
+        Serial.println(number_status_topic);
+      } else {
+        Serial.print("ERROR: Failed to subscribe to: ");
+        Serial.println(number_status_topic);
       }
 
       // Turn off built-in LED when broker connection is complete
       digitalWrite(LED_BUILTIN, HIGH);
     } else {
       Serial.print("failed, rc=");
-      Serial.print(client.state());
+      Serial.print(mqttClient.state());
       Serial.println(" Retrying in 5 seconds...");
       delay(5000);
     }
   }
 }
 
-
 // =========================================================================
 // MESSAGE RECEPTION FUNCTION (CALLBACK)
 // =========================================================================
 
-void callback(char* topic, byte* payload, unsigned int length) {
+void mqttCallback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message received on topic: ");
   Serial.println(topic);
 
@@ -120,8 +146,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message: ");
   Serial.println(messageTemp);
 
-  // Process only defined topics (command_topic and status_topic)
-  if (String(topic) == command_topic || String(topic) == status_topic) {
+  // Process switch topics
+  if (String(topic) == switch_command_topic || String(topic) == switch_status_topic) {
     int new_state;
 
     // Map ON/OFF to pin logic (Active-High for external LED)
@@ -134,19 +160,49 @@ void callback(char* topic, byte* payload, unsigned int length) {
       return;
     }
 
-    if (new_state != led_state) {
-        led_state = new_state;
+    if (new_state != switch_state) {
+        switch_state = new_state;
 
-        digitalWrite(RELAY_PIN, new_state);
+        digitalWrite(SWITCH_PIN, new_state);
 
         Serial.print("Light changed to: ");
-        Serial.println(led_state == HIGH ? "ON" : "OFF");
+        Serial.println(switch_state == HIGH ? "ON" : "OFF");
 
         // Only publish FEEDBACK if the message comes from the COMMAND topic
         // Avoids an infinite loop when receiving the retained message
-        if (String(topic) == command_topic) {
-          String status_msg = (led_state == HIGH) ? "1" : "0";
-          client.publish(status_topic, (uint8_t*)status_msg.c_str(), status_msg.length(), true);
+        if (String(topic) == switch_command_topic) {
+          String status_msg = (switch_state == HIGH) ? "1" : "0";
+          mqttClient.publish(switch_status_topic, (uint8_t*)status_msg.c_str(), status_msg.length(), true);
+        }
+    }
+  }
+  // Process number topics
+  else if (String(topic) == number_command_topic || String(topic) == number_status_topic) {
+    int new_value = messageTemp.toInt();
+
+    if (new_value < 0 || new_value > 15) {
+      Serial.println("Invalid number command. Must be between 0 and 15.");
+      return;
+    }
+
+    if (new_value != number_value) {
+        number_value = new_value;
+
+        // Set the number pins according to the binary representation of number_value
+        // NUMBER_PIN_1 is the most significant bit (MSB - leftmost LED)
+        digitalWrite(NUMBER_PIN_1, (number_value & 0x08) ? HIGH : LOW); // Bit 3 (MSB)
+        digitalWrite(NUMBER_PIN_2, (number_value & 0x04) ? HIGH : LOW); // Bit 2
+        digitalWrite(NUMBER_PIN_3, (number_value & 0x02) ? HIGH : LOW); // Bit 1
+        digitalWrite(NUMBER_PIN_4, (number_value & 0x01) ? HIGH : LOW); // Bit 0 (LSB)
+
+        Serial.print("Number changed to: ");
+        Serial.println(number_value);
+
+        // Only publish FEEDBACK if the message comes from the COMMAND topic
+        // Avoids an infinite loop when receiving the retained message
+        if (String(topic) == number_command_topic) {
+          String status_msg = String(number_value);
+          mqttClient.publish(number_status_topic, (uint8_t*)status_msg.c_str(), status_msg.length(), true);
         }
     }
   }
@@ -164,19 +220,23 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW); // LED ON (LOW turns on the built-in LED on ESP8266)
 
-  pinMode(RELAY_PIN, OUTPUT);
+  pinMode(SWITCH_PIN, OUTPUT);
+  pinMode(NUMBER_PIN_1, OUTPUT);
+  pinMode(NUMBER_PIN_2, OUTPUT);
+  pinMode(NUMBER_PIN_3, OUTPUT);
+  pinMode(NUMBER_PIN_4, OUTPUT);
 
-  setup_wifi();
+  setupWifi();
 
   espClient.setInsecure();
 
-  client.setServer(mqtt_server, mqtt_port);
-  client.setCallback(callback);
+  mqttClient.setServer(mqtt_server, mqtt_port);
+  mqttClient.setCallback(mqttCallback);
 }
 
 void loop() {
-  if (!client.connected()) {
-    reconnect();
+  if (!mqttClient.connected()) {
+    mqttReconnect();
   }
-  client.loop();
+  mqttClient.loop();
 }

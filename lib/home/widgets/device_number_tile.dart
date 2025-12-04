@@ -291,7 +291,12 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
               max: widget.device.rangeMax,
               divisions: widget.device.divisions,
               value: _value,
-              onChanged: _isOnline ? _publishCommand : null,
+              onChanged: _isOnline
+                  ? (value) => setState(() {
+                        _value = value;
+                      })
+                  : null,
+              onChangeEnd: _isOnline ? _publishCommand : null,
             ),
           ],
         ),
