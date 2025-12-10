@@ -305,10 +305,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_fonts
-      sha256: "517b20870220c48752eafa0ba1a797a092fb22df0d89535fd9991e86ee2cdd9c"
+      sha256: ba03d03bcaa2f6cb7bd920e3b5027181db75ab524f8891c8bc3aa603885b8055
       url: "https://artifactory.apps.bancolombia.com/artifactory/api/pub/pub-bancolombia/"
     source: hosted
-    version: "6.3.2"
+    version: "6.3.3"
   hive:
     dependency: "direct main"
     description:
@@ -481,10 +481,10 @@ packages:
     dependency: "direct main"
     description:
       name: mqtt_client
-      sha256: "3b3f406bf804df7de909f2c5098fba1a7d87fc4d86f01b6a12dc8d1b24be221f"
+      sha256: "8bcd0bd6dd85343df249164f9d4b2232002b2ce8742875431421863d3cbcd0db"
       url: "https://artifactory.apps.bancolombia.com/artifactory/api/pub/pub-bancolombia/"
     source: hosted
-    version: "10.11.1"
+    version: "10.11.3"
   nested:
     dependency: transitive
     description:

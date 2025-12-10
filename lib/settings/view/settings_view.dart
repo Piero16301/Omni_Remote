@@ -31,36 +31,54 @@ class SettingsView extends StatelessWidget {
           body: ListView(
             children: [
               Card(
-                child: RadioGroup<String>(
-                  groupValue: state.language,
-                  onChanged: (value) {
-                    if (value != null) {
-                      unawaited(
-                        context.read<AppCubit>().changeLanguage(
-                          language: value,
-                        ),
-                      );
-                    }
-                  },
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                        child: Text(
-                          l10n.settingsLanguageTitle,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
+                      Text(
+                        l10n.settingsLanguageTitle,
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                       ),
-                      ...AppLocalizations.supportedLocales.map(
-                        (locale) => RadioListTile<String>(
-                          title: Text(_getLanguageName(locale, l10n)),
-                          value:
-                              '${locale.languageCode}_'
-                              '${locale.languageCode.toUpperCase()}',
+                      const SizedBox(height: 12),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .outline
+                                .withValues(alpha: 0.3),
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: DropdownButton<String>(
+                          value: state.language,
+                          isExpanded: true,
+                          underline: const SizedBox(),
+                          borderRadius: BorderRadius.circular(8),
+                          onChanged: (value) {
+                            if (value != null) {
+                              unawaited(
+                                context.read<AppCubit>().changeLanguage(
+                                      language: value,
+                                    ),
+                              );
+                            }
+                          },
+                          items: AppLocalizations.supportedLocales.map(
+                            (locale) {
+                              final languageCode = '${locale.languageCode}_'
+                                  '${locale.languageCode.toUpperCase()}';
+                              return DropdownMenuItem<String>(
+                                value: languageCode,
+                                child: Text(_getLanguageName(locale, l10n)),
+                              );
+                            },
+                          ).toList(),
                         ),
                       ),
                     ],
@@ -68,90 +86,148 @@ class SettingsView extends StatelessWidget {
                 ),
               ),
               Card(
-                child: RadioGroup<String>(
-                  groupValue: state.theme,
-                  onChanged: (value) {
-                    if (value != null) {
-                      unawaited(
-                        context.read<AppCubit>().changeTheme(theme: value),
-                      );
-                    }
-                  },
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                        child: Text(
-                          l10n.settingsThemeTitle,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
+                      Text(
+                        l10n.settingsThemeTitle,
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                      ),
+                      const SizedBox(height: 12),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .outline
+                                .withValues(alpha: 0.3),
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: DropdownButton<String>(
+                          value: state.theme,
+                          isExpanded: true,
+                          underline: const SizedBox(),
+                          borderRadius: BorderRadius.circular(8),
+                          onChanged: (value) {
+                            if (value != null) {
+                              unawaited(
+                                context
+                                    .read<AppCubit>()
+                                    .changeTheme(theme: value),
+                              );
+                            }
+                          },
+                          items: [
+                            DropdownMenuItem<String>(
+                              value: 'LIGHT',
+                              child: Row(
+                                children: [
+                                  const HugeIcon(
+                                    icon: HugeIcons.strokeRoundedSun03,
+                                    size: 20,
+                                    strokeWidth: 2,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(l10n.settingsThemeLight),
+                                ],
                               ),
-                        ),
-                      ),
-                      RadioListTile<String>(
-                        title: Row(
-                          children: [
-                            const HugeIcon(
-                              icon: HugeIcons.strokeRoundedSun03,
-                              size: 20,
-                              strokeWidth: 2,
                             ),
-                            const SizedBox(width: 12),
-                            Text(l10n.settingsThemeLight),
+                            DropdownMenuItem<String>(
+                              value: 'DARK',
+                              child: Row(
+                                children: [
+                                  const HugeIcon(
+                                    icon: HugeIcons.strokeRoundedMoon02,
+                                    size: 20,
+                                    strokeWidth: 2,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(l10n.settingsThemeDark),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
-                        value: 'LIGHT',
-                      ),
-                      RadioListTile<String>(
-                        title: Row(
-                          children: [
-                            const HugeIcon(
-                              icon: HugeIcons.strokeRoundedMoon02,
-                              size: 20,
-                              strokeWidth: 2,
-                            ),
-                            const SizedBox(width: 12),
-                            Text(l10n.settingsThemeDark),
-                          ],
-                        ),
-                        value: 'DARK',
                       ),
                     ],
                   ),
                 ),
               ),
               Card(
-                child: RadioGroup<String>(
-                  groupValue: state.baseColor,
-                  onChanged: (value) {
-                    if (value != null) {
-                      unawaited(
-                        context.read<AppCubit>().changeBaseColor(
-                          baseColor: value,
-                        ),
-                      );
-                    }
-                  },
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                        child: Text(
-                          l10n.settingsBaseColorTitle,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
+                      Text(
+                        l10n.settingsBaseColorTitle,
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                       ),
-                      ...ColorHelper.colorMap.entries.map(
-                        (entry) => _buildColorOption(
-                          context,
-                          entry.key,
-                          _getColorName(entry.key, l10n),
+                      const SizedBox(height: 12),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .outline
+                                .withValues(alpha: 0.3),
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: DropdownButton<String>(
+                          value: state.baseColor,
+                          isExpanded: true,
+                          underline: const SizedBox(),
+                          borderRadius: BorderRadius.circular(8),
+                          onChanged: (value) {
+                            if (value != null) {
+                              unawaited(
+                                context.read<AppCubit>().changeBaseColor(
+                                      baseColor: value,
+                                    ),
+                              );
+                            }
+                          },
+                          items: ColorHelper.colorMap.entries.map(
+                            (entry) {
+                              final color =
+                                  ColorHelper.getColorByName(entry.key);
+                              return DropdownMenuItem<String>(
+                                value: entry.key,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 24,
+                                      height: 24,
+                                      decoration: BoxDecoration(
+                                        color: color,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .outline
+                                              .withValues(alpha: 0.3),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Text(_getColorName(entry.key, l10n)),
+                                  ],
+                                ),
+                              );
+                            },
+                          ).toList(),
                         ),
                       ),
                     ],
@@ -162,37 +238,6 @@ class SettingsView extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildColorOption(
-    BuildContext context,
-    String colorKey,
-    String colorName,
-  ) {
-    final color = ColorHelper.getColorByName(colorKey);
-
-    return RadioListTile<String>(
-      title: Row(
-        children: [
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Theme.of(
-                  context,
-                ).colorScheme.outline.withValues(alpha: 0.3),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Text(colorName),
-        ],
-      ),
-      value: colorKey,
     );
   }
 

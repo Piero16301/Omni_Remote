@@ -16,12 +16,12 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   go_router: ^17.0.0
-  google_fonts: ^6.3.2
+  google_fonts: ^6.3.3
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   hugeicons: ^1.1.2
   intl: ^0.20.2
-  mqtt_client: ^10.11.1
+  mqtt_client: ^10.11.3
   user_api:
     path: packages/user_api
   user_api_remote:
@@ -46,7 +46,7 @@ flutter_launcher_icons:
   adaptive_icon_background: "#145EB9"
   adaptive_icon_foreground: "assets/images/app-main-logo-rounded.png"
   ios: true
-  image_path_ios: "assets/images/app-main-logo.png"
+  image_path_ios: "assets/images/app-main-logo-rounded.png"
   remove_alpha_ios: true
   background_color_ios: "#145EB9"
   web:
