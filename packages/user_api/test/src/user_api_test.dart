@@ -14,6 +14,9 @@ class _MockUserApi extends IUserApi {
   String? getLanguage() => null;
 
   @override
+  String? getFontFamily() => null;
+
+  @override
   Future<void> saveBaseColor({String baseColor = 'INDIGO'}) async {}
 
   @override
@@ -21,6 +24,9 @@ class _MockUserApi extends IUserApi {
 
   @override
   Future<void> saveLanguage({String language = 'es_ES'}) async {}
+
+  @override
+  Future<void> saveFontFamily({String fontFamily = 'Roboto_regular'}) async {}
 
   @override
   String? getBrokerUrl() => null;

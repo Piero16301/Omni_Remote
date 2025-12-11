@@ -4,8 +4,7 @@ enum BrokerConnectionStatus {
   disconnected,
   connecting,
   connected,
-  disconnecting
-  ;
+  disconnecting;
 
   bool get isDisconnected => this == BrokerConnectionStatus.disconnected;
   bool get isConnecting => this == BrokerConnectionStatus.connecting;
@@ -18,24 +17,28 @@ class AppState extends Equatable {
     this.language = 'en_US',
     this.theme = 'LIGHT',
     this.baseColor = 'INDIGO',
+    this.fontFamily = 'Nunito_regular',
     this.brokerConnectionStatus = BrokerConnectionStatus.disconnected,
   });
 
   final String language;
   final String theme;
   final String baseColor;
+  final String fontFamily;
   final BrokerConnectionStatus brokerConnectionStatus;
 
   AppState copyWith({
     String? language,
     String? theme,
     String? baseColor,
+    String? fontFamily,
     BrokerConnectionStatus? brokerConnectionStatus,
   }) {
     return AppState(
       language: language ?? this.language,
       theme: theme ?? this.theme,
       baseColor: baseColor ?? this.baseColor,
+      fontFamily: fontFamily ?? this.fontFamily,
       brokerConnectionStatus:
           brokerConnectionStatus ?? this.brokerConnectionStatus,
     );
@@ -43,9 +46,10 @@ class AppState extends Equatable {
 
   @override
   List<Object?> get props => [
-    language,
-    theme,
-    baseColor,
-    brokerConnectionStatus,
-  ];
+        language,
+        theme,
+        baseColor,
+        fontFamily,
+        brokerConnectionStatus,
+      ];
 }

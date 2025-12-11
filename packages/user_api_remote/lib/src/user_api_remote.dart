@@ -38,6 +38,9 @@ class UserApiRemote implements IUserApi {
   /// The key used to store the user's base color preference
   static const kUserBaseColor = '__user_base_color__';
 
+  /// The key used to store the user's font family preference
+  static const kUserFontFamily = '__user_font_family__';
+
   /// The key used to store the broker URL
   static const kBrokerUrl = '__broker_url__';
 
@@ -107,6 +110,16 @@ class UserApiRemote implements IUserApi {
   @override
   String? getBaseColor() {
     return _settingsBox.get(kUserBaseColor);
+  }
+
+  @override
+  Future<void> saveFontFamily({required String fontFamily}) async {
+    await _settingsBox.put(kUserFontFamily, fontFamily);
+  }
+
+  @override
+  String? getFontFamily() {
+    return _settingsBox.get(kUserFontFamily);
   }
 
   @override

@@ -32,6 +32,13 @@ class UserRepository {
   /// Get save color from local storage
   String? getBaseColor() => _userApi.getBaseColor();
 
+  /// Save font family in local storage
+  Future<void> saveFontFamily({required String fontFamily}) =>
+      _userApi.saveFontFamily(fontFamily: fontFamily);
+
+  /// Get font family from local storage
+  String? getFontFamily() => _userApi.getFontFamily();
+
   /// Get Broker URL
   String? getBrokerUrl() => _userApi.getBrokerUrl();
 

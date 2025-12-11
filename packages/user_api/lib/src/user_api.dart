@@ -27,6 +27,12 @@ abstract class IUserApi {
   /// Get base color from local storage
   String? getBaseColor();
 
+  /// Save font family in local storage
+  Future<void> saveFontFamily({required String fontFamily});
+
+  /// Get font family from local storage
+  String? getFontFamily();
+
   /// Get Broker URL
   String? getBrokerUrl();
 

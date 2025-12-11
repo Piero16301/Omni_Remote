@@ -21,7 +21,12 @@ class ModifyDeviceView extends StatelessWidget {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(l10n.modifyDeviceSaveSuccessSnackbar(state.title)),
+              content: Text(
+                l10n.modifyDeviceSaveSuccessSnackbar(state.title),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+              ),
             ),
           );
           context.pop();
@@ -37,6 +42,9 @@ class ModifyDeviceView extends StatelessWidget {
                   l10n: l10n,
                   groups: context.read<ModifyDeviceCubit>().groups,
                 ),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
               ),
             ),
           );
@@ -49,6 +57,9 @@ class ModifyDeviceView extends StatelessWidget {
             state.deviceModel == null
                 ? l10n.modifyDevicePageTitleCreate
                 : l10n.modifyDevicePageTitleEdit,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
           ),
           centerTitle: true,
           leading: IconButton(
@@ -117,17 +128,16 @@ class ModifyDeviceView extends StatelessWidget {
               const SizedBox(height: 24),
               TileTypeSelector(
                 selectedType: state.tileType,
-                onTypeSelected: context
-                    .read<ModifyDeviceCubit>()
-                    .changeTileType,
+                onTypeSelected:
+                    context.read<ModifyDeviceCubit>().changeTileType,
               ),
               if (state.tileType == DeviceTileType.number) ...[
                 const SizedBox(height: 24),
                 Text(
                   l10n.modifyDeviceRangeConfigurationLabel,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -139,14 +149,14 @@ class ModifyDeviceView extends StatelessWidget {
                         initialValue: state.deviceModel != null
                             ? state.rangeMin.toString()
                             : (state.rangeMin != 0
-                                  ? state.rangeMin.toString()
-                                  : ''),
+                                ? state.rangeMin.toString()
+                                : ''),
                         onChanged: (value) {
                           final doubleValue = double.tryParse(value);
                           if (doubleValue != null) {
                             context.read<ModifyDeviceCubit>().changeRangeMin(
-                              doubleValue,
-                            );
+                                  doubleValue,
+                                );
                           }
                         },
                         keyboardType: const TextInputType.numberWithOptions(
@@ -178,8 +188,8 @@ class ModifyDeviceView extends StatelessWidget {
                           final doubleValue = double.tryParse(value);
                           if (doubleValue != null) {
                             context.read<ModifyDeviceCubit>().changeRangeMax(
-                              doubleValue,
-                            );
+                                  doubleValue,
+                                );
                           }
                         },
                         keyboardType: const TextInputType.numberWithOptions(
@@ -215,8 +225,8 @@ class ModifyDeviceView extends StatelessWidget {
                           final intValue = int.tryParse(value);
                           if (intValue != null) {
                             context.read<ModifyDeviceCubit>().changeDivisions(
-                              intValue,
-                            );
+                                  intValue,
+                                );
                           }
                         },
                         keyboardType: TextInputType.number,
@@ -246,8 +256,8 @@ class ModifyDeviceView extends StatelessWidget {
                           final doubleValue = double.tryParse(value);
                           if (doubleValue != null) {
                             context.read<ModifyDeviceCubit>().changeInterval(
-                              doubleValue,
-                            );
+                                  doubleValue,
+                                );
                           }
                         },
                         keyboardType: const TextInputType.numberWithOptions(

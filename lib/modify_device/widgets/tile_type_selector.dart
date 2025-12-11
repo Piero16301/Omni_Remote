@@ -11,7 +11,7 @@ class TileTypeSelector extends StatelessWidget {
   });
 
   final DeviceTileType selectedType;
-  final ValueChanged<DeviceTileType> onTypeSelected;
+  final void Function(DeviceTileType value) onTypeSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +23,8 @@ class TileTypeSelector extends StatelessWidget {
         Text(
           l10n.modifyDeviceTileTypeLabel,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const SizedBox(height: 8),
         SizedBox(
@@ -52,13 +52,13 @@ class TileTypeSelector extends StatelessWidget {
                 label: Text(
                   l10n.modifyDeviceTileTypeBoolean,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontWeight: selectedType == DeviceTileType.boolean
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                    color: selectedType == DeviceTileType.boolean
-                        ? Theme.of(context).colorScheme.primary
-                        : null,
-                  ),
+                        fontWeight: selectedType == DeviceTileType.boolean
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                        color: selectedType == DeviceTileType.boolean
+                            ? Theme.of(context).colorScheme.primary
+                            : null,
+                      ),
                 ),
                 icon: HugeIcon(
                   icon: HugeIcons.strokeRoundedToggleOn,
@@ -74,13 +74,13 @@ class TileTypeSelector extends StatelessWidget {
                 label: Text(
                   l10n.modifyDeviceTileTypeNumber,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontWeight: selectedType == DeviceTileType.number
-                        ? FontWeight.bold
-                        : FontWeight.normal,
-                    color: selectedType == DeviceTileType.number
-                        ? Theme.of(context).colorScheme.primary
-                        : null,
-                  ),
+                        fontWeight: selectedType == DeviceTileType.number
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                        color: selectedType == DeviceTileType.number
+                            ? Theme.of(context).colorScheme.primary
+                            : null,
+                      ),
                 ),
                 icon: HugeIcon(
                   icon: HugeIcons.strokeRoundedLeftToRightListNumber,

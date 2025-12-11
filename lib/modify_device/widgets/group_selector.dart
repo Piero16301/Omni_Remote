@@ -124,7 +124,7 @@ class _GroupSelectorState extends State<GroupSelector> {
           label: group.title,
           labelWidget: Text(
             group.title,
-            style: const TextStyle(fontSize: 16),
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
         );
       }).toList(),

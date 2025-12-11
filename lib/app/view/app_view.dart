@@ -35,8 +35,14 @@ class _AppViewState extends State<AppView> {
           state.language.split('_').first,
           state.language.split('_').last,
         ),
-        theme: AppThemes.lightTheme(baseColor: state.baseColor),
-        darkTheme: AppThemes.darkTheme(baseColor: state.baseColor),
+        theme: AppThemes.lightTheme(
+          baseColor: state.baseColor,
+          fontFamily: state.fontFamily,
+        ),
+        darkTheme: AppThemes.darkTheme(
+          baseColor: state.baseColor,
+          fontFamily: state.fontFamily,
+        ),
         themeAnimationCurve: Curves.easeInOut,
         themeAnimationDuration: const Duration(milliseconds: 400),
         themeMode: ThemeHelper.getThemeByName(state.theme),

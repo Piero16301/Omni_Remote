@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
+import 'package:omni_remote/settings/settings.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
@@ -18,7 +19,12 @@ class SettingsView extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(l10n.settingsAppBarTitle),
+            title: Text(
+              l10n.settingsAppBarTitle,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
             centerTitle: true,
             leading: IconButton(
               onPressed: () => context.pop(),
@@ -30,209 +36,148 @@ class SettingsView extends StatelessWidget {
           ),
           body: ListView(
             children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.settingsLanguageTitle,
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+              SettingsCardBlock<String>(
+                title: l10n.settingsLanguageTitle,
+                value: state.language,
+                items: AppLocalizations.supportedLocales.map(
+                  (locale) {
+                    final languageCode = '${locale.languageCode}_'
+                        '${locale.languageCode.toUpperCase()}';
+                    return DropdownMenuItem<String>(
+                      value: languageCode,
+                      child: Text(
+                        _getLanguageName(locale, l10n),
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                      const SizedBox(height: 12),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .outline
-                                .withValues(alpha: 0.3),
+                    );
+                  },
+                ).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    unawaited(
+                      context.read<AppCubit>().changeLanguage(
+                            language: value,
                           ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: DropdownButton<String>(
-                          value: state.language,
-                          isExpanded: true,
-                          underline: const SizedBox(),
-                          borderRadius: BorderRadius.circular(8),
-                          onChanged: (value) {
-                            if (value != null) {
-                              unawaited(
-                                context.read<AppCubit>().changeLanguage(
-                                      language: value,
-                                    ),
-                              );
-                            }
-                          },
-                          items: AppLocalizations.supportedLocales.map(
-                            (locale) {
-                              final languageCode = '${locale.languageCode}_'
-                                  '${locale.languageCode.toUpperCase()}';
-                              return DropdownMenuItem<String>(
-                                value: languageCode,
-                                child: Text(_getLanguageName(locale, l10n)),
-                              );
-                            },
-                          ).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                    );
+                  }
+                },
               ),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.settingsThemeTitle,
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                      ),
-                      const SizedBox(height: 12),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .outline
-                                .withValues(alpha: 0.3),
-                          ),
-                          borderRadius: BorderRadius.circular(8),
+              SettingsCardBlock<String>(
+                title: l10n.settingsThemeTitle,
+                value: state.theme,
+                items: [
+                  DropdownMenuItem<String>(
+                    value: 'LIGHT',
+                    child: Row(
+                      spacing: 12,
+                      children: [
+                        const HugeIcon(
+                          icon: HugeIcons.strokeRoundedSun03,
+                          size: 20,
+                          strokeWidth: 2,
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: DropdownButton<String>(
-                          value: state.theme,
-                          isExpanded: true,
-                          underline: const SizedBox(),
-                          borderRadius: BorderRadius.circular(8),
-                          onChanged: (value) {
-                            if (value != null) {
-                              unawaited(
-                                context
-                                    .read<AppCubit>()
-                                    .changeTheme(theme: value),
-                              );
-                            }
-                          },
-                          items: [
-                            DropdownMenuItem<String>(
-                              value: 'LIGHT',
-                              child: Row(
-                                children: [
-                                  const HugeIcon(
-                                    icon: HugeIcons.strokeRoundedSun03,
-                                    size: 20,
-                                    strokeWidth: 2,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Text(l10n.settingsThemeLight),
-                                ],
+                        Text(
+                          l10n.settingsThemeLight,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ],
+                    ),
+                  ),
+                  DropdownMenuItem<String>(
+                    value: 'DARK',
+                    child: Row(
+                      spacing: 12,
+                      children: [
+                        const HugeIcon(
+                          icon: HugeIcons.strokeRoundedMoon02,
+                          size: 20,
+                          strokeWidth: 2,
+                        ),
+                        Text(
+                          l10n.settingsThemeDark,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    unawaited(
+                      context.read<AppCubit>().changeTheme(theme: value),
+                    );
+                  }
+                },
+              ),
+              SettingsCardBlock<String>(
+                title: l10n.settingsBaseColorTitle,
+                value: state.baseColor,
+                items: ColorHelper.colorMap.entries.map(
+                  (entry) {
+                    final color = ColorHelper.getColorByName(entry.key);
+                    return DropdownMenuItem<String>(
+                      value: entry.key,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: color,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .outline
+                                    .withValues(alpha: 0.3),
                               ),
                             ),
-                            DropdownMenuItem<String>(
-                              value: 'DARK',
-                              child: Row(
-                                children: [
-                                  const HugeIcon(
-                                    icon: HugeIcons.strokeRoundedMoon02,
-                                    size: 20,
-                                    strokeWidth: 2,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Text(l10n.settingsThemeDark),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.settingsBaseColorTitle,
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                      ),
-                      const SizedBox(height: 12),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .outline
-                                .withValues(alpha: 0.3),
                           ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: DropdownButton<String>(
-                          value: state.baseColor,
-                          isExpanded: true,
-                          underline: const SizedBox(),
-                          borderRadius: BorderRadius.circular(8),
-                          onChanged: (value) {
-                            if (value != null) {
-                              unawaited(
-                                context.read<AppCubit>().changeBaseColor(
-                                      baseColor: value,
-                                    ),
-                              );
-                            }
-                          },
-                          items: ColorHelper.colorMap.entries.map(
-                            (entry) {
-                              final color =
-                                  ColorHelper.getColorByName(entry.key);
-                              return DropdownMenuItem<String>(
-                                value: entry.key,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 24,
-                                      height: 24,
-                                      decoration: BoxDecoration(
-                                        color: color,
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .outline
-                                              .withValues(alpha: 0.3),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Text(_getColorName(entry.key, l10n)),
-                                  ],
-                                ),
-                              );
-                            },
-                          ).toList(),
-                        ),
+                          const SizedBox(width: 12),
+                          Text(
+                            _getColorName(entry.key, l10n),
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    );
+                  },
+                ).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    unawaited(
+                      context.read<AppCubit>().changeBaseColor(
+                            baseColor: value,
+                          ),
+                    );
+                  }
+                },
+              ),
+              SettingsCardBlock<String>(
+                title: l10n.settingsFontTitle,
+                value: state.fontFamily,
+                items: AppVariables.availableFonts.entries.map(
+                  (entry) {
+                    return DropdownMenuItem<String>(
+                      value: entry.value,
+                      child: Text(
+                        entry.key,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontFamily: entry.value,
+                            ),
+                      ),
+                    );
+                  },
+                ).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    unawaited(
+                      context.read<AppCubit>().changeFontFamily(
+                            fontFamily: value,
+                          ),
+                    );
+                  }
+                },
               ),
             ],
           ),

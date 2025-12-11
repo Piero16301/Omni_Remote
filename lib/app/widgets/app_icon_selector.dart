@@ -23,8 +23,8 @@ class AppIconSelector extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const SizedBox(height: 16),
         Card(
@@ -38,8 +38,7 @@ class AppIconSelector extends StatelessWidget {
               const cellSize = 55.0;
 
               return SizedBox(
-                height:
-                    (cellSize * crossAxisCount) +
+                height: (cellSize * crossAxisCount) +
                     (crossAxisSpacing * (crossAxisCount - 1)) +
                     (padding * 2),
                 child: GridView.builder(
@@ -67,12 +66,12 @@ class AppIconSelector extends StatelessWidget {
                               ? Theme.of(
                                   context,
                                 ).colorScheme.primary.withValues(
-                                  alpha: 0.2,
-                                )
+                                    alpha: 0.2,
+                                  )
                               : Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainerHighest
-                                    .withValues(alpha: 0.3),
+                                  .colorScheme
+                                  .surfaceContainerHighest
+                                  .withValues(alpha: 0.3),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: isSelected

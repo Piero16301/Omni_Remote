@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:omni_remote/app/app.dart';
 
 class AppThemes {
-  static final TextStyle _textStyle = GoogleFonts.rubik();
+  // static final TextStyle _textStyle = GoogleFonts.rubik();
   // static final TextStyle _textStyle = GoogleFonts.orbitron();
 
-  static ThemeData lightTheme({required String baseColor}) {
+  static ThemeData lightTheme({
+    required String baseColor,
+    required String fontFamily,
+  }) {
     final color = ColorHelper.getColorByName(baseColor);
     final colorScheme = ColorScheme.fromSeed(seedColor: color);
 
     return ThemeData(
       useMaterial3: true,
-      fontFamily: _textStyle.fontFamily,
+      fontFamily: fontFamily,
       brightness: Brightness.light,
       colorScheme: ColorScheme.fromSeed(
         seedColor: color,
@@ -38,16 +40,15 @@ class AppThemes {
           ),
           backgroundColor: colorScheme.primary,
           foregroundColor: colorScheme.onPrimary,
-          textStyle: const TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
-          ),
         ),
       ),
     );
   }
 
-  static ThemeData darkTheme({required String baseColor}) {
+  static ThemeData darkTheme({
+    required String baseColor,
+    required String fontFamily,
+  }) {
     final color = ColorHelper.getColorByName(baseColor);
     final colorScheme = ColorScheme.fromSeed(
       seedColor: color,
@@ -56,7 +57,7 @@ class AppThemes {
 
     return ThemeData(
       useMaterial3: true,
-      fontFamily: _textStyle.fontFamily,
+      fontFamily: fontFamily,
       brightness: Brightness.dark,
       colorScheme: ColorScheme.fromSeed(
         seedColor: color,
@@ -83,10 +84,6 @@ class AppThemes {
           ),
           backgroundColor: colorScheme.primary,
           foregroundColor: colorScheme.onPrimary,
-          textStyle: const TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
-          ),
         ),
       ),
     );

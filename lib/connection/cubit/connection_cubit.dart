@@ -38,6 +38,10 @@ class ConnectionCubit extends Cubit<ConnectionState> {
     emit(state.copyWith(brokerPassword: password));
   }
 
+  void togglePasswordVisibility() {
+    emit(state.copyWith(hidePassword: !state.hidePassword));
+  }
+
   Future<void> saveAndConnect({required BuildContext context}) async {
     if (!(state.formKey.currentState?.validate() ?? false)) {
       return;

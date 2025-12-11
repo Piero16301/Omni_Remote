@@ -6,6 +6,7 @@ class ConnectionState extends Equatable {
     this.brokerPort = '',
     this.brokerUsername = '',
     this.brokerPassword = '',
+    this.hidePassword = true,
     this.formKey = const GlobalObjectKey<FormState>('connection_form'),
   });
 
@@ -13,6 +14,7 @@ class ConnectionState extends Equatable {
   final String brokerPort;
   final String brokerUsername;
   final String brokerPassword;
+  final bool hidePassword;
   final GlobalKey<FormState> formKey;
 
   ConnectionState copyWith({
@@ -20,6 +22,7 @@ class ConnectionState extends Equatable {
     String? brokerPort,
     String? brokerUsername,
     String? brokerPassword,
+    bool? hidePassword,
     GlobalKey<FormState>? formKey,
   }) {
     return ConnectionState(
@@ -27,16 +30,18 @@ class ConnectionState extends Equatable {
       brokerPort: brokerPort ?? this.brokerPort,
       brokerUsername: brokerUsername ?? this.brokerUsername,
       brokerPassword: brokerPassword ?? this.brokerPassword,
+      hidePassword: hidePassword ?? this.hidePassword,
       formKey: formKey ?? this.formKey,
     );
   }
 
   @override
   List<Object> get props => [
-    brokerUrl,
-    brokerPort,
-    brokerUsername,
-    brokerPassword,
-    formKey,
-  ];
+        brokerUrl,
+        brokerPort,
+        brokerUsername,
+        brokerPassword,
+        hidePassword,
+        formKey,
+      ];
 }

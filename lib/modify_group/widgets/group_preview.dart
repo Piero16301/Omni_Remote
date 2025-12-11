@@ -25,8 +25,8 @@ class GroupPreview extends StatelessWidget {
           l10n.modifyGroupPreview,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const SizedBox(height: 16),
         Card(
@@ -39,8 +39,8 @@ class GroupPreview extends StatelessWidget {
                     Radius.circular(16),
                   ),
                   color: Theme.of(context).colorScheme.primary.withValues(
-                    alpha: 0.1,
-                  ),
+                        alpha: 0.1,
+                      ),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -61,10 +61,12 @@ class GroupPreview extends StatelessWidget {
                               title.isEmpty
                                   ? l10n.modifyGroupGroupTitle
                                   : title,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ),
                             Visibility(
                               visible: subtitle.isNotEmpty,
@@ -72,9 +74,7 @@ class GroupPreview extends StatelessWidget {
                                 subtitle.isEmpty
                                     ? l10n.modifyGroupGroupSubtitle
                                     : subtitle,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                ),
+                                style: Theme.of(context).textTheme.bodyLarge,
                               ),
                             ),
                           ],

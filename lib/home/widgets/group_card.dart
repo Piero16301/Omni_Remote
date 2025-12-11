@@ -72,18 +72,18 @@ class GroupCard extends StatelessWidget {
                         children: [
                           Text(
                             group.title,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                           Visibility(
                             visible: group.subtitle.isNotEmpty,
                             child: Text(
                               group.subtitle,
-                              style: const TextStyle(
-                                fontSize: 16,
-                              ),
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           ),
                         ],
@@ -167,17 +167,14 @@ class GroupCard extends StatelessWidget {
                     children: [
                       Text(
                         group.title,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                       if (group.subtitle.isNotEmpty)
                         Text(
                           group.subtitle,
-                          style: const TextStyle(
-                            fontSize: 18,
-                          ),
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                     ],
                   ),
@@ -187,18 +184,28 @@ class GroupCard extends StatelessWidget {
                     icon: HugeIcons.strokeRoundedEdit02,
                     strokeWidth: 2,
                   ),
-                  title: Text(l10n.homeEditOption),
+                  title: Text(
+                    l10n.homeEditOption,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     onEdit();
                   },
                 ),
                 ListTile(
-                  leading: const HugeIcon(
+                  leading: HugeIcon(
                     icon: HugeIcons.strokeRoundedDelete02,
                     strokeWidth: 2,
+                    color: Theme.of(context).colorScheme.error,
                   ),
-                  title: Text(l10n.homeDeleteOption),
+                  title: Text(
+                    l10n.homeDeleteOption,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(color: Theme.of(context).colorScheme.error),
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     _showDeleteConfirmation(context, group);
@@ -220,19 +227,38 @@ class GroupCard extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(l10n.homeDeleteDialogTitle(group.title)),
-            content: Text(l10n.homeDeleteDialogContent(group.title)),
+            title: Text(
+              l10n.homeDeleteDialogTitle(group.title),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            content: Text(
+              l10n.homeDeleteDialogContent(group.title),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text(l10n.homeDeleteDialogCancel),
+                child: Text(
+                  l10n.homeDeleteDialogCancel,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                ),
               ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
                   onDelete();
                 },
-                child: Text(l10n.homeDeleteDialogConfirm),
+                child: Text(
+                  l10n.homeDeleteDialogConfirm,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                ),
               ),
             ],
           );

@@ -36,8 +36,8 @@ class DevicePreview extends StatelessWidget {
           l10n.modifyDevicePreview,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const SizedBox(height: 16),
         DevicePreviewTile(
@@ -152,10 +152,9 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
                         widget.title.isEmpty
                             ? l10n.modifyDeviceDeviceTitle
                             : widget.title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                       Visibility(
                         visible: widget.subtitle.isNotEmpty,
@@ -163,9 +162,7 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
                           widget.subtitle.isEmpty
                               ? l10n.modifyDeviceDeviceSubtitle
                               : widget.subtitle,
-                          style: const TextStyle(
-                            fontSize: 14,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
                     ],
@@ -215,18 +212,16 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
                             widget.title.isEmpty
                                 ? l10n.modifyDeviceDeviceTitle
                                 : widget.title,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                    ),
                           ),
                           Text(
                             widget.subtitle.isEmpty
                                 ? l10n.modifyDeviceDeviceSubtitle
                                 : widget.subtitle,
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ],
                       ),
@@ -256,10 +251,7 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
                         ),
                         Text(
                           _numberValue.toStringAsFixed(1),
-                          style: TextStyle(
-                            fontSize: widget.interval > 0 ? 16 : 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         Visibility(
                           visible: widget.interval > 0,

@@ -43,7 +43,12 @@ class ConnectionView extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(l10n.connectionAppBarTitle),
+            title: Text(
+              l10n.connectionAppBarTitle,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
             centerTitle: true,
             leading: IconButton(
               onPressed: () => context.pop(),
@@ -94,9 +99,8 @@ class ConnectionView extends StatelessWidget {
                 const SizedBox(height: 16),
                 AppTextField(
                   initialValue: state.brokerUsername,
-                  onChanged: context
-                      .read<ConnectionCubit>()
-                      .changeBrokerUsername,
+                  onChanged:
+                      context.read<ConnectionCubit>().changeBrokerUsername,
                   labelText: l10n.connectionUsernameLabel,
                   hintText: l10n.connectionUsernameHint,
                   prefixIcon: HugeIcons.strokeRoundedUser,
@@ -110,30 +114,49 @@ class ConnectionView extends StatelessWidget {
                 const SizedBox(height: 16),
                 AppTextField(
                   initialValue: state.brokerPassword,
-                  onChanged: context
-                      .read<ConnectionCubit>()
-                      .changeBrokerPassword,
+                  onChanged:
+                      context.read<ConnectionCubit>().changeBrokerPassword,
                   labelText: l10n.connectionPasswordLabel,
                   hintText: l10n.connectionPasswordHint,
                   prefixIcon: HugeIcons.strokeRoundedLockPassword,
-                  obscureText: true,
+                  obscureText: state.hidePassword,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return l10n.connectionFieldErrorEmpty;
                     }
                     return null;
                   },
+                  suffixIcon: IconButton(
+                    onPressed: () => context
+                        .read<ConnectionCubit>()
+                        .togglePasswordVisibility(),
+                    icon: HugeIcon(
+                      icon: state.hidePassword
+                          ? HugeIcons.strokeRoundedEye
+                          : HugeIcons.strokeRoundedViewOff,
+                      strokeWidth: 2,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed:
-                      (connectionStatus.isConnecting ||
+                  onPressed: (connectionStatus.isConnecting ||
                           connectionStatus.isDisconnecting)
                       ? null
                       : () async => context
-                            .read<ConnectionCubit>()
-                            .saveAndConnect(context: context),
-                  child: Text(l10n.connectionSaveAndConnectButton),
+                          .read<ConnectionCubit>()
+                          .saveAndConnect(context: context),
+                  child: Text(
+                    l10n.connectionSaveAndConnectButton,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Theme.of(context)
+                              .elevatedButtonTheme
+                              .style
+                              ?.foregroundColor
+                              ?.resolve({}),
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
                 ),
                 if (state.brokerUrl.isNotEmpty && state.brokerPort.isNotEmpty)
                   Padding(
@@ -141,10 +164,9 @@ class ConnectionView extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color:
-                            Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest.withValues(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest.withValues(
                               alpha: 0.5,
                             ),
                         borderRadius: BorderRadius.circular(12),
@@ -164,8 +186,13 @@ class ConnectionView extends StatelessWidget {
                           ),
                           Text(
                             statusText,
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(color: statusColor),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  color: statusColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                           Row(
                             spacing: 8,
@@ -199,14 +226,23 @@ class ConnectionView extends StatelessWidget {
                             TextButton.icon(
                               onPressed: connectionStatus.isConnected
                                   ? () => context
-                                        .read<ConnectionCubit>()
-                                        .disconnectBroker(context: context)
+                                      .read<ConnectionCubit>()
+                                      .disconnectBroker(context: context)
                                   : null,
                               icon: const HugeIcon(
                                 icon: HugeIcons.strokeRoundedCancelCircle,
                                 size: 20,
                               ),
-                              label: const Text('Desconectar'),
+                              label: Text(
+                                l10n.connectionDisconnectButton,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red,
+                                    ),
+                              ),
                               style: TextButton.styleFrom(
                                 foregroundColor: Colors.red,
                               ),

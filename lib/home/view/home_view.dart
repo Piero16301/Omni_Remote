@@ -27,7 +27,10 @@ class HomeView extends StatelessWidget {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(l10n.homeDeleteGroupSuccessSnackbar),
+              content: Text(
+                l10n.homeDeleteGroupSuccessSnackbar,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             ),
           );
         } else if (state.deleteGroupStatus.isFailure) {
@@ -39,6 +42,7 @@ class HomeView extends StatelessWidget {
                   state.groupDeleteError,
                   l10n,
                 ),
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
           );
@@ -50,7 +54,10 @@ class HomeView extends StatelessWidget {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(l10n.homeDeleteDeviceSuccessSnackbar),
+              content: Text(
+                l10n.homeDeleteDeviceSuccessSnackbar,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             ),
           );
         } else if (state.deleteDeviceStatus.isFailure) {
@@ -62,6 +69,7 @@ class HomeView extends StatelessWidget {
                   state.deviceDeleteError,
                   l10n,
                 ),
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
           );
@@ -96,7 +104,12 @@ class HomeView extends StatelessWidget {
               appBar: AppBar(
                 title: Column(
                   children: [
-                    Text(l10n.homeAppBarTitle),
+                    Text(
+                      l10n.homeAppBarTitle,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -111,11 +124,10 @@ class HomeView extends StatelessWidget {
                         const SizedBox(width: 6),
                         Text(
                           statusText,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.normal,
-                            color: statusColor,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: statusColor,
+                                  ),
                         ),
                       ],
                     ),
@@ -184,7 +196,10 @@ class HomeView extends StatelessWidget {
                               strokeWidth: 2,
                             ),
                             const SizedBox(width: 8),
-                            Text(l10n.homeNewGroupButton),
+                            Text(
+                              l10n.homeNewGroupButton,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
                           ],
                         ),
                       ),

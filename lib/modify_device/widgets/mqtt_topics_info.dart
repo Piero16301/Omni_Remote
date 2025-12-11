@@ -24,7 +24,12 @@ class MqttTopicsInfo extends StatelessWidget {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: Text(
+          message,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+        ),
       ),
     );
   }
@@ -59,8 +64,8 @@ class MqttTopicsInfo extends StatelessWidget {
           l10n.modifyDeviceMqttTopics,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.w600,
+              ),
         ),
         const SizedBox(height: 16),
         Card(
@@ -139,7 +144,13 @@ class MqttTopicsInfo extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: '${l10n.modifyDeviceMqttTopicOnline}: ',
-                            style: const TextStyle(fontWeight: FontWeight.w600),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                           ),
                           TextSpan(
                             text: l10n.modifyDeviceMqttTopicOnlineDescription,
@@ -166,7 +177,13 @@ class MqttTopicsInfo extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: '${l10n.modifyDeviceMqttTopicStatus}: ',
-                            style: const TextStyle(fontWeight: FontWeight.w600),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                           ),
                           TextSpan(
                             text: getTopicStatusDescription(tileType, l10n),
@@ -193,7 +210,13 @@ class MqttTopicsInfo extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: '${l10n.modifyDeviceMqttTopicCommand}: ',
-                            style: const TextStyle(fontWeight: FontWeight.w600),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                           ),
                           TextSpan(
                             text: getTopicCommandDescription(tileType, l10n),
@@ -246,18 +269,16 @@ class _TopicItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Row(
       children: [
         SizedBox(
           width: 80,
           child: Text(
             label,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: theme.colorScheme.primary,
-            ),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),
@@ -269,14 +290,14 @@ class _TopicItem extends StatelessWidget {
               vertical: 8,
             ),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               topic,
-              style: theme.textTheme.bodySmall?.copyWith(
-                fontFamily: 'monospace',
-              ),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontFamily: 'monospace',
+                  ),
             ),
           ),
         ),

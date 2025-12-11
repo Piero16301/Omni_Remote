@@ -20,7 +20,12 @@ class ModifyGroupView extends StatelessWidget {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(l10n.modifyGroupSaveSuccessSnackbar(state.title)),
+              content: Text(
+                l10n.modifyGroupSaveSuccessSnackbar(state.title),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+              ),
             ),
           );
           context.pop();
@@ -30,6 +35,9 @@ class ModifyGroupView extends StatelessWidget {
             SnackBar(
               content: Text(
                 getFailureMessage(state.modifyGroupError, state.title, l10n),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
               ),
             ),
           );
@@ -42,6 +50,9 @@ class ModifyGroupView extends StatelessWidget {
             state.groupModel == null
                 ? l10n.modifyGroupPageTitleCreate
                 : l10n.modifyGroupPageTitleEdit,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
           ),
           centerTitle: true,
           leading: IconButton(

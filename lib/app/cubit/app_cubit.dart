@@ -72,6 +72,11 @@ class AppCubit extends Cubit<AppState> {
     emit(state.copyWith(baseColor: baseColor));
   }
 
+  Future<void> changeFontFamily({required String fontFamily}) async {
+    await userRepository.saveFontFamily(fontFamily: fontFamily);
+    emit(state.copyWith(fontFamily: fontFamily));
+  }
+
   Future<void> _initializeMqttClient() async {
     final brokerUrl = userRepository.getBrokerUrl();
     final brokerPort = userRepository.getBrokerPort();

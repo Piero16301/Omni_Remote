@@ -232,18 +232,15 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                     children: [
                       Text(
                         widget.device.title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                       Visibility(
                         visible: widget.device.subtitle.isNotEmpty,
                         child: Text(
                           widget.device.subtitle,
-                          style: const TextStyle(
-                            fontSize: 14,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
                     ],
@@ -266,10 +263,7 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                     ),
                     Text(
                       _value.toStringAsFixed(1),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     IconButton(
                       onPressed: _isOnline
@@ -327,17 +321,15 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                     children: [
                       Text(
                         device.title,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
                       ),
                       if (device.subtitle.isNotEmpty)
                         Text(
                           device.subtitle,
-                          style: const TextStyle(
-                            fontSize: 18,
-                          ),
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                     ],
                   ),
@@ -347,7 +339,10 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                     icon: HugeIcons.strokeRoundedArrowReloadHorizontal,
                     strokeWidth: 2,
                   ),
-                  title: Text(l10n.homeReconnectOption),
+                  title: Text(
+                    l10n.homeReconnectOption,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     _verifyStatus();
@@ -358,18 +353,28 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                     icon: HugeIcons.strokeRoundedEdit02,
                     strokeWidth: 2,
                   ),
-                  title: Text(l10n.homeEditOption),
+                  title: Text(
+                    l10n.homeEditOption,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     widget.onEdit();
                   },
                 ),
                 ListTile(
-                  leading: const HugeIcon(
+                  leading: HugeIcon(
                     icon: HugeIcons.strokeRoundedDelete02,
                     strokeWidth: 2,
+                    color: Theme.of(context).colorScheme.error,
                   ),
-                  title: Text(l10n.homeDeleteOption),
+                  title: Text(
+                    l10n.homeDeleteOption,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(color: Theme.of(context).colorScheme.error),
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     _showDeleteConfirmation(context, device);
@@ -391,19 +396,39 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(l10n.homeDeleteDialogTitle(device.title)),
-            content: Text(l10n.homeDeleteDialogContent(device.title)),
+            title: Text(
+              l10n.homeDeleteDialogTitle(device.title),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            content: Text(
+              l10n.homeDeleteDialogContent(device.title),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text(l10n.homeDeleteDialogCancel),
+                child: Text(
+                  l10n.homeDeleteDialogCancel,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Theme.of(context).colorScheme.primary),
+                ),
               ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
                   widget.onDelete();
                 },
-                child: Text(l10n.homeDeleteDialogConfirm),
+                child: Text(
+                  l10n.homeDeleteDialogConfirm,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                ),
               ),
             ],
           );

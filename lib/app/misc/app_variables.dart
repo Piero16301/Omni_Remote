@@ -1,3 +1,5 @@
+import 'package:google_fonts/google_fonts.dart';
+
 class AppVariables {
   static const String appName = 'Omni Remote';
   static const String defaultBaseColor = 'INDIGO';
@@ -8,6 +10,19 @@ class AppVariables {
   static const String onlineSuffix = 'online';
   static const String statusSuffix = 'status';
   static const String commandSuffix = 'command';
+
+  static Map<String, String> availableFonts = {
+    'Merriweather': GoogleFonts.merriweather().fontFamily ?? '',
+    'Montserrat': GoogleFonts.montserrat().fontFamily ?? '',
+    'Nunito': GoogleFonts.nunito().fontFamily ?? '',
+    'Open Sans': GoogleFonts.openSans().fontFamily ?? '',
+    'Orbitron': GoogleFonts.orbitron().fontFamily ?? '',
+    'Pacifico': GoogleFonts.pacifico().fontFamily ?? '',
+    'Playfair Display': GoogleFonts.playfairDisplay().fontFamily ?? '',
+    'Poppins': GoogleFonts.poppins().fontFamily ?? '',
+    'Roboto': GoogleFonts.roboto().fontFamily ?? '',
+    'Source Code Pro': GoogleFonts.sourceCodePro().fontFamily ?? '',
+  };
 
   static String buildDeviceTopic({
     required String groupTitle,
