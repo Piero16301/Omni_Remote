@@ -53,6 +53,15 @@ class AppCubit extends Cubit<AppState> {
     }
     emit(state.copyWith(baseColor: userRepository.getBaseColor()));
 
+    // Setting the font family to Nunito_regular if it's not set
+    final fontFamily = userRepository.getFontFamily();
+    if (fontFamily == null) {
+      await userRepository.saveFontFamily(
+        fontFamily: AppVariables.defaultFontFamily,
+      );
+    }
+    emit(state.copyWith(fontFamily: userRepository.getFontFamily()));
+
     // Initialize MQTT Client
     await _initializeMqttClient();
   }

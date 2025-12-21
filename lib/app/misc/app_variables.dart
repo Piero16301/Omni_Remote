@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 class AppVariables {
   static const String appName = 'Omni Remote';
   static const String defaultBaseColor = 'INDIGO';
+  static const String defaultFontFamily = 'Nunito_regular';
 
   static const String lastWillTopic = 'application/lastwill';
   static const String lastWillMessage = 'Client disconnected unexpectedly';
