@@ -8,20 +8,20 @@ environment:
   flutter: ">=3.35.6"
 
 dependencies:
-  bloc: ^9.1.0
-  equatable: ^2.0.7
+  bloc: ^9.2.0
+  equatable: ^2.0.8
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
   flutter_localizations:
     sdk: flutter
   go_router: ^17.0.1
-  google_fonts: ^6.3.3
+  google_fonts: ^7.1.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  hugeicons: ^1.1.4
+  hugeicons: ^1.1.5
   intl: ^0.20.2
-  mqtt_client: ^10.11.3
+  mqtt_client: ^10.11.5
   user_api:
     path: packages/user_api
   user_api_remote:
@@ -35,7 +35,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
-  mockito: ^5.6.1
+  mockito: ^5.6.3
   mocktail: ^1.0.4
   test_coverage_badge: ^0.3.2
   very_good_analysis: ^10.0.0

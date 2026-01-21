@@ -32,7 +32,6 @@ class AppCubit extends Cubit<AppState> {
       final deviceLanguage = Platform.localeName;
       await userRepository.saveLanguage(language: deviceLanguage);
     }
-    emit(state.copyWith(language: userRepository.getLanguage()));
 
     // Setting the theme to the device theme if it's not set
     final theme = userRepository.getTheme();
@@ -42,7 +41,6 @@ class AppCubit extends Cubit<AppState> {
         theme: deviceBrightness == Brightness.dark ? 'DARK' : 'LIGHT',
       );
     }
-    emit(state.copyWith(theme: userRepository.getTheme()));
 
     // Setting the base color to INDIGO if it's not set
     final baseColor = userRepository.getBaseColor();
@@ -51,7 +49,6 @@ class AppCubit extends Cubit<AppState> {
         baseColor: AppVariables.defaultBaseColor,
       );
     }
-    emit(state.copyWith(baseColor: userRepository.getBaseColor()));
 
     // Setting the font family to Nunito_regular if it's not set
     final fontFamily = userRepository.getFontFamily();
@@ -60,7 +57,16 @@ class AppCubit extends Cubit<AppState> {
         fontFamily: AppVariables.defaultFontFamily,
       );
     }
-    emit(state.copyWith(fontFamily: userRepository.getFontFamily()));
+
+    // Emit state with all loaded configurations at once
+    emit(
+      state.copyWith(
+        language: userRepository.getLanguage(),
+        theme: userRepository.getTheme(),
+        baseColor: userRepository.getBaseColor(),
+        fontFamily: userRepository.getFontFamily(),
+      ),
+    );
 
     // Initialize MQTT Client
     await _initializeMqttClient();

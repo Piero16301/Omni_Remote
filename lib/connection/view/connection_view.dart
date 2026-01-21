@@ -149,12 +149,13 @@ class ConnectionView extends StatelessWidget {
                   child: Text(
                     l10n.connectionSaveAndConnectButton,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context)
-                              .elevatedButtonTheme
-                              .style
-                              ?.foregroundColor
-                              ?.resolve({}),
                           fontWeight: FontWeight.bold,
+                          color: (connectionStatus.isConnecting ||
+                                  connectionStatus.isDisconnecting)
+                              ? Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryFixedVariant
+                              : Theme.of(context).colorScheme.onPrimary,
                         ),
                   ),
                 ),
