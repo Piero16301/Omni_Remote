@@ -12,6 +12,7 @@ class DeviceNumberTile extends StatefulWidget {
   const DeviceNumberTile({
     required this.device,
     required this.group,
+    required this.groupIsOnline,
     required this.onEdit,
     required this.onDelete,
     super.key,
@@ -19,6 +20,7 @@ class DeviceNumberTile extends StatefulWidget {
 
   final DeviceModel device;
   final GroupModel group;
+  final bool groupIsOnline;
   final void Function() onEdit;
   final void Function() onDelete;
 
@@ -29,7 +31,6 @@ class DeviceNumberTile extends StatefulWidget {
 class _DeviceNumberTileState extends State<DeviceNumberTile> {
   StreamSubscription<List<MqttReceivedMessage<MqttMessage>>>? _subscription;
   bool _isSubscribed = false;
-  bool _isOnline = false;
   late double _value;
 
   @override
@@ -45,7 +46,6 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
     if (oldWidget.device.id != widget.device.id ||
         oldWidget.device.title != widget.device.title ||
         oldWidget.group.title != widget.group.title) {
-      _isOnline = false;
       _isSubscribed = false;
       _value = widget.device.rangeMin;
       _verifyStatus();
@@ -68,11 +68,6 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
       return;
     }
 
-    final online = AppVariables.buildDeviceTopic(
-      groupTitle: widget.group.title,
-      deviceTitle: widget.device.title,
-      suffix: AppVariables.onlineSuffix,
-    );
     final status = AppVariables.buildDeviceTopic(
       groupTitle: widget.group.title,
       deviceTitle: widget.device.title,
@@ -87,18 +82,7 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
       List<MqttReceivedMessage<MqttMessage>> messages,
     ) {
       for (final message in messages) {
-        if (message.topic == online) {
-          final payload = message.payload as MqttPublishMessage;
-          final messageText = MqttPublishPayload.bytesToStringAsString(
-            payload.payload.message,
-          );
-
-          if (mounted) {
-            setState(() {
-              _isOnline = messageText == '1';
-            });
-          }
-        } else if (message.topic == status) {
+        if (message.topic == status) {
           final payload = message.payload as MqttPublishMessage;
           final messageText = MqttPublishPayload.bytesToStringAsString(
             payload.payload.message,
@@ -116,9 +100,7 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
 
     // Now subscribe to MQTT topics - retained messages will be delivered
     // immediately and broadcast to our listener above
-    mqttClient
-      ..subscribe(online, MqttQos.atMostOnce)
-      ..subscribe(status, MqttQos.atMostOnce);
+    mqttClient.subscribe(status, MqttQos.atMostOnce);
     _isSubscribed = true;
   }
 
@@ -194,11 +176,6 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
           _trySubscribeMqttTopics();
         } else if (state.brokerConnectionStatus.isDisconnected) {
           _isSubscribed = false;
-          if (mounted) {
-            setState(() {
-              _isOnline = false;
-            });
-          }
         }
       },
       child: InkWell(
@@ -212,14 +189,6 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
             Row(
               spacing: 16,
               children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: _isOnline ? Colors.green : Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                ),
                 HugeIcon(
                   icon: IconHelper.getIconByName(widget.device.icon),
                   size: 28,
@@ -251,7 +220,7 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                   spacing: 8,
                   children: [
                     IconButton(
-                      onPressed: _isOnline
+                      onPressed: widget.groupIsOnline
                           ? () => _publishCommand(
                                 _value - widget.device.interval,
                               )
@@ -266,7 +235,7 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     IconButton(
-                      onPressed: _isOnline
+                      onPressed: widget.groupIsOnline
                           ? () => _publishCommand(
                                 _value + widget.device.interval,
                               )
@@ -285,12 +254,12 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
               max: widget.device.rangeMax,
               divisions: widget.device.divisions,
               value: _value,
-              onChanged: _isOnline
+              onChanged: widget.groupIsOnline
                   ? (value) => setState(() {
                         _value = value;
                       })
                   : null,
-              onChangeEnd: _isOnline ? _publishCommand : null,
+              onChangeEnd: widget.groupIsOnline ? _publishCommand : null,
             ),
           ],
         ),

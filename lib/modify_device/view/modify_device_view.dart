@@ -304,7 +304,6 @@ class ModifyDeviceView extends StatelessWidget {
                           title: '',
                           subtitle: '',
                           icon: '',
-                          enabled: true,
                         ),
                       )
                       .title,
@@ -339,7 +338,6 @@ class ModifyDeviceView extends StatelessWidget {
         title: '',
         subtitle: '',
         icon: '',
-        enabled: true,
       ),
     );
     switch (error) {

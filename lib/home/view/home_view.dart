@@ -108,6 +108,7 @@ class HomeView extends StatelessWidget {
                       l10n.homeAppBarTitle,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                     ),
                     Row(
@@ -136,17 +137,19 @@ class HomeView extends StatelessWidget {
                 centerTitle: true,
                 leading: IconButton(
                   onPressed: () => context.pushNamed(ConnectionPage.pageName),
-                  icon: const HugeIcon(
-                    icon: HugeIcons.strokeRoundedWifi01,
+                  icon: HugeIcon(
+                    icon: HugeIcons.strokeRoundedInternetAntenna04,
                     strokeWidth: 2,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 actions: [
                   IconButton(
                     onPressed: () => context.pushNamed(SettingsPage.pageName),
-                    icon: const HugeIcon(
+                    icon: HugeIcon(
                       icon: HugeIcons.strokeRoundedSettings01,
                       strokeWidth: 2,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ],
@@ -172,8 +175,6 @@ class HomeView extends StatelessWidget {
                   ...groups.map(
                     (group) => GroupCard(
                       group: group,
-                      onEnable: () =>
-                          context.read<HomeCubit>().toggleGroupEnabled(group),
                       onEdit: () => context.pushNamed(
                         ModifyGroupPage.pageName,
                         extra: group,

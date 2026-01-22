@@ -10,7 +10,6 @@ class GroupModel {
     required this.title,
     required this.subtitle,
     required this.icon,
-    required this.enabled,
     this.id = '',
   });
 
@@ -30,24 +29,18 @@ class GroupModel {
   @HiveField(3, defaultValue: '')
   final String icon;
 
-  /// Indicates if the group is enabled
-  @HiveField(4, defaultValue: true)
-  final bool enabled;
-
   /// Creates a copy of the current GroupModel with optional new values
   GroupModel copyWith({
     String? id,
     String? title,
     String? subtitle,
     String? icon,
-    bool? enabled,
   }) {
     return GroupModel(
       id: id ?? this.id,
       title: title ?? this.title,
       subtitle: subtitle ?? this.subtitle,
       icon: icon ?? this.icon,
-      enabled: enabled ?? this.enabled,
     );
   }
 }

@@ -4,25 +4,123 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:mqtt_client/mqtt_client.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 import 'package:omni_remote/modify_device/modify_device.dart';
 import 'package:user_api/user_api.dart';
 
-class GroupCard extends StatelessWidget {
+class GroupCard extends StatefulWidget {
   const GroupCard({
     required this.group,
-    required this.onEnable,
     required this.onEdit,
     required this.onDelete,
     super.key,
   });
 
   final GroupModel group;
-  final void Function() onEnable;
   final void Function() onEdit;
   final void Function() onDelete;
+
+  @override
+  State<GroupCard> createState() => _GroupCardState();
+}
+
+class _GroupCardState extends State<GroupCard> {
+  StreamSubscription<List<MqttReceivedMessage<MqttMessage>>>? _subscription;
+  bool _isSubscribed = false;
+  bool _isOnline = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _trySubscribeMqttTopics();
+  }
+
+  @override
+  void didUpdateWidget(covariant GroupCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.group.id != widget.group.id ||
+        oldWidget.group.title != widget.group.title) {
+      _isOnline = false;
+      _isSubscribed = false;
+      _verifyStatus();
+    }
+  }
+
+  @override
+  void dispose() {
+    unawaited(_subscription?.cancel());
+    super.dispose();
+  }
+
+  void _trySubscribeMqttTopics() {
+    final appCubit = context.read<AppCubit>();
+    final mqttClient = appCubit.mqttClient;
+
+    if (mqttClient == null ||
+        mqttClient.connectionStatus?.state != MqttConnectionState.connected ||
+        _isSubscribed) {
+      return;
+    }
+
+    final online = AppVariables.buildGroupTopic(
+      groupTitle: widget.group.title,
+      suffix: AppVariables.onlineSuffix,
+    );
+
+    // Cancel any existing subscription first
+    unawaited(_subscription?.cancel());
+
+    // Listen to the broadcast stream from AppCubit FIRST
+    _subscription = appCubit.messageStream.listen((
+      List<MqttReceivedMessage<MqttMessage>> messages,
+    ) {
+      for (final message in messages) {
+        if (message.topic == online) {
+          final payload = message.payload as MqttPublishMessage;
+          final messageText = MqttPublishPayload.bytesToStringAsString(
+            payload.payload.message,
+          );
+
+          if (mounted) {
+            setState(() {
+              _isOnline = messageText == '1';
+            });
+          }
+        }
+      }
+    });
+
+    // Now subscribe to MQTT topics - retained messages will be delivered
+    // immediately and broadcast to our listener above
+    mqttClient.subscribe(online, MqttQos.atLeastOnce);
+    _isSubscribed = true;
+  }
+
+  void _verifyStatus() {
+    final appCubit = context.read<AppCubit>();
+    final mqttClient = appCubit.mqttClient;
+
+    if (mqttClient == null ||
+        mqttClient.connectionStatus?.state != MqttConnectionState.connected) {
+      return;
+    }
+
+    // Unsubscribe from current topics
+    final online = AppVariables.buildGroupTopic(
+      groupTitle: widget.group.title,
+      suffix: AppVariables.onlineSuffix,
+    );
+
+    mqttClient.unsubscribe(online);
+
+    unawaited(_subscription?.cancel());
+    _isSubscribed = false;
+
+    _trySubscribeMqttTopics();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,24 +130,16 @@ class GroupCard extends StatelessWidget {
       child: Column(
         children: [
           InkWell(
-            onLongPress: () => _showGroupOptions(context, group),
-            borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(16),
-              topRight: const Radius.circular(16),
-              bottomLeft:
-                  group.enabled ? Radius.zero : const Radius.circular(16),
-              bottomRight:
-                  group.enabled ? Radius.zero : const Radius.circular(16),
+            onLongPress: () => _showGroupOptions(context, widget.group),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
             ),
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(16),
-                  topRight: const Radius.circular(16),
-                  bottomLeft:
-                      group.enabled ? Radius.zero : const Radius.circular(16),
-                  bottomRight:
-                      group.enabled ? Radius.zero : const Radius.circular(16),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
                 ),
                 color: Theme.of(context).colorScheme.primary.withValues(
                       alpha: 0.1,
@@ -61,7 +151,7 @@ class GroupCard extends StatelessWidget {
                   spacing: 16,
                   children: [
                     HugeIcon(
-                      icon: IconHelper.getIconByName(group.icon),
+                      icon: IconHelper.getIconByName(widget.group.icon),
                       size: 32,
                       strokeWidth: 2,
                     ),
@@ -71,7 +161,7 @@ class GroupCard extends StatelessWidget {
                         spacing: 4,
                         children: [
                           Text(
-                            group.title,
+                            widget.group.title,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleLarge
@@ -80,64 +170,61 @@ class GroupCard extends StatelessWidget {
                                 ),
                           ),
                           Visibility(
-                            visible: group.subtitle.isNotEmpty,
+                            visible: widget.group.subtitle.isNotEmpty,
                             child: Text(
-                              group.subtitle,
+                              widget.group.subtitle,
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    // Switch(
-                    //   value: group.enabled,
-                    //   onChanged: (_) => onEnable(),
-                    // ),
+                    HugeIcon(
+                      icon: _isOnline
+                          ? HugeIcons.strokeRoundedWifiConnected02
+                          : HugeIcons.strokeRoundedWifiDisconnected02,
+                      strokeWidth: 2,
+                      color: _isOnline ? Colors.green : Colors.red,
+                    ),
                   ],
                 ),
               ),
             ),
           ),
-          AnimatedSize(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            child: group.enabled
-                ? ValueListenableBuilder(
-                    valueListenable:
-                        context.read<HomeCubit>().getDevicesListenable(),
-                    builder: (builderContext, box, widget) {
-                      final devices = box.values
-                          .where((device) => device.groupId == group.id)
-                          .toList();
-                      return Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          spacing: 18,
-                          children: devices.isEmpty
-                              ? [
-                                  Text(
-                                    l10n.homeGroupEmptyDevicesMessage,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          fontStyle: FontStyle.italic,
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.onSurfaceVariant,
-                                        ),
-                                  ),
-                                ]
-                              : getDevicesTiles(
-                                  context: context,
-                                  group: group,
-                                  devices: devices,
+          ValueListenableBuilder(
+            valueListenable: context.read<HomeCubit>().getDevicesListenable(),
+            builder: (builderContext, box, widgetBuilder) {
+              final devices = box.values
+                  .where((device) => device.groupId == widget.group.id)
+                  .toList();
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                child: Column(
+                  spacing: 18,
+                  children: devices.isEmpty
+                      ? [
+                          Text(
+                            l10n.homeGroupEmptyDevicesMessage,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  fontStyle: FontStyle.italic,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
                                 ),
+                          ),
+                        ]
+                      : getDevicesTiles(
+                          context: context,
+                          group: widget.group,
+                          devices: devices,
                         ),
-                      );
-                    },
-                  )
-                : const SizedBox.shrink(),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -190,7 +277,7 @@ class GroupCard extends StatelessWidget {
                   ),
                   onTap: () {
                     Navigator.pop(context);
-                    onEdit();
+                    widget.onEdit();
                   },
                 ),
                 ListTile(
@@ -250,7 +337,7 @@ class GroupCard extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  onDelete();
+                  widget.onDelete();
                 },
                 child: Text(
                   l10n.homeDeleteDialogConfirm,
@@ -280,6 +367,7 @@ class GroupCard extends StatelessWidget {
             DeviceBooleanTile(
               device: device,
               group: group,
+              groupIsOnline: _isOnline,
               onEdit: () => context.pushNamed(
                 ModifyDevicePage.pageName,
                 extra: device,
@@ -292,6 +380,7 @@ class GroupCard extends StatelessWidget {
             DeviceNumberTile(
               device: device,
               group: group,
+              groupIsOnline: _isOnline,
               onEdit: () => context.pushNamed(
                 ModifyDevicePage.pageName,
                 extra: device,

@@ -12,6 +12,7 @@ class DeviceBooleanTile extends StatefulWidget {
   const DeviceBooleanTile({
     required this.device,
     required this.group,
+    required this.groupIsOnline,
     required this.onEdit,
     required this.onDelete,
     super.key,
@@ -19,6 +20,7 @@ class DeviceBooleanTile extends StatefulWidget {
 
   final DeviceModel device;
   final GroupModel group;
+  final bool groupIsOnline;
   final void Function() onEdit;
   final void Function() onDelete;
 
@@ -29,7 +31,6 @@ class DeviceBooleanTile extends StatefulWidget {
 class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
   StreamSubscription<List<MqttReceivedMessage<MqttMessage>>>? _subscription;
   bool _isSubscribed = false;
-  bool _isOnline = false;
   bool _value = false;
 
   @override
@@ -44,7 +45,6 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
     if (oldWidget.device.id != widget.device.id ||
         oldWidget.device.title != widget.device.title ||
         oldWidget.group.title != widget.group.title) {
-      _isOnline = false;
       _isSubscribed = false;
       _value = false;
       _verifyStatus();
@@ -67,11 +67,6 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
       return;
     }
 
-    final online = AppVariables.buildDeviceTopic(
-      groupTitle: widget.group.title,
-      deviceTitle: widget.device.title,
-      suffix: AppVariables.onlineSuffix,
-    );
     final status = AppVariables.buildDeviceTopic(
       groupTitle: widget.group.title,
       deviceTitle: widget.device.title,
@@ -86,18 +81,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
       List<MqttReceivedMessage<MqttMessage>> messages,
     ) {
       for (final message in messages) {
-        if (message.topic == online) {
-          final payload = message.payload as MqttPublishMessage;
-          final messageText = MqttPublishPayload.bytesToStringAsString(
-            payload.payload.message,
-          );
-
-          if (mounted) {
-            setState(() {
-              _isOnline = messageText == '1';
-            });
-          }
-        } else if (message.topic == status) {
+        if (message.topic == status) {
           final payload = message.payload as MqttPublishMessage;
           final messageText = MqttPublishPayload.bytesToStringAsString(
             payload.payload.message,
@@ -114,9 +98,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
 
     // Now subscribe to MQTT topics - retained messages will be delivered
     // immediately and broadcast to our listener above
-    mqttClient
-      ..subscribe(online, MqttQos.atLeastOnce)
-      ..subscribe(status, MqttQos.atLeastOnce);
+    mqttClient.subscribe(status, MqttQos.atLeastOnce);
     _isSubscribed = true;
   }
 
@@ -191,11 +173,6 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
           _trySubscribeMqttTopics();
         } else if (state.brokerConnectionStatus.isDisconnected) {
           _isSubscribed = false;
-          if (mounted) {
-            setState(() {
-              _isOnline = false;
-            });
-          }
         }
       },
       child: InkWell(
@@ -207,14 +184,6 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
         child: Row(
           spacing: 16,
           children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: _isOnline ? Colors.green : Colors.red,
-                shape: BoxShape.circle,
-              ),
-            ),
             HugeIcon(
               icon: IconHelper.getIconByName(widget.device.icon),
               size: 28,
@@ -243,7 +212,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
             ),
             Switch(
               value: _value,
-              onChanged: _isOnline ? _publishCommand : null,
+              onChanged: widget.groupIsOnline ? _publishCommand : null,
             ),
           ],
         ),

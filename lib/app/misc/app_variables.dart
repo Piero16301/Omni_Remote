@@ -43,6 +43,14 @@ class AppVariables {
     return availableFonts['Nunito'] ?? 'Nunito';
   }
 
+  static String buildGroupTopic({
+    required String groupTitle,
+    required String suffix,
+  }) {
+    final normalizedGroup = _normalizeText(groupTitle);
+    return '$normalizedGroup/$suffix';
+  }
+
   static String buildDeviceTopic({
     required String groupTitle,
     required String deviceTitle,

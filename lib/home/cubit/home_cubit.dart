@@ -20,11 +20,6 @@ class HomeCubit extends Cubit<HomeState> {
     return userRepository.getDevicesListenable();
   }
 
-  Future<void> toggleGroupEnabled(GroupModel group) async {
-    final updatedGroup = group.copyWith(enabled: !group.enabled);
-    await userRepository.updateGroup(group: updatedGroup);
-  }
-
   void resetDeleteGroupStatus() {
     emit(state.copyWith(deleteGroupStatus: HomeStatus.initial));
   }

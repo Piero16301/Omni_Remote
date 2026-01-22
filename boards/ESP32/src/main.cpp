@@ -15,13 +15,13 @@ const char* mqtt_user = "pmorales";
 const char* mqtt_password = "qweASD123*";
 
 // --- 4. TOPIC DEFINITIONS ---
+const char* group_online_topic = "demo/online";
+
 const char* switch_command_topic = "demo/switch/command";
 const char* switch_status_topic = "demo/switch/status";
-const char* switch_online_topic = "demo/switch/online";
 
 const char* number_command_topic = "demo/number/command";
 const char* number_status_topic = "demo/number/status";
-const char* number_online_topic = "demo/number/online";
 
 // --- 5. HARDWARE CONFIGURATION ---
 const int SWITCH_PIN = 5;
@@ -75,16 +75,15 @@ void mqttReconnect() {
       clientId.c_str(),
       mqtt_user,
       mqtt_password,
-      switch_online_topic,
+      group_online_topic,
       1,
       true,
       "0"
     )) {
       Serial.println("connected!");
 
-      // Publish online status for both devices
-      mqttClient.publish(switch_online_topic, "1", true);
-      mqttClient.publish(number_online_topic, "1", true);
+      // Publish online status for group
+      mqttClient.publish(group_online_topic, "1", true);
       
       // Subscribe to all topics
       if (mqttClient.subscribe(switch_command_topic, 1)) {
