@@ -13,7 +13,7 @@ class AppThemes {
     final colorScheme = ColorScheme.fromSeed(seedColor: color);
     final realFontFamily = AppVariables.getFontFamily(fontFamily);
 
-    return ThemeData.light().copyWith(
+    return ThemeData(
       textTheme: ThemeData.light().textTheme.apply(
             fontFamily: realFontFamily,
           ),
@@ -58,7 +58,7 @@ class AppThemes {
     );
     final realFontFamily = AppVariables.getFontFamily(fontFamily);
 
-    return ThemeData.dark().copyWith(
+    return ThemeData(
       textTheme: ThemeData.dark().textTheme.apply(
             fontFamily: realFontFamily,
           ),

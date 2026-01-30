@@ -295,6 +295,7 @@ class ModifyDeviceView extends StatelessWidget {
                 const SizedBox(height: 48),
               if (state.selectedGroupId != null && state.title.isNotEmpty)
                 MqttTopicsInfo(
+                  topicInfoType: TopicInfoType.device,
                   groupTitle: context
                       .read<ModifyDeviceCubit>()
                       .groups
@@ -308,7 +309,7 @@ class ModifyDeviceView extends StatelessWidget {
                       )
                       .title,
                   deviceTitle: state.title,
-                  tileType: state.tileType,
+                  deviceTileType: state.tileType,
                 ),
             ],
           ),

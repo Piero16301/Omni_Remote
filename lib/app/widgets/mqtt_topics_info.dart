@@ -9,15 +9,17 @@ import 'package:user_api/user_api.dart';
 
 class MqttTopicsInfo extends StatelessWidget {
   const MqttTopicsInfo({
-    required this.groupTitle,
-    required this.deviceTitle,
-    required this.tileType,
+    required this.topicInfoType,
+    this.groupTitle,
+    this.deviceTitle,
+    this.deviceTileType,
     super.key,
   });
 
-  final String groupTitle;
-  final String deviceTitle;
-  final DeviceTileType tileType;
+  final TopicInfoType topicInfoType;
+  final String? groupTitle;
+  final String? deviceTitle;
+  final DeviceTileType? deviceTileType;
 
   void _copyToClipboard(BuildContext context, String message, String text) {
     unawaited(Clipboard.setData(ClipboardData(text: text)));
@@ -36,27 +38,52 @@ class MqttTopicsInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    switch (topicInfoType) {
+      case TopicInfoType.group:
+        if (groupTitle == null) {
+          return const SizedBox.shrink();
+        }
 
-    if (groupTitle.isEmpty || deviceTitle.isEmpty) {
-      return const SizedBox.shrink();
+        final onlineTopic = AppVariables.buildGroupTopic(
+          groupTitle: groupTitle!,
+          suffix: AppVariables.onlineSuffix,
+        );
+
+        return topicInfoGroup(
+          context: context,
+          onlineTopic: onlineTopic,
+        );
+      case TopicInfoType.device:
+        if (groupTitle == null ||
+            deviceTitle == null ||
+            deviceTileType == null) {
+          return const SizedBox.shrink();
+        }
+
+        final statusTopic = AppVariables.buildDeviceTopic(
+          groupTitle: groupTitle!,
+          deviceTitle: deviceTitle!,
+          suffix: AppVariables.statusSuffix,
+        );
+        final commandTopic = AppVariables.buildDeviceTopic(
+          groupTitle: groupTitle!,
+          deviceTitle: deviceTitle!,
+          suffix: AppVariables.commandSuffix,
+        );
+
+        return topicInfoDevice(
+          context: context,
+          statusTopic: statusTopic,
+          commandTopic: commandTopic,
+        );
     }
+  }
 
-    final onlineTopic = AppVariables.buildDeviceTopic(
-      groupTitle: groupTitle,
-      deviceTitle: deviceTitle,
-      suffix: AppVariables.onlineSuffix,
-    );
-    final statusTopic = AppVariables.buildDeviceTopic(
-      groupTitle: groupTitle,
-      deviceTitle: deviceTitle,
-      suffix: AppVariables.statusSuffix,
-    );
-    final commandTopic = AppVariables.buildDeviceTopic(
-      groupTitle: groupTitle,
-      deviceTitle: deviceTitle,
-      suffix: AppVariables.commandSuffix,
-    );
+  Widget topicInfoGroup({
+    required BuildContext context,
+    required String onlineTopic,
+  }) {
+    final l10n = AppLocalizations.of(context);
 
     return Column(
       children: [
@@ -88,6 +115,90 @@ class MqttTopicsInfo extends StatelessWidget {
                     onlineTopic,
                   ),
                 ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outlineVariant,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  HugeIcon(
+                    icon: HugeIcons.strokeRoundedInformationCircle,
+                    size: 16,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        style: Theme.of(context).textTheme.bodySmall,
+                        children: [
+                          TextSpan(
+                            text: '${l10n.modifyDeviceMqttTopicOnline}: ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                          ),
+                          TextSpan(
+                            text: l10n.modifyDeviceMqttTopicOnlineDescription,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget topicInfoDevice({
+    required BuildContext context,
+    required String statusTopic,
+    required String commandTopic,
+  }) {
+    final l10n = AppLocalizations.of(context);
+
+    return Column(
+      children: [
+        Text(
+          l10n.modifyDeviceMqttTopics,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+        ),
+        const SizedBox(height: 16),
+        Card(
+          elevation: 2,
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 12,
+              children: [
                 _TopicItem(
                   label: l10n.modifyDeviceMqttTopicStatus,
                   topic: statusTopic,
@@ -143,39 +254,6 @@ class MqttTopicsInfo extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodySmall,
                         children: [
                           TextSpan(
-                            text: '${l10n.modifyDeviceMqttTopicOnline}: ',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                          ),
-                          TextSpan(
-                            text: l10n.modifyDeviceMqttTopicOnlineDescription,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  HugeIcon(
-                    icon: HugeIcons.strokeRoundedInformationCircle,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: RichText(
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.bodySmall,
-                        children: [
-                          TextSpan(
                             text: '${l10n.modifyDeviceMqttTopicStatus}: ',
                             style: Theme.of(context)
                                 .textTheme
@@ -186,7 +264,10 @@ class MqttTopicsInfo extends StatelessWidget {
                                 ),
                           ),
                           TextSpan(
-                            text: getTopicStatusDescription(tileType, l10n),
+                            text: getTopicStatusDescription(
+                              l10n: l10n,
+                              type: deviceTileType,
+                            ),
                           ),
                         ],
                       ),
@@ -219,7 +300,10 @@ class MqttTopicsInfo extends StatelessWidget {
                                 ),
                           ),
                           TextSpan(
-                            text: getTopicCommandDescription(tileType, l10n),
+                            text: getTopicCommandDescription(
+                              type: deviceTileType,
+                              l10n: l10n,
+                            ),
                           ),
                         ],
                       ),
@@ -234,7 +318,14 @@ class MqttTopicsInfo extends StatelessWidget {
     );
   }
 
-  String getTopicStatusDescription(DeviceTileType type, AppLocalizations l10n) {
+  String getTopicStatusDescription({
+    required AppLocalizations l10n,
+    DeviceTileType? type,
+  }) {
+    if (type == null) {
+      return '';
+    }
+
     switch (type) {
       case DeviceTileType.boolean:
         return l10n.modifyDeviceMqttTopicStatusDescriptionBool;
@@ -243,10 +334,14 @@ class MqttTopicsInfo extends StatelessWidget {
     }
   }
 
-  String getTopicCommandDescription(
-    DeviceTileType type,
-    AppLocalizations l10n,
-  ) {
+  String getTopicCommandDescription({
+    required AppLocalizations l10n,
+    DeviceTileType? type,
+  }) {
+    if (type == null) {
+      return '';
+    }
+
     switch (type) {
       case DeviceTileType.boolean:
         return l10n.modifyDeviceMqttTopicCommandDescriptionBool;
@@ -272,7 +367,7 @@ class _TopicItem extends StatelessWidget {
     return Row(
       children: [
         SizedBox(
-          width: 80,
+          width: 90,
           child: Text(
             label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(

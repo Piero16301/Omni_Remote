@@ -81,3 +81,8 @@ class AppVariables {
     return normalized;
   }
 }
+
+enum TopicInfoType {
+  group,
+  device,
+}

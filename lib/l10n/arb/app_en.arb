@@ -310,5 +310,9 @@
     "connectionStatusConnecting": "Connecting...",
     "@connectionStatusConnecting": {},
     "connectionStatusDisconnecting": "Disconnecting...",
-    "@connectionStatusDisconnecting": {}
+    "@connectionStatusDisconnecting": {},
+    "settingsVersionTitle": "Version",
+    "@settingsVersionTitle": {},
+    "settingsUpdateDateTitle": "Last update",
+    "@settingsUpdateDateTitle": {}
 }

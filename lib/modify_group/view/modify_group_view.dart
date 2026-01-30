@@ -66,9 +66,11 @@ class ModifyGroupView extends StatelessWidget {
         body: Form(
           key: state.formKey,
           child: ListView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 12,
+            padding: const EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 12,
+              bottom: 120,
             ),
             children: [
               AppTextField(
@@ -114,6 +116,12 @@ class ModifyGroupView extends StatelessWidget {
                 subtitle: state.subtitle,
                 iconName: state.icon,
               ),
+              if (state.title.isNotEmpty) const SizedBox(height: 48),
+              if (state.title.isNotEmpty)
+                MqttTopicsInfo(
+                  topicInfoType: TopicInfoType.group,
+                  groupTitle: state.title,
+                ),
             ],
           ),
         ),

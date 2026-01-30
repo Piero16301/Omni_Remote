@@ -179,6 +179,7 @@ class SettingsView extends StatelessWidget {
                   }
                 },
               ),
+              const SettingsAppSpecs(),
             ],
           ),
         );

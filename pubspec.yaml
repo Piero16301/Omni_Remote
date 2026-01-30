@@ -16,12 +16,13 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   go_router: ^17.0.1
-  google_fonts: ^7.1.0
+  google_fonts: ^8.0.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   hugeicons: ^1.1.5
   intl: ^0.20.2
-  mqtt_client: ^10.11.5
+  mqtt_client: ^10.11.9
+  package_info_plus: ^9.0.0
   user_api:
     path: packages/user_api
   user_api_remote:
