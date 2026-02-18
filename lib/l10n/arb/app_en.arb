@@ -48,7 +48,6 @@
     "@homeDeleteDeviceErrorNotFound": {},
     "homeDeleteDeviceErrorUnknown": "An unknown error occurred while deleting the device",
     "@homeDeleteDeviceErrorUnknown": {},
-
     "modifyGroupPageTitleEdit": "Edit group",
     "@modifyGroupPageTitleEdit": {},
     "modifyGroupPageTitleCreate": "New group",
@@ -99,7 +98,6 @@
             }
         }
     },
-
     "modifyDevicePageTitleEdit": "Edit device",
     "@modifyDevicePageTitleEdit": {},
     "modifyDevicePageTitleCreate": "New device",
@@ -219,21 +217,24 @@
     "@modifyDeviceMqttTopicStatusDescriptionNumber": {},
     "modifyDeviceMqttTopicCommandDescriptionNumber": "Sends a value within the configured range to adjust the device (e.g., \"7.3\").",
     "@modifyDeviceMqttTopicCommandDescriptionNumber": {},
-
     "settingsAppBarTitle": "Settings",
     "@settingsAppBarTitle": {},
     "settingsLanguageTitle": "Language",
     "@settingsLanguageTitle": {},
-    "settingsLanguageEnglish": "🇬🇧 English",
+    "settingsLanguageEnglish": "🇺🇸 English",
     "@settingsLanguageEnglish": {},
     "settingsLanguageSpanish": "🇪🇸 Spanish",
     "@settingsLanguageSpanish": {},
+    "settingsLanguageItalian": "🇮🇹 Italian",
+    "@settingsLanguageItalian": {},
     "settingsThemeTitle": "Theme",
     "@settingsThemeTitle": {},
     "settingsThemeLight": "Light",
     "@settingsThemeLight": {},
     "settingsThemeDark": "Dark",
     "@settingsThemeDark": {},
+    "settingsThemeSystem": "System",
+    "@settingsThemeSystem": {},
     "settingsBaseColorTitle": "Base color",
     "@settingsBaseColorTitle": {},
     "settingsColorRed": "Red",
@@ -276,7 +277,6 @@
     "@settingsColorBlueGrey": {},
     "settingsFontTitle": "Font",
     "@settingsFontTitle": {},
-
     "connectionAppBarTitle": "MQTT Connection",
     "@connectionAppBarTitle": {},
     "connectionTitle": "Broker Configuration",

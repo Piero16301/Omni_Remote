@@ -6,7 +6,6 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
-import 'package:user_api/user_api.dart';
 
 class DeviceBooleanTile extends StatefulWidget {
   const DeviceBooleanTile({
@@ -78,7 +77,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
 
     // Listen to the broadcast stream from AppCubit FIRST
     _subscription = appCubit.messageStream.listen((
-      List<MqttReceivedMessage<MqttMessage>> messages,
+      messages,
     ) {
       for (final message in messages) {
         if (message.topic == status) {
@@ -226,7 +225,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
     unawaited(
       showModalBottomSheet<void>(
         context: context,
-        builder: (BuildContext context) {
+        builder: (context) {
           return SafeArea(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -316,7 +315,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
     unawaited(
       showDialog<void>(
         context: context,
-        builder: (BuildContext context) {
+        builder: (context) {
           return AlertDialog(
             title: Text(
               l10n.homeDeleteDialogTitle(device.title),

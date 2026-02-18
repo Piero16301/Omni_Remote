@@ -14,23 +14,23 @@ enum BrokerConnectionStatus {
 
 class AppState extends Equatable {
   const AppState({
-    this.language = 'en_US',
-    this.theme = 'LIGHT',
-    this.baseColor = 'INDIGO',
-    this.fontFamily = 'Nunito_regular',
+    this.language = const Locale('en', 'US'),
+    this.theme = ThemeMode.system,
+    this.baseColor = Colors.green,
+    this.fontFamily = 'Poppins',
     this.brokerConnectionStatus = BrokerConnectionStatus.disconnected,
   });
 
-  final String language;
-  final String theme;
-  final String baseColor;
+  final Locale language;
+  final ThemeMode theme;
+  final Color baseColor;
   final String fontFamily;
   final BrokerConnectionStatus brokerConnectionStatus;
 
   AppState copyWith({
-    String? language,
-    String? theme,
-    String? baseColor,
+    Locale? language,
+    ThemeMode? theme,
+    Color? baseColor,
     String? fontFamily,
     BrokerConnectionStatus? brokerConnectionStatus,
   }) {

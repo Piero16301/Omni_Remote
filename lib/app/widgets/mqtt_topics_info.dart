@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
-import 'package:user_api/user_api.dart';
 
 class MqttTopicsInfo extends StatelessWidget {
   const MqttTopicsInfo({

@@ -2,15 +2,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:omni_remote/app/app.dart';
-import 'package:user_api/user_api.dart';
-import 'package:user_repository/user_repository.dart';
 
 part 'modify_group_state.dart';
 
 class ModifyGroupCubit extends Cubit<ModifyGroupState> {
-  ModifyGroupCubit(this.userRepository) : super(const ModifyGroupState());
+  ModifyGroupCubit() : super(const ModifyGroupState());
 
-  final UserRepository userRepository;
+  final LocalStorageService localStorage = getIt<LocalStorageService>();
 
   void groupReceived(GroupModel? group) {
     emit(
@@ -39,7 +37,7 @@ class ModifyGroupCubit extends Cubit<ModifyGroupState> {
     emit(state.copyWith(saveStatus: ModifyGroupStatus.initial));
   }
 
-  Future<void> saveGroupModel() async {
+  void saveGroupModel() {
     if (!state.formKey.currentState!.validate()) {
       return;
     }
@@ -52,7 +50,7 @@ class ModifyGroupCubit extends Cubit<ModifyGroupState> {
           subtitle: state.subtitle,
           icon: state.icon,
         );
-        await userRepository.updateGroup(group: updatedGroup);
+        localStorage.updateGroup(group: updatedGroup);
         emit(state.copyWith(saveStatus: ModifyGroupStatus.success));
       } else {
         final newGroup = GroupModel(
@@ -61,7 +59,7 @@ class ModifyGroupCubit extends Cubit<ModifyGroupState> {
           subtitle: state.subtitle,
           icon: state.icon,
         );
-        await userRepository.createGroup(group: newGroup);
+        localStorage.createGroup(group: newGroup);
         emit(state.copyWith(saveStatus: ModifyGroupStatus.success));
       }
     } on Exception catch (e) {

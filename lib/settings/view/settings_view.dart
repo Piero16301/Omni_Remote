@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -35,154 +33,56 @@ class SettingsView extends StatelessWidget {
             ),
           ),
           body: ListView(
-            children: [
-              SettingsCardBlock<String>(
-                title: l10n.settingsLanguageTitle,
-                value: state.language,
-                items: AppLocalizations.supportedLocales.map(
-                  (locale) {
-                    final languageCode = '${locale.languageCode}_'
-                        '${locale.languageCode.toUpperCase()}';
-                    return DropdownMenuItem<String>(
-                      value: languageCode,
-                      child: Text(
-                        _getLanguageName(locale, l10n),
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    );
-                  },
-                ).toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    unawaited(
-                      context.read<AppCubit>().changeLanguage(
-                            language: value,
-                          ),
-                    );
-                  }
-                },
-              ),
-              SettingsCardBlock<String>(
-                title: l10n.settingsThemeTitle,
-                value: state.theme,
-                items: [
-                  DropdownMenuItem<String>(
-                    value: 'LIGHT',
-                    child: Row(
-                      spacing: 12,
-                      children: [
-                        const HugeIcon(
-                          icon: HugeIcons.strokeRoundedSun03,
-                          size: 20,
-                          strokeWidth: 2,
-                        ),
-                        Text(
-                          l10n.settingsThemeLight,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ],
-                    ),
-                  ),
-                  DropdownMenuItem<String>(
-                    value: 'DARK',
-                    child: Row(
-                      spacing: 12,
-                      children: [
-                        const HugeIcon(
-                          icon: HugeIcons.strokeRoundedMoon02,
-                          size: 20,
-                          strokeWidth: 2,
-                        ),
-                        Text(
-                          l10n.settingsThemeDark,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ],
-                    ),
-                  ),
+            padding: const EdgeInsets.all(16),
+            children: const [
+              Row(
+                spacing: 4,
+                children: [
+                  LocaleSettingsCard(),
+                  ThemeSettingsCard(),
                 ],
-                onChanged: (value) {
-                  if (value != null) {
-                    unawaited(
-                      context.read<AppCubit>().changeTheme(theme: value),
-                    );
-                  }
-                },
               ),
-              SettingsCardBlock<String>(
-                title: l10n.settingsBaseColorTitle,
-                value: state.baseColor,
-                items: ColorHelper.colorMap.entries.map(
-                  (entry) {
-                    final color = ColorHelper.getColorByName(entry.key);
-                    return DropdownMenuItem<String>(
-                      value: entry.key,
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              color: color,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .outline
-                                    .withValues(alpha: 0.3),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            _getColorName(entry.key, l10n),
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ).toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    unawaited(
-                      context.read<AppCubit>().changeBaseColor(
-                            baseColor: value,
-                          ),
-                    );
-                  }
-                },
-              ),
-              SettingsCardBlock<String>(
-                title: l10n.settingsFontTitle,
-                value: state.fontFamily,
-                items: AppVariables.availableFonts.entries.map(
-                  (entry) {
-                    return DropdownMenuItem<String>(
-                      value: entry.value,
-                      child: Text(
-                        entry.key,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontFamily: entry.value,
-                            ),
-                      ),
-                    );
-                  },
-                ).toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    unawaited(
-                      context.read<AppCubit>().changeFontFamily(
-                            fontFamily: value,
-                          ),
-                    );
-                  }
-                },
-              ),
-              const SettingsAppSpecs(),
+              SizedBox(height: 4),
+              ColorSettingsCard(),
+              SizedBox(height: 4),
+              FontSettingsCard(),
+              Divider(),
+              SettingsAppSpecs(),
             ],
           ),
         );
+      },
+    );
+  }
+}
+
+class LocaleSettingsCard extends StatelessWidget {
+  const LocaleSettingsCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final state = context.watch<AppCubit>().state;
+
+    return SettingsCardBlock<Locale>(
+      isExpanded: true,
+      title: l10n.settingsLanguageTitle,
+      value: state.language,
+      items: AppVariables.supportedLocales.map(
+        (locale) {
+          return DropdownMenuItem<Locale>(
+            value: locale,
+            child: Text(
+              _getLanguageName(locale, l10n),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          );
+        },
+      ).toList(),
+      onChanged: (value) {
+        if (value != null) {
+          context.read<AppCubit>().changeLanguage(language: value);
+        }
       },
     );
   }
@@ -193,9 +93,118 @@ class SettingsView extends StatelessWidget {
         return l10n.settingsLanguageEnglish;
       case 'es':
         return l10n.settingsLanguageSpanish;
+      case 'it':
+        return l10n.settingsLanguageItalian;
       default:
         return locale.languageCode;
     }
+  }
+}
+
+class ThemeSettingsCard extends StatelessWidget {
+  const ThemeSettingsCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final state = context.watch<AppCubit>().state;
+
+    return SettingsCardBlock<ThemeMode>(
+      isExpanded: true,
+      title: l10n.settingsThemeTitle,
+      value: state.theme,
+      items: ThemeMode.values.map(
+        (themeMode) {
+          return DropdownMenuItem<ThemeMode>(
+            value: themeMode,
+            child: Row(
+              spacing: 12,
+              children: [
+                HugeIcon(
+                  icon: themeMode == ThemeMode.light
+                      ? HugeIcons.strokeRoundedSun03
+                      : (themeMode == ThemeMode.dark
+                          ? HugeIcons.strokeRoundedMoon02
+                          : HugeIcons.strokeRoundedFan01),
+                  size: 20,
+                  strokeWidth: 2,
+                ),
+                Text(
+                  _getThemeName(themeMode, l10n),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+            ),
+          );
+        },
+      ).toList(),
+      onChanged: (value) {
+        if (value != null) {
+          context.read<AppCubit>().changeTheme(theme: value);
+        }
+      },
+    );
+  }
+
+  String _getThemeName(ThemeMode themeMode, AppLocalizations l10n) {
+    switch (themeMode) {
+      case ThemeMode.light:
+        return l10n.settingsThemeLight;
+      case ThemeMode.dark:
+        return l10n.settingsThemeDark;
+      case ThemeMode.system:
+        return l10n.settingsThemeSystem;
+    }
+  }
+}
+
+class ColorSettingsCard extends StatelessWidget {
+  const ColorSettingsCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final state = context.watch<AppCubit>().state;
+
+    return SettingsCardBlock<Color>(
+      title: l10n.settingsBaseColorTitle,
+      value: state.baseColor,
+      items: ColorHelper.colorMap.entries.map(
+        (entry) {
+          return DropdownMenuItem<Color>(
+            value: entry.value,
+            child: Row(
+              spacing: 12,
+              children: [
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: entry.value,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .outline
+                          .withValues(alpha: 0.3),
+                    ),
+                  ),
+                ),
+                Text(
+                  _getColorName(entry.key, l10n),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
+            ),
+          );
+        },
+      ).toList(),
+      onChanged: (value) {
+        if (value != null) {
+          context.read<AppCubit>().changeBaseColor(baseColor: value);
+        }
+      },
+    );
   }
 
   String _getColorName(String colorKey, AppLocalizations l10n) {
@@ -241,5 +250,46 @@ class SettingsView extends StatelessWidget {
       default:
         return colorKey;
     }
+  }
+}
+
+class FontSettingsCard extends StatelessWidget {
+  const FontSettingsCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final state = context.watch<AppCubit>().state;
+
+    final fontItems = AppVariables.availableFonts.entries.map(
+      (entry) {
+        return DropdownMenuItem<String>(
+          value: entry.value,
+          child: Text(
+            entry.key,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontFamily: entry.value,
+                ),
+          ),
+        );
+      },
+    ).toList();
+
+    final validValue = fontItems.any((item) => item.value == state.fontFamily)
+        ? state.fontFamily
+        : (AppVariables.availableFonts[state.fontFamily] ??
+            fontItems.firstOrNull?.value ??
+            state.fontFamily);
+
+    return SettingsCardBlock<String>(
+      title: l10n.settingsFontTitle,
+      value: validValue,
+      items: fontItems,
+      onChanged: (value) {
+        if (value != null) {
+          context.read<AppCubit>().changeFontFamily(fontFamily: value);
+        }
+      },
+    );
   }
 }

@@ -1,32 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:omni_remote/app/app.dart';
-import 'package:user_repository/user_repository.dart';
 
 class AppPage extends StatelessWidget {
-  const AppPage({
-    required UserRepository userRepository,
-    super.key,
-  }) : _userRepository = userRepository;
-
-  final UserRepository _userRepository;
+  const AppPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
+    return MultiBlocProvider(
       providers: [
-        RepositoryProvider<UserRepository>.value(value: _userRepository),
+        BlocProvider<AppCubit>(
+          /// Fixes issue where AppCubit initialLoad() was not awaited,
+          // ignore: discarded_futures
+          create: (_) => AppCubit()..initialLoad(),
+        ),
       ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider<AppCubit>(
-            /// Fixes issue where AppCubit initialLoad() was not awaited,
-            // ignore: discarded_futures
-            create: (_) => AppCubit(_userRepository)..initialLoad(),
-          ),
-        ],
-        child: const AppView(),
-      ),
+      child: const AppView(),
     );
   }
 }

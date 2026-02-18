@@ -30,11 +30,8 @@ class _AppViewState extends State<AppView> {
         routeInformationParser: _router.routeInformationParser,
         debugShowCheckedModeBanner: false,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: Locale(
-          state.language.split('_').first,
-          state.language.split('_').last,
-        ),
+        supportedLocales: AppVariables.supportedLocales,
+        locale: state.language,
         theme: AppThemes.lightTheme(
           baseColor: state.baseColor,
           fontFamily: state.fontFamily,
@@ -44,8 +41,8 @@ class _AppViewState extends State<AppView> {
           fontFamily: state.fontFamily,
         ),
         themeAnimationCurve: Curves.easeInOut,
-        themeAnimationDuration: const Duration(milliseconds: 400),
-        themeMode: ThemeHelper.getThemeByName(state.theme),
+        themeAnimationDuration: const Duration(milliseconds: 500),
+        themeMode: state.theme,
       ),
     );
   }

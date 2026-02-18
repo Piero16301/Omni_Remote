@@ -2,15 +2,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:omni_remote/app/app.dart';
-import 'package:user_api/user_api.dart';
-import 'package:user_repository/user_repository.dart';
 
 part 'modify_device_state.dart';
 
 class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
-  ModifyDeviceCubit(this.userRepository) : super(const ModifyDeviceState());
+  ModifyDeviceCubit() : super(const ModifyDeviceState());
 
-  final UserRepository userRepository;
+  final LocalStorageService localStorage = getIt<LocalStorageService>();
 
   void deviceReceived(DeviceModel? device) {
     emit(
@@ -69,9 +67,9 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
     emit(state.copyWith(saveStatus: ModifyDeviceStatus.initial));
   }
 
-  List<GroupModel> get groups => userRepository.getGroups();
+  List<GroupModel> get groups => localStorage.getGroups();
 
-  Future<void> saveDeviceModel() async {
+  void saveDeviceModel() {
     if (!state.formKey.currentState!.validate()) {
       return;
     }
@@ -90,7 +88,7 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
           divisions: state.divisions,
           interval: state.interval,
         );
-        await userRepository.updateDevice(device: updatedDevice);
+        localStorage.updateDevice(device: updatedDevice);
         emit(state.copyWith(saveStatus: ModifyDeviceStatus.success));
       } else {
         if (state.selectedGroupId == null) {
@@ -114,7 +112,7 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
           divisions: state.divisions,
           interval: state.interval,
         );
-        await userRepository.createDevice(device: newDevice);
+        localStorage.createDevice(device: newDevice);
         emit(state.copyWith(saveStatus: ModifyDeviceStatus.success));
       }
     } on Exception catch (e) {

@@ -1,23 +1,21 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:hive/hive.dart';
-import 'package:user_api/user_api.dart';
-import 'package:user_repository/user_repository.dart';
+import 'package:omni_remote/app/app.dart';
 
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit(this.userRepository) : super(const HomeState());
+  HomeCubit() : super(const HomeState());
 
-  final UserRepository userRepository;
+  final LocalStorageService localStorage = getIt<LocalStorageService>();
 
-  ValueListenable<Box<GroupModel>> getGroupsListenable() {
-    return userRepository.getGroupsListenable();
+  ValueListenable<List<GroupModel>> getGroupsListenable() {
+    return localStorage.getGroupsListenable();
   }
 
-  ValueListenable<Box<DeviceModel>> getDevicesListenable() {
-    return userRepository.getDevicesListenable();
+  ValueListenable<List<DeviceModel>> getDevicesListenable() {
+    return localStorage.getDevicesListenable();
   }
 
   void resetDeleteGroupStatus() {
@@ -28,10 +26,10 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(deleteDeviceStatus: HomeStatus.initial));
   }
 
-  Future<void> deleteGroup(GroupModel group) async {
+  void deleteGroup(GroupModel group) {
     emit(state.copyWith(deleteGroupStatus: HomeStatus.loading));
     try {
-      await userRepository.deleteGroup(groupId: group.id);
+      localStorage.deleteGroup(groupId: group.id);
       emit(state.copyWith(deleteGroupStatus: HomeStatus.success));
     } on Exception catch (e) {
       GroupDeleteError groupDeleteError;
@@ -52,10 +50,10 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  Future<void> deleteDevice(DeviceModel device) async {
+  void deleteDevice(DeviceModel device) {
     emit(state.copyWith(deleteDeviceStatus: HomeStatus.loading));
     try {
-      await userRepository.deleteDevice(deviceId: device.id);
+      localStorage.deleteDevice(deviceId: device.id);
       emit(state.copyWith(deleteDeviceStatus: HomeStatus.success));
     } on Exception catch (e) {
       DeviceDeleteError deviceDeleteError;

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
-import 'package:user_api/user_api.dart';
 
 class GroupSelector extends StatefulWidget {
   const GroupSelector({
@@ -128,7 +127,7 @@ class _GroupSelectorState extends State<GroupSelector> {
           ),
         );
       }).toList(),
-      onSelected: (String? value) {
+      onSelected: (value) {
         if (value == '') {
           widget.onGroupSelected(null);
         } else {

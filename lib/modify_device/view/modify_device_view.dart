@@ -6,7 +6,6 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 import 'package:omni_remote/modify_device/cubit/modify_device_cubit.dart';
 import 'package:omni_remote/modify_device/widgets/widgets.dart';
-import 'package:user_api/user_api.dart';
 
 class ModifyDeviceView extends StatelessWidget {
   const ModifyDeviceView({super.key});

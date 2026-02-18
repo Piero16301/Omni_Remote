@@ -9,7 +9,6 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 import 'package:omni_remote/modify_device/modify_device.dart';
-import 'package:user_api/user_api.dart';
 
 class GroupCard extends StatefulWidget {
   const GroupCard({
@@ -75,7 +74,7 @@ class _GroupCardState extends State<GroupCard> {
 
     // Listen to the broadcast stream from AppCubit FIRST
     _subscription = appCubit.messageStream.listen((
-      List<MqttReceivedMessage<MqttMessage>> messages,
+      messages,
     ) {
       for (final message in messages) {
         if (message.topic == online) {
@@ -193,16 +192,17 @@ class _GroupCardState extends State<GroupCard> {
           ),
           ValueListenableBuilder(
             valueListenable: context.read<HomeCubit>().getDevicesListenable(),
-            builder: (builderContext, box, widgetBuilder) {
-              final devices = box.values
+            builder: (builderContext, devices, widgetBuilder) {
+              final devicesInGroup = devices
                   .where((device) => device.groupId == widget.group.id)
                   .toList();
+
               return Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 child: Column(
                   spacing: 18,
-                  children: devices.isEmpty
+                  children: devicesInGroup.isEmpty
                       ? [
                           Text(
                             l10n.homeGroupEmptyDevicesMessage,
@@ -220,7 +220,7 @@ class _GroupCardState extends State<GroupCard> {
                       : getDevicesTiles(
                           context: context,
                           group: widget.group,
-                          devices: devices,
+                          devices: devicesInGroup,
                         ),
                 ),
               );
@@ -237,7 +237,7 @@ class _GroupCardState extends State<GroupCard> {
     unawaited(
       showModalBottomSheet<void>(
         context: context,
-        builder: (BuildContext context) {
+        builder: (context) {
           return SafeArea(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -312,7 +312,7 @@ class _GroupCardState extends State<GroupCard> {
     unawaited(
       showDialog<void>(
         context: context,
-        builder: (BuildContext context) {
+        builder: (context) {
           return AlertDialog(
             title: Text(
               l10n.homeDeleteDialogTitle(group.title),

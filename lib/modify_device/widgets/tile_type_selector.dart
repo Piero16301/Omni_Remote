@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
-import 'package:user_api/user_api.dart';
 
 class TileTypeSelector extends StatelessWidget {
   const TileTypeSelector({
@@ -35,7 +35,7 @@ class TileTypeSelector extends StatelessWidget {
                 const EdgeInsets.symmetric(vertical: 20),
               ),
               side: WidgetStateProperty.resolveWith<BorderSide?>(
-                (Set<WidgetState> states) {
+                (states) {
                   if (states.contains(WidgetState.selected)) {
                     return BorderSide(
                       color: Theme.of(context).colorScheme.primary,
@@ -93,7 +93,7 @@ class TileTypeSelector extends StatelessWidget {
               ),
             ],
             selected: {selectedType},
-            onSelectionChanged: (Set<DeviceTileType> newSelection) {
+            onSelectionChanged: (newSelection) {
               onTypeSelected(newSelection.first);
             },
             showSelectedIcon: false,

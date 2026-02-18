@@ -3,28 +3,36 @@ import 'package:flutter/material.dart';
 class SettingsCardBlock<T> extends StatelessWidget {
   const SettingsCardBlock({
     required this.title,
-    this.value,
-    this.items,
+    required this.value,
+    required this.items,
     this.onChanged,
+    this.isExpanded = false,
     super.key,
   });
 
   final String title;
-  final T? value;
-  final List<DropdownMenuItem<T>>? items;
+  final T value;
+  final List<DropdownMenuItem<T>> items;
   final void Function(T?)? onChanged;
+  final bool isExpanded;
 
   @override
   Widget build(BuildContext context) {
+    return isExpanded
+        ? Expanded(child: _buildCard(context))
+        : _buildCard(context);
+  }
+
+  Widget _buildCard(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),

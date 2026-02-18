@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:omni_remote/app/helpers/icon_helper.dart';
+import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
-import 'package:user_api/user_api.dart';
 
 class DevicePreview extends StatelessWidget {
   const DevicePreview({

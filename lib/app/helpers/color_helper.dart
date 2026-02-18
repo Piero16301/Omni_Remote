@@ -24,6 +24,10 @@ class ColorHelper {
   };
 
   static Color getColorByName(String colorName) {
-    return colorMap[colorName.toUpperCase()] ?? Colors.indigo;
+    return colorMap[colorName.toUpperCase()] ?? Colors.green;
+  }
+
+  static String getColorName(Color color) {
+    return colorMap.entries.firstWhere((entry) => entry.value == color).key;
   }
 }

@@ -1,21 +1,21 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:omni_remote/app/app.dart';
-import 'package:user_repository/user_repository.dart';
 import 'package:uuid/uuid.dart';
 
 part 'app_state.dart';
 
 class AppCubit extends Cubit<AppState> {
-  AppCubit(this.userRepository) : super(const AppState());
+  AppCubit() : super(const AppState());
 
-  final UserRepository userRepository;
+  final LocalStorageService localStorage = getIt<LocalStorageService>();
+
   MqttServerClient? _mqttClient;
   StreamSubscription<List<MqttReceivedMessage<MqttMessage>>>? _mqttSubscription;
   final _messageController =
@@ -27,44 +27,44 @@ class AppCubit extends Cubit<AppState> {
 
   Future<void> initialLoad() async {
     // Setting the language to the device language if it's not set
-    final language = userRepository.getLanguage();
+    final language = localStorage.getLanguage();
     if (language == null) {
-      final deviceLanguage = Platform.localeName;
-      await userRepository.saveLanguage(language: deviceLanguage);
+      final deviceLanguage = AppVariables.supportedLocales.first;
+      localStorage.saveLanguage(language: deviceLanguage);
     }
 
     // Setting the theme to the device theme if it's not set
-    final theme = userRepository.getTheme();
+    final theme = localStorage.getTheme();
     if (theme == null) {
-      final deviceBrightness = PlatformDispatcher.instance.platformBrightness;
-      await userRepository.saveTheme(
-        theme: deviceBrightness == Brightness.dark ? 'DARK' : 'LIGHT',
-      );
+      localStorage.saveTheme(theme: ThemeMode.system);
     }
 
-    // Setting the base color to INDIGO if it's not set
-    final baseColor = userRepository.getBaseColor();
+    // Setting the base color to GREEN if it's not set
+    final baseColor = localStorage.getBaseColor();
     if (baseColor == null) {
-      await userRepository.saveBaseColor(
-        baseColor: AppVariables.defaultBaseColor,
-      );
+      localStorage.saveBaseColor(baseColor: AppVariables.defaultBaseColor);
     }
 
-    // Setting the font family to Nunito_regular if it's not set
-    final fontFamily = userRepository.getFontFamily();
-    if (fontFamily == null) {
-      await userRepository.saveFontFamily(
-        fontFamily: AppVariables.defaultFontFamily,
-      );
+    // Setting the font family to Popping if it's not set
+    var fontFamily = localStorage.getFontFamily();
+    final isFontSupported = fontFamily != null &&
+        AppVariables.availableFonts.containsValue(fontFamily);
+
+    if (!isFontSupported) {
+      final defaultFont =
+          AppVariables.availableFonts[AppVariables.defaultFontFamily] ??
+              AppVariables.defaultFontFamily;
+      localStorage.saveFontFamily(fontFamily: defaultFont);
+      fontFamily = defaultFont;
     }
 
     // Emit state with all loaded configurations at once
     emit(
       state.copyWith(
-        language: userRepository.getLanguage(),
-        theme: userRepository.getTheme(),
-        baseColor: userRepository.getBaseColor(),
-        fontFamily: userRepository.getFontFamily(),
+        language: localStorage.getLanguage(),
+        theme: localStorage.getTheme(),
+        baseColor: localStorage.getBaseColor(),
+        fontFamily: localStorage.getFontFamily(),
       ),
     );
 
@@ -72,31 +72,31 @@ class AppCubit extends Cubit<AppState> {
     await _initializeMqttClient();
   }
 
-  Future<void> changeLanguage({required String language}) async {
-    await userRepository.saveLanguage(language: language);
+  void changeLanguage({required Locale language}) {
+    localStorage.saveLanguage(language: language);
     emit(state.copyWith(language: language));
   }
 
-  Future<void> changeTheme({required String theme}) async {
-    await userRepository.saveTheme(theme: theme);
+  void changeTheme({required ThemeMode theme}) {
+    localStorage.saveTheme(theme: theme);
     emit(state.copyWith(theme: theme));
   }
 
-  Future<void> changeBaseColor({required String baseColor}) async {
-    await userRepository.saveBaseColor(baseColor: baseColor);
+  void changeBaseColor({required Color baseColor}) {
+    localStorage.saveBaseColor(baseColor: baseColor);
     emit(state.copyWith(baseColor: baseColor));
   }
 
-  Future<void> changeFontFamily({required String fontFamily}) async {
-    await userRepository.saveFontFamily(fontFamily: fontFamily);
+  void changeFontFamily({required String fontFamily}) {
+    localStorage.saveFontFamily(fontFamily: fontFamily);
     emit(state.copyWith(fontFamily: fontFamily));
   }
 
   Future<void> _initializeMqttClient() async {
-    final brokerUrl = userRepository.getBrokerUrl();
-    final brokerPort = userRepository.getBrokerPort();
-    final username = userRepository.getBrokerUsername();
-    final password = userRepository.getBrokerPassword();
+    final brokerUrl = localStorage.getBrokerUrl();
+    final brokerPort = localStorage.getBrokerPort();
+    final username = localStorage.getBrokerUsername();
+    final password = localStorage.getBrokerPassword();
 
     if (brokerUrl == null ||
         brokerUrl.isEmpty ||
@@ -155,8 +155,8 @@ class AppCubit extends Cubit<AppState> {
       );
 
       await _mqttClient!.connect(
-        userRepository.getBrokerUsername(),
-        userRepository.getBrokerPassword(),
+        localStorage.getBrokerUsername(),
+        localStorage.getBrokerPassword(),
       );
 
       if (_mqttClient!.connectionStatus?.state ==

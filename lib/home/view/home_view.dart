@@ -97,9 +97,7 @@ class HomeView extends StatelessWidget {
 
         return ValueListenableBuilder(
           valueListenable: context.read<HomeCubit>().getGroupsListenable(),
-          builder: (context, box, widget) {
-            final groups = box.values.toList();
-
+          builder: (context, groups, widget) {
             return Scaffold(
               appBar: AppBar(
                 title: Column(
