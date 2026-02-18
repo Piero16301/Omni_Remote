@@ -4,5 +4,7 @@ import 'package:omni_remote/app/app.dart';
 final GetIt getIt = GetIt.instance;
 
 void setupServiceLocator() {
-  getIt.registerLazySingleton<LocalStorageService>(LocalStorageService.new);
+  getIt
+    ..registerLazySingleton<LocalStorageService>(LocalStorageService.new)
+    ..registerLazySingleton<MqttService>(MqttService.new);
 }

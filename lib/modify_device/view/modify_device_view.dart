@@ -82,9 +82,12 @@ class ModifyDeviceView extends StatelessWidget {
               AppTextField(
                 initialValue: state.title,
                 onChanged: context.read<ModifyDeviceCubit>().changeTitle,
-                labelText: l10n.modifyDeviceTitleLabel,
+                label: l10n.modifyDeviceTitleLabel,
                 hintText: l10n.modifyDeviceTitleHint,
-                prefixIcon: HugeIcons.strokeRoundedBookmark01,
+                prefix: const HugeIcon(
+                  icon: HugeIcons.strokeRoundedBookmark01,
+                  strokeWidth: 2,
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return l10n.modifyDeviceTitleErrorEmpty;
@@ -104,16 +107,35 @@ class ModifyDeviceView extends StatelessWidget {
               const SizedBox(height: 16),
               AppTextField(
                 initialValue: state.subtitle,
+                isRequired: false,
                 onChanged: context.read<ModifyDeviceCubit>().changeSubtitle,
-                labelText: l10n.modifyDeviceSubtitleLabel,
+                label: l10n.modifyDeviceSubtitleLabel,
                 hintText: l10n.modifyDeviceSubtitleHint,
-                prefixIcon: HugeIcons.strokeRoundedNote,
+                prefix: const HugeIcon(
+                  icon: HugeIcons.strokeRoundedNote,
+                  strokeWidth: 2,
+                ),
               ),
               const SizedBox(height: 16),
-              GroupSelector(
-                groups: context.read<ModifyDeviceCubit>().groups,
-                selectedGroupId: state.selectedGroupId,
-                onGroupSelected: (selected) => context
+              AppDropdownField(
+                label: l10n.modifyDeviceGroupLabel,
+                options: context.read<ModifyDeviceCubit>().groups.map((group) {
+                  return DropdownMenuItem<String>(
+                    value: group.id,
+                    child: Row(
+                      spacing: 8,
+                      children: [
+                        HugeIcon(
+                          icon: IconHelper.getIconByName(group.icon),
+                          strokeWidth: 2,
+                        ),
+                        Text(group.title),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                selected: state.selectedGroupId,
+                onChanged: (selected) => context
                     .read<ModifyDeviceCubit>()
                     .changeSelectedGroup(selected),
               ),
@@ -161,7 +183,7 @@ class ModifyDeviceView extends StatelessWidget {
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
-                        labelText: l10n.modifyDeviceRangeMinLabel,
+                        label: l10n.modifyDeviceRangeMinLabel,
                         hintText: l10n.modifyDeviceRangeMinHint,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -194,7 +216,7 @@ class ModifyDeviceView extends StatelessWidget {
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
-                        labelText: l10n.modifyDeviceRangeMaxLabel,
+                        label: l10n.modifyDeviceRangeMaxLabel,
                         hintText: l10n.modifyDeviceRangeMaxHint,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -229,7 +251,7 @@ class ModifyDeviceView extends StatelessWidget {
                           }
                         },
                         keyboardType: TextInputType.number,
-                        labelText: l10n.modifyDeviceDivisionsLabel,
+                        label: l10n.modifyDeviceDivisionsLabel,
                         hintText: l10n.modifyDeviceDivisionsHint,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -262,7 +284,7 @@ class ModifyDeviceView extends StatelessWidget {
                         keyboardType: const TextInputType.numberWithOptions(
                           decimal: true,
                         ),
-                        labelText: l10n.modifyDeviceIntervalLabel,
+                        label: l10n.modifyDeviceIntervalLabel,
                         hintText: l10n.modifyDeviceIntervalHint,
                         validator: (value) {
                           if (value == null || value.isEmpty) {

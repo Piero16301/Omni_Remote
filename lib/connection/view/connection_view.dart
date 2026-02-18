@@ -71,9 +71,12 @@ class ConnectionView extends StatelessWidget {
                 AppTextField(
                   initialValue: state.brokerUrl,
                   onChanged: context.read<ConnectionCubit>().changeBrokerUrl,
-                  labelText: l10n.connectionUrlLabel,
+                  label: l10n.connectionUrlLabel,
                   hintText: l10n.connectionUrlHint,
-                  prefixIcon: HugeIcons.strokeRoundedLink01,
+                  prefix: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedLink01,
+                    strokeWidth: 2,
+                  ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return l10n.connectionFieldErrorEmpty;
@@ -85,9 +88,12 @@ class ConnectionView extends StatelessWidget {
                 AppTextField(
                   initialValue: state.brokerPort,
                   onChanged: context.read<ConnectionCubit>().changeBrokerPort,
-                  labelText: l10n.connectionPortLabel,
+                  label: l10n.connectionPortLabel,
                   hintText: l10n.connectionPortHint,
-                  prefixIcon: HugeIcons.strokeRoundedGps01,
+                  prefix: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedGps01,
+                    strokeWidth: 2,
+                  ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -101,9 +107,12 @@ class ConnectionView extends StatelessWidget {
                   initialValue: state.brokerUsername,
                   onChanged:
                       context.read<ConnectionCubit>().changeBrokerUsername,
-                  labelText: l10n.connectionUsernameLabel,
+                  label: l10n.connectionUsernameLabel,
                   hintText: l10n.connectionUsernameHint,
-                  prefixIcon: HugeIcons.strokeRoundedUser,
+                  prefix: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedUser,
+                    strokeWidth: 2,
+                  ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return l10n.connectionFieldErrorEmpty;
@@ -116,9 +125,12 @@ class ConnectionView extends StatelessWidget {
                   initialValue: state.brokerPassword,
                   onChanged:
                       context.read<ConnectionCubit>().changeBrokerPassword,
-                  labelText: l10n.connectionPasswordLabel,
+                  label: l10n.connectionPasswordLabel,
                   hintText: l10n.connectionPasswordHint,
-                  prefixIcon: HugeIcons.strokeRoundedLockPassword,
+                  prefix: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedLockPassword,
+                    strokeWidth: 2,
+                  ),
                   obscureText: state.hidePassword,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -126,7 +138,7 @@ class ConnectionView extends StatelessWidget {
                     }
                     return null;
                   },
-                  suffixIcon: IconButton(
+                  suffix: IconButton(
                     onPressed: () => context
                         .read<ConnectionCubit>()
                         .togglePasswordVisibility(),

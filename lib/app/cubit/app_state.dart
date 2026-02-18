@@ -1,17 +1,5 @@
 part of 'app_cubit.dart';
 
-enum BrokerConnectionStatus {
-  disconnected,
-  connecting,
-  connected,
-  disconnecting;
-
-  bool get isDisconnected => this == BrokerConnectionStatus.disconnected;
-  bool get isConnecting => this == BrokerConnectionStatus.connecting;
-  bool get isConnected => this == BrokerConnectionStatus.connected;
-  bool get isDisconnecting => this == BrokerConnectionStatus.disconnecting;
-}
-
 class AppState extends Equatable {
   const AppState({
     this.language = const Locale('en', 'US'),

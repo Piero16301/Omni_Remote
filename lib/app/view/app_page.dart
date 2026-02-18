@@ -10,9 +10,11 @@ class AppPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AppCubit>(
-          /// Fixes issue where AppCubit initialLoad() was not awaited,
-          // ignore: discarded_futures
-          create: (_) => AppCubit()..initialLoad(),
+          create: (_) => AppCubit()
+            ..initialize()
+            // Initialize app and mqtt client
+            // ignore: discarded_futures
+            ..initializeMqttClient(),
         ),
       ],
       child: const AppView(),

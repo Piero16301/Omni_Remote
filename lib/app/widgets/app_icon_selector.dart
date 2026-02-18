@@ -29,73 +29,60 @@ class AppIconSelector extends StatelessWidget {
         const SizedBox(height: 16),
         Card(
           margin: EdgeInsets.zero,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              const crossAxisCount = 3;
-              const crossAxisSpacing = 12.0;
-              const mainAxisSpacing = 12.0;
-              const padding = 16.0;
-              const cellSize = 55.0;
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 70,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+              ),
+              itemCount: iconOptions.length,
+              itemBuilder: (context, index) {
+                final entry = iconOptions.entries.elementAt(index);
+                final iconName = entry.key;
+                final iconData = entry.value;
+                final isSelected = selectedIcon == iconName;
 
-              return SizedBox(
-                height: (cellSize * crossAxisCount) +
-                    (crossAxisSpacing * (crossAxisCount - 1)) +
-                    (padding * 2),
-                child: GridView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.all(padding),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: crossAxisSpacing,
-                    mainAxisSpacing: mainAxisSpacing,
-                    mainAxisExtent: cellSize,
-                  ),
-                  itemCount: iconOptions.length,
-                  itemBuilder: (context, index) {
-                    final entry = iconOptions.entries.elementAt(index);
-                    final iconName = entry.key;
-                    final iconData = entry.value;
-                    final isSelected = selectedIcon == iconName;
-
-                    return InkWell(
-                      onTap: () => onIconSelected(iconName),
+                return InkWell(
+                  onTap: () => onIconSelected(iconName),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(
+                                alpha: 0.2,
+                              )
+                          : Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest
+                              .withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? Theme.of(
-                                  context,
-                                ).colorScheme.primary.withValues(
-                                    alpha: 0.2,
-                                  )
-                              : Theme.of(context)
-                                  .colorScheme
-                                  .surfaceContainerHighest
-                                  .withValues(alpha: 0.3),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: isSelected
-                                ? Theme.of(context).colorScheme.primary
-                                : Colors.transparent,
-                            width: 2,
-                          ),
-                        ),
-                        child: Center(
-                          child: HugeIcon(
-                            icon: iconData,
-                            size: 28,
-                            strokeWidth: 2,
-                            color: isSelected
-                                ? Theme.of(context).colorScheme.primary
-                                : null,
-                          ),
-                        ),
+                      border: Border.all(
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.primary
+                            : Colors.transparent,
+                        width: 2,
                       ),
-                    );
-                  },
-                ),
-              );
-            },
+                    ),
+                    child: Center(
+                      child: HugeIcon(
+                        icon: iconData,
+                        size: 28,
+                        strokeWidth: 2,
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.primary
+                            : null,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ],

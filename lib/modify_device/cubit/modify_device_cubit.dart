@@ -22,7 +22,7 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
         divisions: device?.divisions,
         interval: device?.interval,
         deviceModel: device,
-        selectedGroupId: device?.groupId,
+        selectedGroupId: device?.groupId ?? groups.first.id,
       ),
     );
   }

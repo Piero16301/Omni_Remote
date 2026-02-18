@@ -4,8 +4,7 @@ enum ModifyGroupStatus {
   initial,
   loading,
   success,
-  failure
-  ;
+  failure;
 
   bool get isInitial => this == ModifyGroupStatus.initial;
   bool get isLoading => this == ModifyGroupStatus.loading;
@@ -56,12 +55,12 @@ class ModifyGroupState extends Equatable {
 
   @override
   List<Object?> get props => [
-    title,
-    subtitle,
-    icon,
-    formKey,
-    groupModel,
-    saveStatus,
-    modifyGroupError,
-  ];
+        title,
+        subtitle,
+        icon,
+        formKey,
+        groupModel,
+        saveStatus,
+        modifyGroupError,
+      ];
 }

@@ -55,8 +55,8 @@ class _GroupCardState extends State<GroupCard> {
   }
 
   void _trySubscribeMqttTopics() {
-    final appCubit = context.read<AppCubit>();
-    final mqttClient = appCubit.mqttClient;
+    final mqttService = getIt<MqttService>();
+    final mqttClient = mqttService.mqttClient;
 
     if (mqttClient == null ||
         mqttClient.connectionStatus?.state != MqttConnectionState.connected ||
@@ -72,8 +72,8 @@ class _GroupCardState extends State<GroupCard> {
     // Cancel any existing subscription first
     unawaited(_subscription?.cancel());
 
-    // Listen to the broadcast stream from AppCubit FIRST
-    _subscription = appCubit.messageStream.listen((
+    // Listen to the broadcast stream from MqttService FIRST
+    _subscription = mqttService.messageStream.listen((
       messages,
     ) {
       for (final message in messages) {
@@ -99,8 +99,8 @@ class _GroupCardState extends State<GroupCard> {
   }
 
   void _verifyStatus() {
-    final appCubit = context.read<AppCubit>();
-    final mqttClient = appCubit.mqttClient;
+    final mqttService = getIt<MqttService>();
+    final mqttClient = mqttService.mqttClient;
 
     if (mqttClient == null ||
         mqttClient.connectionStatus?.state != MqttConnectionState.connected) {
@@ -265,6 +265,20 @@ class _GroupCardState extends State<GroupCard> {
                         ),
                     ],
                   ),
+                ),
+                ListTile(
+                  leading: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedArrowReloadHorizontal,
+                    strokeWidth: 2,
+                  ),
+                  title: Text(
+                    l10n.homeReconnectOption,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _verifyStatus();
+                  },
                 ),
                 ListTile(
                   leading: const HugeIcon(

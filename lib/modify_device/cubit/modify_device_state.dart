@@ -4,8 +4,7 @@ enum ModifyDeviceStatus {
   initial,
   loading,
   success,
-  failure
-  ;
+  failure;
 
   bool get isInitial => this == ModifyDeviceStatus.initial;
   bool get isLoading => this == ModifyDeviceStatus.loading;
@@ -80,18 +79,18 @@ class ModifyDeviceState extends Equatable {
 
   @override
   List<Object?> get props => [
-    title,
-    subtitle,
-    icon,
-    tileType,
-    rangeMin,
-    rangeMax,
-    divisions,
-    interval,
-    formKey,
-    deviceModel,
-    saveStatus,
-    modifyDeviceError,
-    selectedGroupId,
-  ];
+        title,
+        subtitle,
+        icon,
+        tileType,
+        rangeMin,
+        rangeMax,
+        divisions,
+        interval,
+        formKey,
+        deviceModel,
+        saveStatus,
+        modifyDeviceError,
+        selectedGroupId,
+      ];
 }

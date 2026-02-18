@@ -45,11 +45,16 @@ flutter_launcher_icons:
   remove_alpha_ios: true
   background_color_ios: "#145EB9"
   web:
-    generate: false
+    generate: true
+    image_path: "assets/images/logo-web.png"
+    background_color: "transparent"
   windows:
-    generate: false
+   generate: true
+   image_path: "assets/images/logo-windows.png"
+   icon_size: 256
   macos:
-    generate: false
+    generate: true
+    image_path: "assets/images/logo-macos.png"
 
 flutter:
   generate: true

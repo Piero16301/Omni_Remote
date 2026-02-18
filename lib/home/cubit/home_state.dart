@@ -4,8 +4,7 @@ enum HomeStatus {
   initial,
   loading,
   success,
-  failure
-  ;
+  failure;
 
   bool get isInitial => this == HomeStatus.initial;
   bool get isLoading => this == HomeStatus.loading;
@@ -46,9 +45,9 @@ class HomeState extends Equatable {
 
   @override
   List<Object> get props => [
-    deleteGroupStatus,
-    deleteDeviceStatus,
-    groupDeleteError,
-    deviceDeleteError,
-  ];
+        deleteGroupStatus,
+        deleteDeviceStatus,
+        groupDeleteError,
+        deviceDeleteError,
+      ];
 }

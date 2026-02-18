@@ -76,9 +76,12 @@ class ModifyGroupView extends StatelessWidget {
               AppTextField(
                 initialValue: state.title,
                 onChanged: context.read<ModifyGroupCubit>().changeTitle,
-                labelText: l10n.modifyGroupTitleLabel,
+                label: l10n.modifyGroupTitleLabel,
                 hintText: l10n.modifyGroupTitleHint,
-                prefixIcon: HugeIcons.strokeRoundedBookmark01,
+                prefix: const HugeIcon(
+                  icon: HugeIcons.strokeRoundedBookmark01,
+                  strokeWidth: 2,
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return l10n.modifyGroupTitleErrorEmpty;
@@ -98,10 +101,14 @@ class ModifyGroupView extends StatelessWidget {
               const SizedBox(height: 16),
               AppTextField(
                 initialValue: state.subtitle,
+                isRequired: false,
                 onChanged: context.read<ModifyGroupCubit>().changeSubtitle,
-                labelText: l10n.modifyGroupSubtitleLabel,
+                label: l10n.modifyGroupSubtitleLabel,
                 hintText: l10n.modifyGroupSubtitleHint,
-                prefixIcon: HugeIcons.strokeRoundedNote,
+                prefix: const HugeIcon(
+                  icon: HugeIcons.strokeRoundedNote,
+                  strokeWidth: 2,
+                ),
               ),
               const SizedBox(height: 24),
               AppIconSelector(

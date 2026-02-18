@@ -29,7 +29,9 @@ class HomeView extends StatelessWidget {
             SnackBar(
               content: Text(
                 l10n.homeDeleteGroupSuccessSnackbar,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
               ),
             ),
           );
@@ -42,7 +44,9 @@ class HomeView extends StatelessWidget {
                   state.groupDeleteError,
                   l10n,
                 ),
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
               ),
             ),
           );
@@ -56,7 +60,9 @@ class HomeView extends StatelessWidget {
             SnackBar(
               content: Text(
                 l10n.homeDeleteDeviceSuccessSnackbar,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
               ),
             ),
           );
@@ -69,7 +75,9 @@ class HomeView extends StatelessWidget {
                   state.deviceDeleteError,
                   l10n,
                 ),
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
               ),
             ),
           );
@@ -106,7 +114,6 @@ class HomeView extends StatelessWidget {
                       l10n.homeAppBarTitle,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
                           ),
                     ),
                     Row(
@@ -135,19 +142,17 @@ class HomeView extends StatelessWidget {
                 centerTitle: true,
                 leading: IconButton(
                   onPressed: () => context.pushNamed(ConnectionPage.pageName),
-                  icon: HugeIcon(
+                  icon: const HugeIcon(
                     icon: HugeIcons.strokeRoundedInternetAntenna04,
                     strokeWidth: 2,
-                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 actions: [
                   IconButton(
                     onPressed: () => context.pushNamed(SettingsPage.pageName),
-                    icon: HugeIcon(
+                    icon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedSettings01,
                       strokeWidth: 2,
-                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ],
