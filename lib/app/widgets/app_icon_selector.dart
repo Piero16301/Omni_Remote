@@ -32,6 +32,7 @@ class AppIconSelector extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: GridView.builder(
+              padding: EdgeInsets.zero,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(

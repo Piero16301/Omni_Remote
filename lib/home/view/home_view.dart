@@ -158,6 +158,12 @@ class HomeView extends StatelessWidget {
                 ],
               ),
               body: ListView(
+                padding: const EdgeInsets.only(
+                  left: 24,
+                  right: 24,
+                  top: 12,
+                  bottom: 120,
+                ),
                 children: [
                   Visibility(
                     visible: groups.isEmpty,

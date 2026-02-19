@@ -33,20 +33,27 @@ class SettingsView extends StatelessWidget {
             ),
           ),
           body: ListView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 12,
+              bottom: 120,
+            ),
             children: const [
               Row(
-                spacing: 4,
+                spacing: 12,
                 children: [
                   LocaleSettingsCard(),
                   ThemeSettingsCard(),
                 ],
               ),
-              SizedBox(height: 4),
+              SizedBox(height: 12),
               ColorSettingsCard(),
-              SizedBox(height: 4),
+              SizedBox(height: 12),
               FontSettingsCard(),
+              SizedBox(height: 12),
               Divider(),
+              SizedBox(height: 12),
               SettingsAppSpecs(),
             ],
           ),

@@ -151,25 +151,14 @@ class ConnectionView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-                ElevatedButton(
+                AppFilledButton(
                   onPressed: (connectionStatus.isConnecting ||
                           connectionStatus.isDisconnecting)
                       ? null
                       : () async => context
                           .read<ConnectionCubit>()
                           .saveAndConnect(context: context),
-                  child: Text(
-                    l10n.connectionSaveAndConnectButton,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: (connectionStatus.isConnecting ||
-                                  connectionStatus.isDisconnecting)
-                              ? Theme.of(
-                                  context,
-                                ).colorScheme.onPrimaryFixedVariant
-                              : Theme.of(context).colorScheme.onPrimary,
-                        ),
-                  ),
+                  label: l10n.connectionSaveAndConnectButton,
                 ),
                 if (state.brokerUrl.isNotEmpty && state.brokerPort.isNotEmpty)
                   Padding(
@@ -236,29 +225,14 @@ class ConnectionView extends StatelessWidget {
                             ],
                           ),
                           if (connectionStatus.isConnected)
-                            TextButton.icon(
+                            AppOutlinedButton(
                               onPressed: connectionStatus.isConnected
                                   ? () => context
                                       .read<ConnectionCubit>()
                                       .disconnectBroker(context: context)
                                   : null,
-                              icon: const HugeIcon(
-                                icon: HugeIcons.strokeRoundedCancelCircle,
-                                size: 20,
-                              ),
-                              label: Text(
-                                l10n.connectionDisconnectButton,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.red,
-                                    ),
-                              ),
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.red,
-                              ),
+                              icon: HugeIcons.strokeRoundedCancelCircle,
+                              label: l10n.connectionDisconnectButton,
                             ),
                         ],
                       ),

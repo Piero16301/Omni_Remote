@@ -25,6 +25,7 @@ class SettingsCardBlock<T> extends StatelessWidget {
 
   Widget _buildCard(BuildContext context) {
     return Card(
+      margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(

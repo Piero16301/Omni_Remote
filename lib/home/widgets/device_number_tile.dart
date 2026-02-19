@@ -353,28 +353,16 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             actions: [
-              TextButton(
+              AppOutlinedButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text(
-                  l10n.homeDeleteDialogCancel,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Theme.of(context).colorScheme.primary),
-                ),
+                label: l10n.homeDeleteDialogCancel,
               ),
-              ElevatedButton(
+              AppFilledButton(
                 onPressed: () {
                   Navigator.pop(context);
                   widget.onDelete();
                 },
-                child: Text(
-                  l10n.homeDeleteDialogConfirm,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                ),
+                label: l10n.homeDeleteDialogConfirm,
               ),
             ],
           );
