@@ -22,16 +22,9 @@ class MqttTopicsInfo extends StatelessWidget {
 
   void _copyToClipboard(BuildContext context, String message, String text) {
     unawaited(Clipboard.setData(ClipboardData(text: text)));
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-        ),
-      ),
+    AppFunctions.showSnackBar(
+      context,
+      message: message,
     );
   }
 

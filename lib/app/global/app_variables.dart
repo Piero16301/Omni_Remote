@@ -81,3 +81,15 @@ enum TopicInfoType {
   group,
   device,
 }
+
+enum SnackBarType {
+  success,
+  error,
+  warning,
+  info;
+
+  bool get isSuccess => this == SnackBarType.success;
+  bool get isError => this == SnackBarType.error;
+  bool get isWarning => this == SnackBarType.warning;
+  bool get isInfo => this == SnackBarType.info;
+}

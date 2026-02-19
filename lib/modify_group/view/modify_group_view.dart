@@ -17,29 +17,21 @@ class ModifyGroupView extends StatelessWidget {
     return BlocConsumer<ModifyGroupCubit, ModifyGroupState>(
       listener: (context, state) {
         if (state.saveStatus.isSuccess) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                l10n.modifyGroupSaveSuccessSnackbar(state.title),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-              ),
-            ),
+          AppFunctions.showSnackBar(
+            context,
+            message: l10n.modifyGroupSaveSuccessSnackbar(state.title),
+            type: SnackBarType.success,
           );
           context.pop();
         } else if (state.saveStatus.isFailure) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                getFailureMessage(state.modifyGroupError, state.title, l10n),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-              ),
+          AppFunctions.showSnackBar(
+            context,
+            message: getFailureMessage(
+              state.modifyGroupError,
+              state.title,
+              l10n,
             ),
+            type: SnackBarType.error,
           );
           context.read<ModifyGroupCubit>().resetSaveStatus();
         }

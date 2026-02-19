@@ -24,62 +24,38 @@ class HomeView extends StatelessWidget {
       listener: (context, state) {
         // Handle delete group status changes
         if (state.deleteGroupStatus.isSuccess) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                l10n.homeDeleteGroupSuccessSnackbar,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-              ),
-            ),
+          AppFunctions.showSnackBar(
+            context,
+            message: l10n.homeDeleteGroupSuccessSnackbar,
+            type: SnackBarType.success,
           );
         } else if (state.deleteGroupStatus.isFailure) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                getGroupDeleteFailureMessage(
-                  state.groupDeleteError,
-                  l10n,
-                ),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-              ),
+          AppFunctions.showSnackBar(
+            context,
+            message: getGroupDeleteFailureMessage(
+              state.groupDeleteError,
+              l10n,
             ),
+            type: SnackBarType.error,
           );
           context.read<HomeCubit>().resetDeleteGroupStatus();
         }
 
         // Handle delete device status changes
         if (state.deleteDeviceStatus.isSuccess) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                l10n.homeDeleteDeviceSuccessSnackbar,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-              ),
-            ),
+          AppFunctions.showSnackBar(
+            context,
+            message: l10n.homeDeleteDeviceSuccessSnackbar,
+            type: SnackBarType.success,
           );
         } else if (state.deleteDeviceStatus.isFailure) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                getDeviceDeleteFailureMessage(
-                  state.deviceDeleteError,
-                  l10n,
-                ),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-              ),
+          AppFunctions.showSnackBar(
+            context,
+            message: getDeviceDeleteFailureMessage(
+              state.deviceDeleteError,
+              l10n,
             ),
+            type: SnackBarType.error,
           );
           context.read<HomeCubit>().resetDeleteDeviceStatus();
         }
@@ -111,7 +87,7 @@ class HomeView extends StatelessWidget {
                 title: Column(
                   children: [
                     Text(
-                      l10n.homeAppBarTitle,
+                      AppVariables.appName,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),

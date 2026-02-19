@@ -17,35 +17,23 @@ class ModifyDeviceView extends StatelessWidget {
     return BlocConsumer<ModifyDeviceCubit, ModifyDeviceState>(
       listener: (context, state) {
         if (state.saveStatus.isSuccess) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                l10n.modifyDeviceSaveSuccessSnackbar(state.title),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-              ),
-            ),
+          AppFunctions.showSnackBar(
+            context,
+            message: l10n.modifyDeviceSaveSuccessSnackbar(state.title),
+            type: SnackBarType.success,
           );
           context.pop();
         } else if (state.saveStatus.isFailure) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                getFailureMessage(
-                  error: state.modifyDeviceError,
-                  title: state.title,
-                  selectedGroupId: state.selectedGroupId ?? '',
-                  l10n: l10n,
-                  groups: context.read<ModifyDeviceCubit>().groups,
-                ),
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-              ),
+          AppFunctions.showSnackBar(
+            context,
+            message: getFailureMessage(
+              error: state.modifyDeviceError,
+              title: state.title,
+              selectedGroupId: state.selectedGroupId ?? '',
+              l10n: l10n,
+              groups: context.read<ModifyDeviceCubit>().groups,
             ),
+            type: SnackBarType.error,
           );
           context.read<ModifyDeviceCubit>().resetSaveStatus();
         }
