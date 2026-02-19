@@ -17,7 +17,7 @@ dependencies:
     sdk: flutter
   get_it: ^9.2.0                      # | Android | iOS | Linux | macOS | web | Windows
   go_router: ^17.1.0                  # | Android | iOS | Linux | macOS | web | Windows
-  google_fonts: ^8.0.1                # | Android | iOS | Linux | macOS | web | Windows
+  google_fonts: ^8.0.2                # | Android | iOS | Linux | macOS | web | Windows
   hive: ^2.2.3                        # | Android | iOS | Linux | macOS | web | Windows
   hive_flutter: ^1.1.0                # | Android | iOS | Linux | macOS | web | Windows
   hugeicons: ^1.1.5                   # | Android | iOS | Linux | macOS | web | Windows
