@@ -1,7 +1,7 @@
 # 📖 Omni Remote
 
 [![analysis](https://github.com/Piero16301/Omni_Remote/actions/workflows/prod.yaml/badge.svg)](https://github.com/Piero16301/Omni_Remote/actions/workflows/prod.yaml)
-[![codecov](https://codecov.io/gh/Piero16301/Omni_Remote/graph/badge.svg?token=IA8WKDJWMK)](https://codecov.io/gh/Piero16301/Omni_Remote)
+[![codecov](https://codecov.io/gh/Piero16301/Omni_Remote/graph/badge.svg)](https://codecov.io/gh/Piero16301/Omni_Remote)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/sanjuanpamk)
 
