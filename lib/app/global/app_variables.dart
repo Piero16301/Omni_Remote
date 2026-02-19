@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -16,6 +18,20 @@ class AppVariables {
   static Map<String, String> availableFonts = getAvailableFonts();
 
   static Map<String, String> getAvailableFonts() {
+    if (Platform.environment.containsKey('FLUTTER_TEST')) {
+      return {
+        'Merriweather': 'Merriweather',
+        'Montserrat': 'Montserrat',
+        'Nunito': 'Nunito',
+        'Open Sans': 'Open Sans',
+        'Orbitron': 'Orbitron',
+        'Pacifico': 'Pacifico',
+        'Playfair Display': 'Playfair Display',
+        'Poppins': 'Poppins',
+        'Roboto': 'Roboto',
+        'Source Code Pro': 'Source Code Pro',
+      };
+    }
     return {
       'Merriweather': GoogleFonts.merriweather().fontFamily ?? 'Merriweather',
       'Montserrat': GoogleFonts.montserrat().fontFamily ?? 'Montserrat',

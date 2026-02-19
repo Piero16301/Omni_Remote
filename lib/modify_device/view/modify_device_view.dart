@@ -44,7 +44,7 @@ class ModifyDeviceView extends StatelessWidget {
             state.deviceModel == null
                 ? l10n.modifyDevicePageTitleCreate
                 : l10n.modifyDevicePageTitleEdit,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),
@@ -144,7 +144,7 @@ class ModifyDeviceView extends StatelessWidget {
                 const SizedBox(height: 24),
                 Text(
                   l10n.modifyDeviceRangeConfigurationLabel,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                 ),

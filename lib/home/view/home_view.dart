@@ -88,7 +88,7 @@ class HomeView extends StatelessWidget {
                   children: [
                     Text(
                       AppVariables.appName,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                     ),
@@ -107,7 +107,7 @@ class HomeView extends StatelessWidget {
                         Text(
                           statusText,
                           style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
                                     color: statusColor,
                                   ),
                         ),
@@ -152,7 +152,7 @@ class HomeView extends StatelessWidget {
                         child: Text(
                           l10n.homeEmptyGroupsMessage,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
                     ),
@@ -184,7 +184,7 @@ class HomeView extends StatelessWidget {
                             const SizedBox(width: 8),
                             Text(
                               l10n.homeNewGroupButton,
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
                         ),

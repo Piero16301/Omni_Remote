@@ -33,7 +33,7 @@ class AppFilledButton extends StatelessWidget {
       label: Text(
         label ?? '',
         style: TextStyle(
-          fontSize: Theme.of(context).textTheme.titleMedium?.fontSize,
+          fontSize: Theme.of(context).textTheme.titleSmall?.fontSize,
           fontWeight: FontWeight.bold,
         ),
       ),

@@ -24,7 +24,7 @@ class GroupPreview extends StatelessWidget {
         Text(
           l10n.modifyGroupPreview,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
         ),
@@ -74,7 +74,7 @@ class GroupPreview extends StatelessWidget {
                                 subtitle.isEmpty
                                     ? l10n.modifyGroupGroupSubtitle
                                     : subtitle,
-                                style: Theme.of(context).textTheme.bodyLarge,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ),
                           ],

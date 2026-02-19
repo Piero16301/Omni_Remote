@@ -172,7 +172,7 @@ class _GroupCardState extends State<GroupCard> {
                             visible: widget.group.subtitle.isNotEmpty,
                             child: Text(
                               widget.group.subtitle,
-                              style: Theme.of(context).textTheme.bodyLarge,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ),
                         ],
@@ -254,14 +254,15 @@ class _GroupCardState extends State<GroupCard> {
                     children: [
                       Text(
                         group.title,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                       ),
                       if (group.subtitle.isNotEmpty)
                         Text(
                           group.subtitle,
-                          style: Theme.of(context).textTheme.bodyLarge,
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                     ],
                   ),
@@ -273,7 +274,7 @@ class _GroupCardState extends State<GroupCard> {
                   ),
                   title: Text(
                     l10n.homeReconnectOption,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -287,7 +288,7 @@ class _GroupCardState extends State<GroupCard> {
                   ),
                   title: Text(
                     l10n.homeEditOption,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -330,13 +331,13 @@ class _GroupCardState extends State<GroupCard> {
           return AlertDialog(
             title: Text(
               l10n.homeDeleteDialogTitle(group.title),
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),
             content: Text(
               l10n.homeDeleteDialogContent(group.title),
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
             actions: [
               AppOutlinedButton(

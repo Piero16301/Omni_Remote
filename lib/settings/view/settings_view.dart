@@ -19,7 +19,7 @@ class SettingsView extends StatelessWidget {
           appBar: AppBar(
             title: Text(
               l10n.settingsAppBarTitle,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -81,7 +81,7 @@ class LocaleSettingsCard extends StatelessWidget {
             value: locale,
             child: Text(
               _getLanguageName(locale, l10n),
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           );
         },
@@ -138,7 +138,7 @@ class ThemeSettingsCard extends StatelessWidget {
                 ),
                 Text(
                   _getThemeName(themeMode, l10n),
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),
@@ -199,7 +199,7 @@ class ColorSettingsCard extends StatelessWidget {
                 ),
                 Text(
                   _getColorName(entry.key, l10n),
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),
@@ -274,7 +274,7 @@ class FontSettingsCard extends StatelessWidget {
           value: entry.value,
           child: Text(
             entry.key,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontFamily: entry.value,
                 ),
           ),

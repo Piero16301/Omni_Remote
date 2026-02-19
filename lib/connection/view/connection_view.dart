@@ -45,7 +45,7 @@ class ConnectionView extends StatelessWidget {
           appBar: AppBar(
             title: Text(
               l10n.connectionAppBarTitle,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -206,7 +206,7 @@ class ConnectionView extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   state.brokerUrl,
-                                  style: Theme.of(context).textTheme.bodyLarge,
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ),
                             ],
@@ -220,7 +220,7 @@ class ConnectionView extends StatelessWidget {
                               ),
                               Text(
                                 state.brokerPort,
-                                style: Theme.of(context).textTheme.bodyLarge,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
                           ),

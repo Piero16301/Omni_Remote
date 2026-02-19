@@ -187,7 +187,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
                 children: [
                   Text(
                     widget.device.title,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                   ),
@@ -195,7 +195,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
                     visible: widget.device.subtitle.isNotEmpty,
                     child: Text(
                       widget.device.subtitle,
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
                 ],
@@ -234,15 +234,14 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
                     children: [
                       Text(
                         device.title,
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                       if (device.subtitle.isNotEmpty)
                         Text(
                           device.subtitle,
-                          style: Theme.of(context).textTheme.bodyLarge,
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                     ],
                   ),
@@ -254,7 +253,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
                   ),
                   title: Text(
                     l10n.homeEditOption,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -297,13 +296,13 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
           return AlertDialog(
             title: Text(
               l10n.homeDeleteDialogTitle(device.title),
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),
             content: Text(
               l10n.homeDeleteDialogContent(device.title),
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
             actions: [
               AppOutlinedButton(

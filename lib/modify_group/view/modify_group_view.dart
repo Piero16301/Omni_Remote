@@ -42,7 +42,7 @@ class ModifyGroupView extends StatelessWidget {
             state.groupModel == null
                 ? l10n.modifyGroupPageTitleCreate
                 : l10n.modifyGroupPageTitleEdit,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
           ),

@@ -82,7 +82,7 @@ class MqttTopicsInfo extends StatelessWidget {
         Text(
           l10n.modifyDeviceMqttTopics,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
         ),
@@ -177,7 +177,7 @@ class MqttTopicsInfo extends StatelessWidget {
         Text(
           l10n.modifyDeviceMqttTopics,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
         ),
@@ -362,7 +362,7 @@ class _TopicItem extends StatelessWidget {
           width: 90,
           child: Text(
             label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: Theme.of(context).colorScheme.primary,
                 ),
