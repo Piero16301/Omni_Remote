@@ -2,6 +2,7 @@
 
 [![analysis](https://github.com/Piero16301/Omni_Remote/actions/workflows/prod.yaml/badge.svg)](https://github.com/Piero16301/Omni_Remote/actions/workflows/prod.yaml)
 [![codecov](https://codecov.io/gh/Piero16301/Omni_Remote/graph/badge.svg)](https://codecov.io/gh/Piero16301/Omni_Remote)
+[![Star on Github](https://img.shields.io/github/stars/Piero16301/Omni_Remote.svg?style=flat&logo=github&colorB=deeppink&label=stars)](https://github.com/Piero16301/Omni_Remote)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/sanjuanpamk)
 
@@ -11,21 +12,21 @@ Welcome to the comprehensive documentation for the **Omni Remote** application. 
 
 ## 📑 Table of Contents
 
-1. [App Core](#app-core)  
-   1.1 [State Management (AppCubit)](#state-management-appcubit)  
-   1.2 [Global Utilities](#global-utilities)  
-   1.3 [Routing & Themes](#routing--themes)  
-   1.4 [Services](#services)  
-   1.5 [UI Layer (View & Widgets)](#ui-layer-view--widgets)  
-2. [Feature Modules](#feature-modules)  
-   2.1 [Connection](#connection)  
-   2.2 [Home](#home)  
-   2.3 [Modify Device](#modify-device)  
-   2.4 [Modify Group](#modify-group)  
-   2.5 [Settings](#settings)  
-3. [Localization (l10n)](#localization-l10n)  
-4. [Bootstrap & Entrypoint](#bootstrap--entrypoint)  
-5. [Packages & Data Models](#packages--data-models)  
+1. [App Core](#app-core)
+   1.1 [State Management (AppCubit)](#state-management-appcubit)
+   1.2 [Global Utilities](#global-utilities)
+   1.3 [Routing & Themes](#routing--themes)
+   1.4 [Services](#services)
+   1.5 [UI Layer (View & Widgets)](#ui-layer-view--widgets)
+2. [Feature Modules](#feature-modules)
+   2.1 [Connection](#connection)
+   2.2 [Home](#home)
+   2.3 [Modify Device](#modify-device)
+   2.4 [Modify Group](#modify-group)
+   2.5 [Settings](#settings)
+3. [Localization (l10n)](#localization-l10n)
+4. [Bootstrap & Entrypoint](#bootstrap--entrypoint)
+5. [Packages & Data Models](#packages--data-models)
 6. [Configuration (`pubspec.yaml`)](#configuration-pubspecyaml)
 
 ---
@@ -179,6 +180,7 @@ Provides the gateway screen for establishing settings required to connect to the
 |------------------------------------|-------------------------------------------------------|
 | **lib/l10n/app_en.arb**            | English string dictionary values.                     |
 | **lib/l10n/app_es.arb**            | Spanish translation map values.                       |
+| **lib/l10n/app_it.arb**            | Italian translation map values.                       |
 | **lib/l10n/gen/***                 | Folder containing dynamically generated delegates.    |
 
 **Mechanism:** Utilizing Flutter standard `l10n` capabilities based on `.arb` file configurations generating standard translation accessors.

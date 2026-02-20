@@ -1,8 +1,7 @@
 🎯 What's new in this version:
 
-• Numeric devices now retrieve their last state upon creation
-• Improved broadcast system for receiving retained MQTT messages
-• Enhancements in MQTT subscription management for greater stability
-• Optimization in the automatic update of device states
+• Performance and stability improvements.
+• Fix for small reported bugs.
+• General optimizations to provide a better user experience.
 
 Thank you for using Omni Remote!
