@@ -17,12 +17,14 @@ on:
 jobs:
   semantic-pull-request:
     name: "📝 Semantic"
+    if: github.event_name != 'workflow_dispatch'
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
     permissions:
       contents: read
 
   spell-check:
     name: "🔍 Spell Check"
+    if: github.event_name != 'workflow_dispatch'
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
     with:
       includes: |
@@ -31,6 +33,7 @@ jobs:
 
   tests:
     name: "🧪 Run Tests"
+    if: github.event_name != 'workflow_dispatch'
     needs: [semantic-pull-request, spell-check]
     runs-on: ubuntu-latest
     permissions:
@@ -61,7 +64,7 @@ jobs:
 
   build:
     name: "🔨 Build Application"
-    needs: tests
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     env:
       APP_PACKAGE_NAME: com.pmorales.omni.remote
