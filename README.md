@@ -224,27 +224,27 @@ These classes interact seamlessly as the main underlying format populating the `
 
 ```mermaid
 flowchart TD
-  subgraph Core
-    AppPage --> AppCubit
-    AppView --> AppCubit
-    AppView --> MaterialApp
+  subgraph "Aplicación Móvil"
+  UI[Interfaz Flutter]
+  State[Estado - Bloc/Cubit]
+  Store[(BD Local - Hive)]
+  Service[Servicio MQTT]
   end
 
-  subgraph Features
-    ConnectionPage --> ConnectionCubit
-    HomePage --> HomeCubit
-    ModifyDevicePage --> ModifyDeviceCubit
-    ModifyGroupPage --> ModifyGroupCubit
-    SettingsPage --> SettingsCubit
+  subgraph Infraestructura
+  Broker((Broker MQTT))
   end
 
-  subgraph Logic Services
-    AppDependencies --> LocalStorageService
-    AppDependencies --> MqttService
+  subgraph Hardware
+  ESP[ESP-32]
   end
 
-  FeatureCubits --> LogicServices
-  MqttService -->|pub/sub| IoT_Broker
+  UI -->|Eventos| State
+  State -->|Leer/Escribir| Store
+  State -->|Conectar| Service
+  UI -->|Suscribir/Publicar| Service
+  Service <-->|Pub/Sub| Broker
+  ESP <-->|Pub/Sub| Broker
 ```
 
 - **Logic Services**: Main gateway connecting asynchronous system memory with external remote device nodes.  
