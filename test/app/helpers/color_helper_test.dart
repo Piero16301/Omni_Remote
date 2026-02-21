@@ -44,7 +44,7 @@ void main() {
 
       test('throws StateError for colors not in the map', () {
         expect(
-          () => ColorHelper.getColorName(const Color(0xFF000000)), // Black
+          () => ColorHelper.getColorName(const Color(0xFF000000)),
           throwsStateError,
         );
         expect(

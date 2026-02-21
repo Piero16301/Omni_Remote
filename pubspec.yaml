@@ -24,6 +24,7 @@ dependencies:
   intl: ^0.20.2                       # | Android | iOS | Linux | macOS | web | Windows
   mqtt_client: ^10.11.9               # | Android | iOS | Linux | macOS | web | Windows
   package_info_plus: ^9.0.0           # | Android | iOS | Linux | macOS | web | Windows
+  typed_data: ^1.4.0                  # | Android | iOS | Linux | macOS | web | Windows
   uuid: ^4.5.2                        # | Android | iOS | Linux | macOS | web | Windows
 
 dev_dependencies:

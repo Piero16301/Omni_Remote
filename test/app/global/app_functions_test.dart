@@ -28,13 +28,12 @@ void main() {
     );
 
     await tester.tap(find.text('Show'));
-    await tester.pump(); // Start animation
-    await tester.pump(const Duration(seconds: 1)); // Wait for animation
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
 
     expect(find.text('Test message'), findsOneWidget);
     expect(find.byType(SnackBar), findsOneWidget);
 
-    // The snackbar should have a green background for success
     final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
     expect(snackBar.backgroundColor, Colors.green);
   });

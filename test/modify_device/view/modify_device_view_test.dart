@@ -109,8 +109,6 @@ void main() {
 
       await tester.pumpWidget(buildSubject());
 
-      // At index 0,1 are title, subtitle. At 2,3,4,5 are rangeMin, rangeMax,
-      // divisions, interval.
       final appTextFields = find.byType(AppTextField);
       expect(appTextFields.evaluate().length, 6);
 

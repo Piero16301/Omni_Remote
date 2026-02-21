@@ -28,13 +28,13 @@ void main() {
       expect(
         state.props,
         <Object?>[
-          '', // title
-          '', // subtitle
-          IconHelper.getGroupFirstIcon, // icon
-          state.formKey, // formKey
-          null, // groupModel
-          ModifyGroupStatus.initial, // saveStatus
-          ModifyGroupError.none, // modifyGroupError
+          '',
+          '',
+          IconHelper.getGroupFirstIcon,
+          state.formKey,
+          null,
+          ModifyGroupStatus.initial,
+          ModifyGroupError.none,
         ],
       );
     });

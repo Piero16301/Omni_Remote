@@ -29,9 +29,6 @@ void main() {
     test('initializes and creates cipher successfully', () async {
       final helper = EncryptionHelper();
 
-      // Before init, it might be false (or true if previous tests ran in same
-      // memory space). Since it's a singleton, we just ensure init works and
-      // cipher is created.
       await helper.init();
 
       expect(helper.isInitialized, isTrue);

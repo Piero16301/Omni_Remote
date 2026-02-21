@@ -28,19 +28,19 @@ void main() {
       expect(
         state.props,
         <Object?>[
-          '', // title
-          '', // subtitle
-          IconHelper.getDeviceFirstIcon, // icon
-          DeviceTileType.boolean, // tileType
-          0.0, // rangeMin
-          0.0, // rangeMax
-          0, // divisions
-          0.0, // interval
-          state.formKey, // formKey
-          null, // deviceModel
-          ModifyDeviceStatus.initial, // saveStatus
-          ModifyDeviceError.none, // modifyDeviceError
-          null, // selectedGroupId
+          '',
+          '',
+          IconHelper.getDeviceFirstIcon,
+          DeviceTileType.boolean,
+          0.0,
+          0.0,
+          0,
+          0.0,
+          state.formKey,
+          null,
+          ModifyDeviceStatus.initial,
+          ModifyDeviceError.none,
+          null,
         ],
       );
     });

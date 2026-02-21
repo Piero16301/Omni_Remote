@@ -147,7 +147,9 @@ class MqttService {
 
   void _onMqttDisconnected() {
     unawaited(_mqttSubscription?.cancel());
-    _connectionStatusController.add(BrokerConnectionStatus.disconnected);
+    if (!_connectionStatusController.isClosed) {
+      _connectionStatusController.add(BrokerConnectionStatus.disconnected);
+    }
   }
 
   void _onMqttAutoReconnect() {

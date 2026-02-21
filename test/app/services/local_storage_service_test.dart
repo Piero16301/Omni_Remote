@@ -72,7 +72,6 @@ void main() {
         icon: 'BEDROOM',
       );
 
-      // Create
       service.createGroup(group: group);
       final groups = service.getGroups();
       expect(groups.length, 1);
@@ -81,14 +80,12 @@ void main() {
       expect(createdGroup.title, 'Bedroom');
       expect(createdGroup.id, isNotEmpty);
 
-      // Update
       final updatedGroup = createdGroup.copyWith(title: 'Master Bedroom');
       service.updateGroup(group: updatedGroup);
 
       final updatedGroups = service.getGroups();
       expect(updatedGroups.first.title, 'Master Bedroom');
 
-      // Delete
       service.deleteGroup(groupId: updatedGroup.id);
       expect(service.getGroups().isEmpty, isTrue);
     });
@@ -102,7 +99,6 @@ void main() {
         groupId: 'grp_01',
       );
 
-      // Create
       service.createDevice(device: device);
       final devices = service.getDevices();
       expect(devices.length, 1);
@@ -111,14 +107,12 @@ void main() {
       expect(createdDevice.title, 'Bed Lamp');
       expect(createdDevice.id, isNotEmpty);
 
-      // Update
       final updatedDevice = createdDevice.copyWith(title: 'Floor Lamp');
       service.updateDevice(device: updatedDevice);
 
       final updatedDevices = service.getDevices();
       expect(updatedDevices.first.title, 'Floor Lamp');
 
-      // Delete
       service.deleteDevice(deviceId: updatedDevice.id);
       expect(service.getDevices().isEmpty, isTrue);
     });
