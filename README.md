@@ -12,22 +12,58 @@ Welcome to the comprehensive documentation for the **Omni Remote** application. 
 
 ## 📑 Table of Contents
 
-1. [App Core](#app-core)
-   1.1 [State Management (AppCubit)](#state-management-appcubit)
-   1.2 [Global Utilities](#global-utilities)
-   1.3 [Routing & Themes](#routing--themes)
-   1.4 [Services](#services)
-   1.5 [UI Layer (View & Widgets)](#ui-layer-view--widgets)
-2. [Feature Modules](#feature-modules)
-   2.1 [Connection](#connection)
-   2.2 [Home](#home)
-   2.3 [Modify Device](#modify-device)
-   2.4 [Modify Group](#modify-group)
-   2.5 [Settings](#settings)
-3. [Localization (l10n)](#localization-l10n)
-4. [Bootstrap & Entrypoint](#bootstrap--entrypoint)
-5. [Packages & Data Models](#packages--data-models)
-6. [Configuration (`pubspec.yaml`)](#configuration-pubspecyaml)
+1. [Architecture](#%EF%B8%8F-architecture)
+2. [App Core](#app-core)
+   2.1 [State Management (AppCubit)](#state-management-appcubit)
+   2.2 [Global Utilities](#global-utilities)
+   2.3 [Routing & Themes](#routing--themes)
+   2.4 [Services](#services)
+   2.5 [UI Layer (View & Widgets)](#ui-layer-view--widgets)
+3. [Feature Modules](#feature-modules)
+   3.1 [Connection](#connection)
+   3.2 [Home](#home)
+   3.3 [Modify Device](#modify-device)
+   3.4 [Modify Group](#modify-group)
+   3.5 [Settings](#settings)
+4. [Localization (l10n)](#localization-l10n)
+5. [Bootstrap & Entrypoint](#bootstrap--entrypoint)
+6. [Packages & Data Models](#packages--data-models)
+7. [Configuration (`pubspec.yaml`)](#configuration-pubspecyaml)
+
+---
+
+# 🏗️ Architecture
+
+```mermaid
+flowchart TD
+  subgraph "Mobile Application"
+  UI[Flutter Interface]
+  State[State - Bloc/Cubit]
+  Store[(Local DB - Hive)]
+  Service[MQTT Service]
+  end
+
+  subgraph Infrastructure
+  Broker((MQTT Broker))
+  end
+
+  subgraph Hardware
+  ESP[ESP-32]
+  end
+
+  UI -->|Events| State
+  State -->|Read/Write| Store
+  State -->|Connect| Service
+  UI -->|Subscribe/Publish| Service
+  Service <-->|Pub/Sub| Broker
+  ESP <-->|Pub/Sub| Broker
+```
+
+- **UI (Flutter Interface)**: Standardized presentation layer that sends events to the State and directly publishes/subscribes via the MQTT Service.
+- **State (Bloc/Cubit)**: Manages the application logic, handles read/write operations with the Local DB, and connects to the MQTT Service.
+- **Store (Local DB - Hive)**: Handles local data persistence on the device.
+- **Service (MQTT Service)**: Main communication gateway managing the Pub/Sub connection between the mobile application and the external MQTT Broker.
+- **Hardware & Infrastructure**: The ESP-32 hardware communicates in real-time with the mobile app through the MQTT Broker using the Pub/Sub model.
 
 ---
 
@@ -217,38 +253,6 @@ These classes interact seamlessly as the main underlying format populating the `
 - Core dependencies defining internal toolings: `flutter_bloc` & `equatable` (handling deterministic state propagation), `hive` & `hive_flutter` (speed-focused cache store), `go_router` (URI routing maps) and `mqtt_client` (TCP socket broker streaming).
 - Defines environment constraints formatting image assets matching platform icon specs (`assets/images`).
 - Includes code quality lint rules extending `very_good_analysis`.
-
----
-
-# 🎬 Architecture
-
-```mermaid
-flowchart TD
-  subgraph "Mobile Application"
-  UI[Flutter Interface]
-  State[State - Bloc/Cubit]
-  Store[(Local DB - Hive)]
-  Service[MQTT Service]
-  end
-
-  subgraph Infrastructure
-  Broker((MQTT Broker))
-  end
-
-  subgraph Hardware
-  ESP[ESP-32]
-  end
-
-  UI -->|Events| State
-  State -->|Read/Write| Store
-  State -->|Connect| Service
-  UI -->|Subscribe/Publish| Service
-  Service <-->|Pub/Sub| Broker
-  ESP <-->|Pub/Sub| Broker
-```
-
-- **Logic Services**: Main gateway connecting asynchronous system memory with external remote device nodes.  
-- **UI Architecture**: Standardized presentation layer decoupled from persistent structures directly listening to BLoC streams emitting from `Connection` and `Home` activities.
 
 ---
 
