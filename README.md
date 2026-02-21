@@ -220,29 +220,29 @@ These classes interact seamlessly as the main underlying format populating the `
 
 ---
 
-# 🎬 Summary of Relationships
+# 🎬 Architecture
 
 ```mermaid
 flowchart TD
-  subgraph "Aplicación Móvil"
-  UI[Interfaz Flutter]
-  State[Estado - Bloc/Cubit]
-  Store[(BD Local - Hive)]
-  Service[Servicio MQTT]
+  subgraph "Mobile Application"
+  UI[Flutter Interface]
+  State[State - Bloc/Cubit]
+  Store[(Local DB - Hive)]
+  Service[MQTT Service]
   end
 
-  subgraph Infraestructura
-  Broker((Broker MQTT))
+  subgraph Infrastructure
+  Broker((MQTT Broker))
   end
 
   subgraph Hardware
   ESP[ESP-32]
   end
 
-  UI -->|Eventos| State
-  State -->|Leer/Escribir| Store
-  State -->|Conectar| Service
-  UI -->|Suscribir/Publicar| Service
+  UI -->|Events| State
+  State -->|Read/Write| Store
+  State -->|Connect| Service
+  UI -->|Subscribe/Publish| Service
   Service <-->|Pub/Sub| Broker
   ESP <-->|Pub/Sub| Broker
 ```
