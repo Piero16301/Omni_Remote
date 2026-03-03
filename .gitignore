@@ -88,6 +88,17 @@ unlinked_spec.ds
 # Coverage
 coverage/
 
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/README.md
+*.cer
+*.certSigningRequest
+*.mobileprovision
+*.p12
+
 # Submodules
 packages/**/pubspec.lock
 
