@@ -44,13 +44,18 @@ platform :ios do
         # Setup signing
         setup_signing
 
+        # Get provisioning profile UUID
+        profile_uuid = lane_context[SharedValues::PROVISIONING_PROFILE_UUID] || 
+                    sh("grep -a -A 1 'UUID' appstore.mobileprovision | grep string | sed -E 's/<string>|<\\/string>|[[:space:]]//g'").strip
+
         # Configure code signing settings
         update_code_signing_settings(
             use_automatic_signing: false,
             path: "ios/Runner.xcodeproj",
             team_id: ENV["FASTLANE_TEAM_ID"],
             bundle_identifier: "com.pmorales.omni.remote",
-            code_sign_identity: "iPhone Distribution"
+            code_sign_identity: "iPhone Distribution",
+            profile_uuid: profile_uuid
         )
 
         # Increment build number automatically
@@ -68,7 +73,10 @@ platform :ios do
             export_options: {
                 method: "app-store",
                 signingStyle: "manual",
-                teamID: ENV["FASTLANE_TEAM_ID"]
+                teamID: ENV["FASTLANE_TEAM_ID"],
+                provisioningProfiles: {
+                    "com.pmorales.omni.remote" => profile_uuid
+                }
             }
         )
     end
