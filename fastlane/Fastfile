@@ -45,8 +45,7 @@ platform :ios do
         setup_signing
 
         # Get provisioning profile UUID
-        profile_uuid = lane_context[SharedValues::PROVISIONING_PROFILE_UUID] || 
-                    sh("grep -a -A 1 'UUID' appstore.mobileprovision | grep string | sed -E 's/<string>|<\\/string>|[[:space:]]//g'").strip
+        profile_uuid = sh("grep -a -A 1 'UUID' appstore.mobileprovision | grep string | sed -E 's/<string>|<\\/string>|[[:space:]]//g'").strip
 
         # Configure code signing settings
         update_code_signing_settings(
