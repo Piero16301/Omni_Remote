@@ -133,3 +133,79 @@ jobs:
           track: beta # production, alpha, qa | automotive, wear, tv, android_xr, google_play_games_pc
           whatsNewDirectory: whatsnew
           # userFraction: 0.1
+
+  build-ios:
+    name: "🔨 Build iOS IPA"
+    needs: quality
+    runs-on: macos-latest
+    env:
+      FASTLANE_APPLE_ID: ${{ secrets.FASTLANE_APPLE_ID }}
+      FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
+      IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v6
+
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: "3.41.3"
+
+      - name: 💎 Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: 📦 Install Flutter Dependencies
+        run: flutter pub get
+
+      - name: 🔑 Decode iOS Certificate (App Store Distribution)
+        run: echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > certificate.p12
+
+      - name: 🔑 Decode Provisioning Profile (App Store)
+        run: echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > appstore.mobileprovision
+
+      - name: 🛠️ Build IPA
+        run: bundle exec fastlane ios build
+
+      - name: ⬇️ Upload IPA to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: build/ios/ipa/*.ipa
+          retention-days: 30
+
+  deploy-ios:
+    name: "✈️ Deploy iOS to TestFlight"
+    runs-on: macos-latest
+    needs: build-ios
+    env:
+      APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+      APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+      APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v6
+
+      - name: 💎 Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: ⬇️ Download IPA Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-ipa
+          path: build/ios/ipa
+
+      - name: 🔑 Create App Store Connect API Key
+        run: |
+          mkdir -p ~/private_keys
+          echo "$APP_STORE_CONNECT_API_KEY_CONTENT" > ~/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8
+
+      - name: ✈️ Upload to TestFlight
+        run: bundle exec fastlane ios upload_testflight
+
