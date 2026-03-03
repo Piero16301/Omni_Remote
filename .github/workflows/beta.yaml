@@ -160,6 +160,11 @@ jobs:
 
       - name: 📦 Install Flutter Dependencies
         run: flutter pub get
+      
+      - name: 🛠️ Install CocoaPods Dependencies
+        run: |
+          cd ios
+          pod install
 
       - name: 🔑 Decode iOS Certificate (App Store Distribution)
         run: echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > certificate.p12
