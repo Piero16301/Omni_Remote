@@ -86,34 +86,18 @@ platform :ios do
 
     desc "Deploy to TestFlight"
     lane :deploy_testflight do
-        # First, let's bump the build number
-        # Get the latest build numbers from both TestFlight and App Store
-        latest_tf_build = latest_testflight_build_number(
-            app_identifier: "com.pmorales.omni.remote",
-            api_key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
-            issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"]
+        # Bump local build number in the Xcode project
+        # (keeps increasing on each CI run)
+        increment_build_number(
+            xcodeproj: "ios/Runner.xcodeproj"
         )
 
-        latest_appstore_build = app_store_build_number(
-            app_identifier: "com.pmorales.omni.remote",
-            api_key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
-            issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"]
-        )
-
-        # Use the highest build number and increment by 1
-        highest_build = [latest_tf_build, latest_appstore_build].max
-        increment_build_number_in_xcodeproj(
-            build_number: highest_build + 1
-        )
-
-        # Build the app (code signing was done in a previous step)
+        # Build the app (signing is handled by the project + installed cert/profile)
         build
 
-        # Upload to TestFlight
+        # Upload to TestFlight (uses default authentication config)
         pilot(
             app_identifier: "com.pmorales.omni.remote",
-            api_key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
-            issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
             skip_waiting_for_build_processing: true,
             changelog: "Automated build from GitHub Actions",
             distribute_external: false,
