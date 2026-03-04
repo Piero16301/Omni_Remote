@@ -10,11 +10,22 @@ platform :ios do
 
     desc "Set up manual certificates"
     lane :setup_certificates do
-        import_certificate(
-            certificate_path: "certificate.p12",
-            certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
-            keychain_name: "login.keychain"
-        )
+        # Use the CI temporary keychain if available, otherwise fall back to login.keychain
+        keychain_path = lane_context[SharedValues::KEYCHAIN_PATH] if defined?(lane_context) && defined?(SharedValues)
+
+        if keychain_path
+            import_certificate(
+                certificate_path: "certificate.p12",
+                certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
+                keychain_path: keychain_path
+            )
+        else
+            import_certificate(
+                certificate_path: "certificate.p12",
+                certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
+                keychain_name: "login.keychain"
+            )
+        end
 
         install_provisioning_profile(
             path: "appstore.mobileprovision"
