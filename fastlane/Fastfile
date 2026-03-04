@@ -44,29 +44,21 @@ platform :ios do
         # Setup signing
         setup_signing
 
-        # Get provisioning profile UUID
-        profile_uuid = sh("grep -a -A 1 'UUID' appstore.mobileprovision | grep string | sed -E 's/<string>|<\\/string>|[[:space:]]//g'").strip
-
         # Increment build number automatically
         increment_build_number(xcodeproj: "ios/Runner.xcodeproj")
 
-        # Build IPA with explicit signing parameters
+        # Build IPA - Let Xcode auto-select the provisioning profile
         build_app(
             scheme: "production",
             workspace: "ios/Runner.xcworkspace",
             export_method: "app-store",
             output_directory: "build/ios/ipa",
             output_name: "omni_remote.ipa",
-            export_team_id: ENV["FASTLANE_TEAM_ID"],
             codesigning_identity: "iPhone Distribution",
-            xcargs: "DEVELOPMENT_TEAM='#{ENV['FASTLANE_TEAM_ID']}' PROVISIONING_PROFILE_SPECIFIER='#{profile_uuid}' CODE_SIGN_STYLE=Manual",
+            xcargs: "DEVELOPMENT_TEAM=#{ENV['FASTLANE_TEAM_ID']} CODE_SIGN_STYLE=Manual",
             export_options: {
                 method: "app-store",
-                signingStyle: "manual",
-                teamID: ENV["FASTLANE_TEAM_ID"],
-                provisioningProfiles: {
-                    "com.pmorales.omni.remote" => profile_uuid
-                }
+                teamID: ENV["FASTLANE_TEAM_ID"]
             }
         )
     end
