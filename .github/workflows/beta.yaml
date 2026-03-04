@@ -166,16 +166,13 @@ jobs:
           cd ios
           pod install
 
-      - name: 🏗️ Build iOS (without code signing)
-        run: flutter build ios --release --no-codesign --flavor production -t lib/main.dart
-
       - name: 🔑 Decode iOS Certificate (App Store Distribution)
         run: echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > certificate.p12
 
       - name: 🔑 Decode Provisioning Profile (App Store)
         run: echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > appstore.mobileprovision
 
-      - name: 📦 Export and Sign IPA with Fastlane
+      - name: 🛠️ Build and Sign IPA with Fastlane
         run: bundle exec fastlane ios build
         env:
           FASTLANE_APPLE_ID: ${{ secrets.FASTLANE_APPLE_ID }}

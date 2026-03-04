@@ -39,22 +39,19 @@ platform :ios do
         end
     end
 
-    desc "Export and sign IPA for App Store / TestFlight"
+    desc "Build and sign IPA for App Store / TestFlight"
     lane :build do
         # Setup signing
         setup_signing
 
-        # Export and sign the IPA (Flutter already built the app without signing)
-        gym(
-            scheme: "Runner",
+        # Build and sign the IPA
+        build_app(
+            scheme: "production",
             workspace: "ios/Runner.xcworkspace",
             export_method: "app-store",
             output_directory: "build/ios/ipa",
             output_name: "omni_remote.ipa",
-            skip_build_archive: true,
-            archive_path: "build/ios/archive/Runner.xcarchive",
             codesigning_identity: "iPhone Distribution",
-            export_team_id: ENV["FASTLANE_TEAM_ID"],
             export_options: {
                 method: "app-store",
                 teamID: ENV["FASTLANE_TEAM_ID"]
