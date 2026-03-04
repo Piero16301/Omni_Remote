@@ -8,64 +8,137 @@ platform :ios do
         setup_ci if ENV['CI']
     end
 
-    desc "Setup code signing from GitHub Secrets"
-    lane :setup_signing do
-        if is_ci
-            # Create temporary keychain
-            keychain_name = "fastlane_tmp_keychain"
-            keychain_password = SecureRandom.uuid
-        
-            create_keychain(
-                name: keychain_name,
-                password: keychain_password,
-                default_keychain: true,
-                unlock: true,
-                timeout: 3600,
-                lock_when_sleeps: false
-            )
+    desc "Set up manual certificates"
+    lane :setup_certificates do
+        import_certificate(
+            certificate_path: "certificate.p12",
+            certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
+            keychain_name: "login.keychain"
+        )
 
-            # Import certificate from environment variable
-            import_certificate(
-                certificate_path: "certificate.p12",
-                certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
-                keychain_name: keychain_name,
-                keychain_password: keychain_password
-            )
-
-            # Install provisioning profile
-            install_provisioning_profile(
-                path: "appstore.mobileprovision"
-            )
-        end
+        install_provisioning_profile(
+            path: "appstore.mobileprovision"
+        )
     end
 
-    desc "Build and sign IPA for App Store / TestFlight"
-    lane :build do
-        # Setup signing (imports certificate + installs provisioning profile)
-        setup_signing
+    # desc "Setup code signing from GitHub Secrets"
+    # lane :setup_signing do
+    #     if is_ci
+    #         # Create temporary keychain
+    #         keychain_name = "fastlane_tmp_keychain"
+    #         keychain_password = SecureRandom.uuid
+        
+    #         create_keychain(
+    #             name: keychain_name,
+    #             password: keychain_password,
+    #             default_keychain: true,
+    #             unlock: true,
+    #             timeout: 3600,
+    #             lock_when_sleeps: false
+    #         )
 
-        # Build and sign the IPA
-        build_app(
+    #         # Import certificate from environment variable
+    #         import_certificate(
+    #             certificate_path: "certificate.p12",
+    #             certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
+    #             keychain_name: keychain_name,
+    #             keychain_password: keychain_password
+    #         )
+
+    #         # Install provisioning profile
+    #         install_provisioning_profile(
+    #             path: "appstore.mobileprovision"
+    #         )
+    #     end
+    # end
+
+    desc "Build the app (archive + IPA)"
+    lane :build do
+        # Build the app using the production scheme and iOS workspace
+        gym(
             scheme: "production",
             workspace: "ios/Runner.xcworkspace",
             export_method: "app-store",
             output_directory: "build/ios/ipa",
-            output_name: "omni_remote.ipa"
+            output_name: "omni_remote.ipa",
+            export_options: {
+                uploadBitcode: false,
+                uploadSymbols: true,
+                compileBitcode: false
+            }
         )
     end
 
-    desc "Upload existing IPA to TestFlight"
-    lane :upload_testflight do
-        # Upload to TestFlight
-        upload_to_testflight(
-            ipa: "build/ios/ipa/omni_remote.ipa",
-            api_key_path: "~/private_keys/AuthKey_#{ENV['APP_STORE_CONNECT_API_KEY_ID']}.p8",
-            skip_waiting_for_build_processing: true,
-            skip_submission: true,
-            distribute_external: false,
-            changelog: "Nueva versión de prueba\nCommit: #{ENV['GITHUB_SHA']}\nBuild: #{ENV['GITHUB_RUN_NUMBER']}"
+    # desc "Build and sign IPA for App Store / TestFlight"
+    # lane :build do
+    #     # Setup signing (imports certificate + installs provisioning profile)
+    #     setup_signing
+
+    #     # Build and sign the IPA
+    #     build_app(
+    #         scheme: "production",
+    #         workspace: "ios/Runner.xcworkspace",
+    #         export_method: "app-store",
+    #         output_directory: "build/ios/ipa",
+    #         output_name: "omni_remote.ipa"
+    #     )
+    # end
+
+    desc "Deploy to TestFlight"
+    lane :deploy_testflight do
+        # First, let's bump the build number
+        # Get the latest build numbers from both TestFlight and App Store
+        latest_tf_build = latest_testflight_build_number(
+            app_identifier: "com.pmorales.omni.remote",
+            api_key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+            issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"]
         )
-        
-        UI.success("🎉 Build uploaded to TestFlight successfully!")
+
+        latest_appstore_build = app_store_build_number(
+            app_identifier: "com.pmorales.omni.remote",
+            api_key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+            issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"]
+        )
+
+        # Use the highest build number and increment by 1
+        highest_build = [latest_tf_build, latest_appstore_build].max
+        increment_build_number_in_xcodeproj(
+            build_number: highest_build + 1
+        )
+
+        # Build the app (code signing was done in a previous step)
+        build
+
+        # Upload to TestFlight
+        pilot(
+            app_identifier: "com.pmorales.omni.remote",
+            api_key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+            issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+            skip_waiting_for_build_processing: true,
+            changelog: "Automated build from GitHub Actions",
+            distribute_external: false,
+            notify_external_testers: false
+        )
+
+        # Send a notification (optional)
+        # slack(
+        #     message: "🚀 New TestFlight build is processing!",
+        #     slack_url: ENV["SLACK_WEBHOOK_URL"]
+        # ) if ENV["SLACK_WEBHOOK_URL"]
     end
+
+    # desc "Upload existing IPA to TestFlight"
+    # lane :upload_testflight do
+    #     # Upload to TestFlight
+    #     upload_to_testflight(
+    #         ipa: "build/ios/ipa/omni_remote.ipa",
+    #         api_key_path: "~/private_keys/AuthKey_#{ENV['APP_STORE_CONNECT_API_KEY_ID']}.p8",
+    #         skip_waiting_for_build_processing: true,
+    #         skip_submission: true,
+    #         distribute_external: false,
+    #         changelog: "Nueva versión de prueba\nCommit: #{ENV['GITHUB_SHA']}\nBuild: #{ENV['GITHUB_RUN_NUMBER']}"
+    #     )
+        
+    #     UI.success("🎉 Build uploaded to TestFlight successfully!")
+    # end
 end
