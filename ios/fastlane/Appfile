@@ -1,0 +1,7 @@
+app_identifier("com.pmorales.omni.remote") # The bundle identifier of your app
+apple_id("julian.bonilla@pragma.co") # Your Apple Developer Portal username
+
+itc_team_id("126553916") # App Store Connect Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile

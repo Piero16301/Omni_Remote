@@ -89,11 +89,11 @@ unlinked_spec.ds
 coverage/
 
 # Fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots
-fastlane/test_output
-fastlane/README.md
+ios/fastlane/report.xml
+ios/fastlane/Preview.html
+ios/fastlane/screenshots
+ios/fastlane/test_output
+ios/fastlane/README.md
 *.cer
 *.certSigningRequest
 *.mobileprovision
