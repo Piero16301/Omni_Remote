@@ -182,13 +182,25 @@ jobs:
       - name: 🔑 Decode iOS Certificate (App Store Distribution)
         run: echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > ios/certificate.p12
 
+      - name: 🔍 Check certificate hash
+        run: |
+          shasum ios/certificate.p12
+
       - name: 🔑 Decode Provisioning Profile (App Store)
         run: echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ios/appstore.mobileprovision
+
+      - name: 🔍 Check provisioning profile hash
+        run: |
+          shasum ios/appstore.mobileprovision
 
       - name: Set up code signing
         run: |
           cd ios
           bundle exec fastlane setup_certificates
+      
+      - name: 🔍 List signing identities
+        run: |
+          security find-identity -p codesigning -v ~/Library/Keychains/fastlane_tmp_keychain-db || true
 
       - name: 🚀 Build and Deploy to TestFlight
         run: |
