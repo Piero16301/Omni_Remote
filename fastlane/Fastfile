@@ -39,23 +39,22 @@ platform :ios do
         end
     end
 
-    desc "Build iOS IPA for App Store / TestFlight"
+    desc "Export and sign IPA for App Store / TestFlight"
     lane :build do
         # Setup signing
         setup_signing
 
-        # Increment build number automatically
-        increment_build_number(xcodeproj: "ios/Runner.xcodeproj")
-
-        # Build IPA - Let Xcode auto-select the provisioning profile
-        build_app(
-            scheme: "production",
+        # Export and sign the IPA (Flutter already built the app without signing)
+        gym(
+            scheme: "Runner",
             workspace: "ios/Runner.xcworkspace",
             export_method: "app-store",
             output_directory: "build/ios/ipa",
             output_name: "omni_remote.ipa",
+            skip_build_archive: true,
+            archive_path: "build/ios/archive/Runner.xcarchive",
             codesigning_identity: "iPhone Distribution",
-            xcargs: "DEVELOPMENT_TEAM=#{ENV['FASTLANE_TEAM_ID']} CODE_SIGN_STYLE=Manual",
+            export_team_id: ENV["FASTLANE_TEAM_ID"],
             export_options: {
                 method: "app-store",
                 teamID: ENV["FASTLANE_TEAM_ID"]
