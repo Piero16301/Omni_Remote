@@ -145,6 +145,7 @@ jobs:
       APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
       APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
       APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
     steps:
       - name: 📚 Git Checkout
         uses: actions/checkout@v6
@@ -182,21 +183,18 @@ jobs:
       - name: 🔑 Decode iOS Certificate (App Store Distribution)
         run: echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > ios/certificate.p12
 
-      - name: 🔍 Check certificate hash
-        run: |
-          shasum ios/certificate.p12
-
       - name: 🔑 Decode Provisioning Profile (App Store)
         run: echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ios/appstore.mobileprovision
 
-      - name: 🔍 Check provisioning profile hash
-        run: |
-          shasum ios/appstore.mobileprovision
+      # - name: Set up code signing
+      #   run: |
+      #     cd ios
+      #     bundle exec fastlane setup_certificates
 
-      - name: Set up code signing
+      - name: 🔐 Sync code signing with match
         run: |
           cd ios
-          bundle exec fastlane setup_certificates
+          bundle exec fastlane sync_signing
       
       - name: 🔍 List signing identities
         run: |

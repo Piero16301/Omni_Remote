@@ -20,29 +20,45 @@ platform :ios do
         setup_ci if ENV['CI']
     end
 
-    desc "Set up manual certificates"
-    lane :setup_certificates do
-        # Use the CI temporary keychain if available, otherwise fall back to login.keychain
-        keychain_path = lane_context[SharedValues::KEYCHAIN_PATH] if defined?(lane_context) && defined?(SharedValues)
+    lane :sync_signing do
+      api_key = app_store_connect_api_key(
+        key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+        issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+        key_content: ENV["APP_STORE_CONNECT_API_KEY_CONTENT"],
+        in_house: false
+      )
 
-        if keychain_path
-            import_certificate(
-                certificate_path: "certificate.p12",
-                certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
-                keychain_path: keychain_path
-            )
-        else
-            import_certificate(
-                certificate_path: "certificate.p12",
-                certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
-                keychain_name: "login.keychain"
-            )
-        end
-
-        install_provisioning_profile(
-            path: "appstore.mobileprovision"
-        )
+      match(
+        type: "appstore",
+        app_identifier: "com.pmorales.omni.remote",
+        api_key: api_key,
+        readonly: ENV["CI"] ? true : false
+      )
     end
+
+    # desc "Set up manual certificates"
+    # lane :setup_certificates do
+    #     # Use the CI temporary keychain if available, otherwise fall back to login.keychain
+    #     keychain_path = lane_context[SharedValues::KEYCHAIN_PATH] if defined?(lane_context) && defined?(SharedValues)
+
+    #     if keychain_path
+    #         import_certificate(
+    #             certificate_path: "certificate.p12",
+    #             certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
+    #             keychain_path: keychain_path
+    #         )
+    #     else
+    #         import_certificate(
+    #             certificate_path: "certificate.p12",
+    #             certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
+    #             keychain_name: "login.keychain"
+    #         )
+    #     end
+
+    #     install_provisioning_profile(
+    #         path: "appstore.mobileprovision"
+    #     )
+    # end
 
     desc "Build and sign IPA for App Store / TestFlight"
     lane :build do

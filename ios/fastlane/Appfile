@@ -1,5 +1,5 @@
 app_identifier("com.pmorales.omni.remote") # The bundle identifier of your app
-apple_id("julian.bonilla@pragma.co") # Your Apple Developer Portal username
+apple_id("conocimiento.mobile@pragma.co") # Your Apple Developer Portal username
 
 itc_team_id("126553916") # App Store Connect Team ID
 
