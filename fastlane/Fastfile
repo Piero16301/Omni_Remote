@@ -41,7 +41,7 @@ platform :ios do
 
     desc "Build and sign IPA for App Store / TestFlight"
     lane :build do
-        # Setup signing
+        # Setup signing (imports certificate + installs provisioning profile)
         setup_signing
 
         # Build and sign the IPA
@@ -50,12 +50,7 @@ platform :ios do
             workspace: "ios/Runner.xcworkspace",
             export_method: "app-store",
             output_directory: "build/ios/ipa",
-            output_name: "omni_remote.ipa",
-            codesigning_identity: "iPhone Distribution",
-            export_options: {
-                method: "app-store",
-                teamID: ENV["FASTLANE_TEAM_ID"]
-            }
+            output_name: "omni_remote.ipa"
         )
     end
 
