@@ -70,9 +70,12 @@ platform :ios do
             output_directory: "build/ios/ipa",
             output_name: "omni_remote.ipa",
             export_options: {
-                uploadBitcode: false,
-                uploadSymbols: true,
-                compileBitcode: false
+              provisioningProfiles: {
+                "com.pmorales.omni.remote" => "match AppStore com.pmorales.omni.remote"
+              },
+              uploadBitcode: false,
+              uploadSymbols: true,
+              compileBitcode: false
             }
         )
     end
