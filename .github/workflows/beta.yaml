@@ -167,7 +167,7 @@ jobs:
           pod install
 
       - name: 🏗️ Build iOS (without code signing)
-        run: flutter build ios --release --no-codesign
+        run: flutter build ios --release --no-codesign --flavor production -t lib/main.dart
 
       - name: 🔑 Decode iOS Certificate (App Store Distribution)
         run: echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > certificate.p12
