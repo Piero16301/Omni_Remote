@@ -191,6 +191,21 @@ jobs:
       #     cd ios
       #     bundle exec fastlane setup_certificates
 
+      - name: Set up SSH key for Match
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.MATCH_GIT_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          cat > ~/.ssh/config << EOF
+          Host github.com
+            HostName github.com
+            User git
+            IdentityFile ~/.ssh/id_rsa
+            IdentitiesOnly yes
+          EOF
+          ssh -T git@github.com || true
+
       - name: 🔐 Sync code signing with match
         run: |
           cd ios
