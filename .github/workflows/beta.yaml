@@ -139,9 +139,6 @@ jobs:
     needs: quality
     runs-on: macos-latest
     env:
-      FASTLANE_APPLE_ID: ${{ secrets.FASTLANE_APPLE_ID }}
-      FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
-      IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
       APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
       APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
       APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
@@ -180,17 +177,6 @@ jobs:
           cd ios
           bundle install
 
-      - name: 🔑 Decode iOS Certificate (App Store Distribution)
-        run: echo "${{ secrets.IOS_CERTIFICATE_BASE64 }}" | base64 --decode > ios/certificate.p12
-
-      - name: 🔑 Decode Provisioning Profile (App Store)
-        run: echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ios/appstore.mobileprovision
-
-      # - name: Set up code signing
-      #   run: |
-      #     cd ios
-      #     bundle exec fastlane setup_certificates
-
       - name: Set up SSH key for Match
         run: |
           mkdir -p ~/.ssh
@@ -215,40 +201,43 @@ jobs:
         run: |
           security find-identity -p codesigning -v ~/Library/Keychains/fastlane_tmp_keychain-db || true
 
-      - name: 🚀 Build and Deploy to TestFlight
+      - name: 🧱 Build IPA
         run: |
           cd ios
-          bundle exec fastlane deploy_testflight
+          bundle exec fastlane build
 
-  # deploy-ios:
-  #   name: "✈️ Deploy iOS to TestFlight"
-  #   runs-on: macos-latest
-  #   needs: build-ios
-  #   env:
-  #     APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-  #     APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-  #     APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
-  #   steps:
-  #     - name: 📚 Git Checkout
-  #       uses: actions/checkout@v6
+      - name: ⬆️ Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: ios/build/ios/ipa/omni_remote.ipa
 
-  #     - name: 💎 Setup Ruby
-  #       uses: ruby/setup-ruby@v1
-  #       with:
-  #         ruby-version: '3.2'
-  #         bundler-cache: true
+  deploy-ios:
+    name: "✈️ Deploy iOS to TestFlight"
+    runs-on: macos-latest
+    needs: build-ios
+    env:
+      APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+      APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+      APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v6
 
-  #     - name: ⬇️ Download IPA Artifact
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: ios-ipa
-  #         path: build/ios/ipa
+      - name: 💎 Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
 
-  #     - name: 🔑 Create App Store Connect API Key
-  #       run: |
-  #         mkdir -p ~/private_keys
-  #         echo "$APP_STORE_CONNECT_API_KEY_CONTENT" > ~/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8
+      - name: ⬇️ Download IPA Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-ipa
+          path: ios/build/ios/ipa
 
-  #     - name: ✈️ Upload to TestFlight
-  #       run: bundle exec fastlane ios upload_testflight
+      - name: ✈️ Upload to TestFlight
+        run: |
+          cd ios
+          bundle exec fastlane upload_testflight
 

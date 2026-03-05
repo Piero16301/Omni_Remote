@@ -36,30 +36,6 @@ platform :ios do
       )
     end
 
-    # desc "Set up manual certificates"
-    # lane :setup_certificates do
-    #     # Use the CI temporary keychain if available, otherwise fall back to login.keychain
-    #     keychain_path = lane_context[SharedValues::KEYCHAIN_PATH] if defined?(lane_context) && defined?(SharedValues)
-
-    #     if keychain_path
-    #         import_certificate(
-    #             certificate_path: "certificate.p12",
-    #             certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
-    #             keychain_path: keychain_path
-    #         )
-    #     else
-    #         import_certificate(
-    #             certificate_path: "certificate.p12",
-    #             certificate_password: ENV["IOS_CERTIFICATE_PASSWORD"],
-    #             keychain_name: "login.keychain"
-    #         )
-    #     end
-
-    #     install_provisioning_profile(
-    #         path: "appstore.mobileprovision"
-    #     )
-    # end
-
     desc "Build and sign IPA for App Store / TestFlight"
     lane :build do
         # Build and sign the IPA (workspace path is relative to ios/)
@@ -80,37 +56,57 @@ platform :ios do
         )
     end
 
-    desc "Deploy to TestFlight"
-    lane :deploy_testflight do
-        # Bump local build number in the Xcode project
-        # (keeps increasing on each CI run)
-        increment_build_number(
-            xcodeproj: "Runner.xcodeproj"
-        )
+    # desc "Deploy to TestFlight"
+    # lane :deploy_testflight do
+    #     # Bump local build number in the Xcode project
+    #     # (keeps increasing on each CI run)
+    #     increment_build_number(
+    #         xcodeproj: "Runner.xcodeproj"
+    #     )
 
-        # Build the app (signing is handled by the project + installed cert/profile)
-        build
+    #     # Build the app (signing is handled by the project + installed cert/profile)
+    #     build
 
-        api_key = app_store_connect_api_key(
-          key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
-          issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
-          key_content: ENV["APP_STORE_CONNECT_API_KEY_CONTENT"],
-        )
+    #     api_key = app_store_connect_api_key(
+    #       key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+    #       issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+    #       key_content: ENV["APP_STORE_CONNECT_API_KEY_CONTENT"],
+    #     )
 
-        # Upload to TestFlight (uses default authentication config)
-        pilot(
-          api_key: api_key,
-          app_identifier: "com.pmorales.omni.remote",
-          skip_waiting_for_build_processing: true,
-          changelog: "Automated build from GitHub Actions",
-          distribute_external: false,
-          notify_external_testers: false
-        )
+    #     # Upload to TestFlight (uses default authentication config)
+    #     pilot(
+    #       api_key: api_key,
+    #       app_identifier: "com.pmorales.omni.remote",
+    #       skip_waiting_for_build_processing: true,
+    #       changelog: "Automated build from GitHub Actions",
+    #       distribute_external: false,
+    #       notify_external_testers: false
+    #     )
 
-        # Send a notification (optional)
-        # slack(
-        #     message: "🚀 New TestFlight build is processing!",
-        #     slack_url: ENV["SLACK_WEBHOOK_URL"]
-        # ) if ENV["SLACK_WEBHOOK_URL"]
+    #     # Send a notification (optional)
+    #     # slack(
+    #     #     message: "🚀 New TestFlight build is processing!",
+    #     #     slack_url: ENV["SLACK_WEBHOOK_URL"]
+    #     # ) if ENV["SLACK_WEBHOOK_URL"]
+    # end
+
+    desc "Upload existing IPA to TestFlight"
+    lane :upload_testflight do |options|
+      api_key = app_store_connect_api_key(
+        key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+        issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+        key_content: ENV["APP_STORE_CONNECT_API_KEY_CONTENT"],
+      )
+
+      ipa_path = options[:ipa] || "build/ios/ipa/omni_remote.ipa"
+
+      pilot(
+        api_key: api_key,
+        ipa: ipa_path,
+        skip_waiting_for_build_processing: true,
+        changelog: "Automated build from GitHub Actions",
+        distribute_external: false,
+        notify_external_testers: false
+      )
     end
 end
