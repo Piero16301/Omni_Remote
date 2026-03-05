@@ -102,7 +102,7 @@ jobs:
           path: ${{ env.AAB_PATH }}
 
   deploy-android:
-    name: "🚀 Deploy to Play Store (Open Test)"
+    name: "🚀 Deploy Android to Play Store (Open Test)"
     runs-on: ubuntu-latest
     needs: build-android
     env:
@@ -213,7 +213,7 @@ jobs:
           path: ios/build/ios/ipa/omni_remote.ipa
 
   deploy-ios:
-    name: "✈️ Deploy iOS to TestFlight"
+    name: "🚀 Deploy iOS to TestFlight"
     runs-on: macos-latest
     needs: build-ios
     env:
