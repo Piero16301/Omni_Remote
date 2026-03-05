@@ -236,7 +236,7 @@ jobs:
           bundle install
 
       - name: ⬇️ Download IPA Artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ios-ipa
           path: ios/build/ios/ipa
