@@ -135,7 +135,7 @@ jobs:
           # userFraction: 0.1
 
   build-ios:
-    name: "✈️  Deploy iOS to TestFlight"
+    name: "🔨 Build iOS IPA"
     needs: quality
     runs-on: macos-latest
     env:
@@ -229,6 +229,11 @@ jobs:
         with:
           ruby-version: '3.2'
           bundler-cache: true
+
+      - name: 💎 Install Ruby gems
+        run: |
+          cd ios
+          bundle install
 
       - name: ⬇️ Download IPA Artifact
         uses: actions/download-artifact@v4
