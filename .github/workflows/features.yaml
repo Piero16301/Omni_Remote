@@ -1,7 +1,6 @@
-name: PR Checks
+name: New Feature
 # CI workflow for validating feature branches.
-# This workflow runs semantic checks, spell checks,
-# and executes tests.
+# This workflow runs semantic checks, spell checks, and executes tests.
 
 concurrency:
   group: feature-${{ github.ref }}
