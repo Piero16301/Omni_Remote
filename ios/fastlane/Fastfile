@@ -38,6 +38,11 @@ platform :ios do
 
     desc "Build and sign IPA for App Store / TestFlight"
     lane :build do
+        # Increment build number in the Xcode project
+        increment_build_number(
+          xcodeproj: "Runner.xcodeproj"
+        )
+
         # Build and sign the IPA (workspace path is relative to ios/)
         gym(
             scheme: "production",
