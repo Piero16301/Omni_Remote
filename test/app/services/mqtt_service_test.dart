@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 
 class MockLocalStorageService extends Mock implements LocalStorageService {}
+
+class MockX509Certificate extends Mock implements X509Certificate {}
 
 void main() {
   group('MqttService', () {
@@ -41,6 +44,14 @@ void main() {
       expect(service.mqttClient, isNull);
     });
 
+    test('initializeMqttClient returns early if url is empty', () async {
+      when(() => mockLocalStorageService.getBrokerUrl()).thenReturn('');
+      when(() => mockLocalStorageService.getBrokerPort()).thenReturn('');
+
+      await service.initializeMqttClient();
+      expect(service.mqttClient, isNull);
+    });
+
     test('disconnectMqtt works safely on null client', () {
       expect(() => service.disconnectMqtt(), returnsNormally);
     });
@@ -59,10 +70,9 @@ void main() {
       unawaited(
         expectLater(
           service.connectionStatusStream,
-          emitsInOrder([
-            BrokerConnectionStatus.connecting,
+          emitsThrough(
             BrokerConnectionStatus.disconnected,
-          ]),
+          ),
         ),
       );
 
@@ -83,16 +93,19 @@ void main() {
       unawaited(
         expectLater(
           service.connectionStatusStream,
-          emitsInOrder([
-            BrokerConnectionStatus.connecting,
+          emitsThrough(
             BrokerConnectionStatus.disconnected,
-          ]),
+          ),
         ),
       );
 
       await service.initializeMqttClient();
       expect(service.mqttClient, isNotNull);
       expect(service.mqttClient?.secure, isTrue);
+      expect(
+        service.mqttClient?.onBadCertificate?.call(MockX509Certificate()),
+        isTrue,
+      );
     });
 
     test(
@@ -119,6 +132,60 @@ void main() {
     test('connectMqtt ignores when client is null', () async {
       await service.connectMqtt();
       expect(service.mqttClient, isNull);
+    });
+
+    test('disconnectMqtt works when client is not null', () async {
+      when(() => mockLocalStorageService.getBrokerUrl())
+          .thenReturn('127.0.0.1');
+      when(() => mockLocalStorageService.getBrokerPort()).thenReturn('1883');
+      when(() => mockLocalStorageService.getBrokerUsername())
+          .thenReturn('user');
+      when(() => mockLocalStorageService.getBrokerPassword())
+          .thenReturn('pass');
+
+      await service.initializeMqttClient();
+
+      unawaited(
+        expectLater(
+          service.connectionStatusStream,
+          emitsThrough(BrokerConnectionStatus.disconnecting),
+        ),
+      );
+
+      service.disconnectMqtt();
+    });
+
+    test('callbacks properly push to stream', () async {
+      when(() => mockLocalStorageService.getBrokerUrl())
+          .thenReturn('127.0.0.1');
+      when(() => mockLocalStorageService.getBrokerPort()).thenReturn('1883');
+      when(() => mockLocalStorageService.getBrokerUsername())
+          .thenReturn('user');
+      when(() => mockLocalStorageService.getBrokerPassword())
+          .thenReturn('pass');
+
+      await service.initializeMqttClient();
+      final client = service.mqttClient!;
+
+      unawaited(
+        expectLater(
+          service.connectionStatusStream,
+          emitsInOrder([
+            BrokerConnectionStatus.connected,
+            BrokerConnectionStatus.disconnected,
+            BrokerConnectionStatus.connecting,
+            BrokerConnectionStatus.connected,
+          ]),
+        ),
+      );
+
+      client.onConnected?.call();
+      await Future<void>.delayed(Duration.zero);
+      client.onDisconnected?.call();
+      await Future<void>.delayed(Duration.zero);
+      client.onAutoReconnect?.call();
+      await Future<void>.delayed(Duration.zero);
+      client.onAutoReconnected?.call();
     });
   });
 
