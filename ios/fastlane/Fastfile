@@ -1,0 +1,82 @@
+default_platform(:ios)
+
+platform :ios do
+  before_all do
+        setup_ci if ENV['CI']
+    end
+
+    lane :sync_signing do
+      api_key = app_store_connect_api_key(
+        key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+        issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+        key_content: ENV["APP_STORE_CONNECT_API_KEY_CONTENT"],
+        in_house: false
+      )
+
+      match(
+        type: "appstore",
+        app_identifier: "com.pmorales.omni.remote",
+        api_key: api_key,
+        readonly: ENV["CI"] ? true : false
+      )
+    end
+
+    desc "Build and sign IPA for App Store / TestFlight"
+    lane :build do |options|
+        if options[:version_name]
+          increment_version_number(
+            version_number: options[:version_name],
+            xcodeproj: "Runner.xcodeproj"
+          )
+        end
+
+        if options[:build_number]
+          increment_build_number(
+            build_number: options[:build_number],
+            xcodeproj: "Runner.xcodeproj"
+          )
+        else
+          # Increment build number in the Xcode project
+          increment_build_number(
+            xcodeproj: "Runner.xcodeproj"
+          )
+        end
+
+        # Build and sign the IPA (workspace path is relative to ios/)
+        gym(
+            scheme: "production",
+            workspace: "Runner.xcworkspace",
+            export_method: "app-store",
+            output_directory: "build/ios/ipa",
+            output_name: "omni_remote.ipa",
+            export_options: {
+              provisioningProfiles: {
+                "com.pmorales.omni.remote" => "match AppStore com.pmorales.omni.remote"
+              },
+              uploadBitcode: false,
+              uploadSymbols: true,
+              compileBitcode: false
+            }
+        )
+    end
+
+    desc "Upload existing IPA to TestFlight"
+    lane :upload_testflight do |options|
+      api_key = app_store_connect_api_key(
+        key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+        issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+        key_content: ENV["APP_STORE_CONNECT_API_KEY_CONTENT"],
+      )
+
+      ipa_path = options[:ipa] || "build/ios/ipa/omni_remote.ipa"
+
+      pilot(
+        api_key: api_key,
+        ipa: ipa_path,
+        skip_waiting_for_build_processing: true,
+        changelog: "Automated build from GitHub Actions",
+        distribute_external: false,
+        notify_external_testers: false
+      )
+    end
+end
