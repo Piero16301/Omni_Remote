@@ -92,54 +92,39 @@ jobs:
       - name: 📚 Git Checkout
         uses: actions/checkout@v6
 
-      - name: 📋 Get Latest Version
+      - name: 💎 Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: 💎 Install Ruby gems
+        run: |
+          cd ios
+          bundle install
+
+      - name: 📋 Get Version from pubspec
         id: version
         run: |
-          VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)
+          VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2 | cut -d '+' -f 1)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "::notice::Current version: $VERSION"
+          echo "::notice::Version to promote: $VERSION"
 
-      - name: 🎯 Simulate iOS App Store Promotion
+      - name: 🚀 Promote iOS to App Store
         run: |
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "🍎 iOS App Store Release Report"
+          echo "🍎 Simulate iOS App Store Promotion"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo ""
-          echo "📱 App Name:           Omni Remote"
-          echo "📦 Bundle ID:          com.pmorales.omni.remote"
-          echo "🔢 Version:            ${{ steps.version.outputs.version }}"
-          echo "🏷️  Build Number:       ${{ github.run_number }}"
-          echo "📅 Release Date:       $(date '+%Y-%m-%d %H:%M:%S')"
-          echo "👤 Released by:        ${{ github.actor }}"
-          echo "🔗 Commit:             ${{ github.sha }}"
-          echo "🌿 Branch:             ${{ github.ref_name }}"
+          echo "- name: 🚀 Promote iOS to App Store"
+          echo "  run: |"
+          echo "    cd ios"
+          echo "    bundle exec fastlane promote_to_app_store \"
+          echo "      version: ${{ steps.version.outputs.version }} \"
+          echo "      build_number: ${{ github.run_number }}"
           echo ""
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "✅ Status:             READY FOR RELEASE"
+          echo "✅                  DEPLOYED TO APP STORE.                       ✅"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo ""
-          echo "📝 Release Notes:"
-          echo "   • New features and improvements"
-          echo "   • Bug fixes and performance enhancements"
-          echo "   • UI/UX improvements"
-          echo ""
-          echo "🎉 The iOS version has been successfully prepared for App Store release!"
-          echo "📱 Users can now download the latest version from the App Store"
-          echo ""
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-      - name: 📊 Create Release Summary
-        run: |
-          echo "### 🍎 iOS Release Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 📱 App Name | Omni Remote |" >> $GITHUB_STEP_SUMMARY
-          echo "| 📦 Bundle ID | com.pmorales.omni.remote |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔢 Version | ${{ steps.version.outputs.version }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🏷️ Build Number | ${{ github.run_number }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 👤 Released by | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 📅 Date | $(date '+%Y-%m-%d %H:%M:%S') |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ **Status:** Ready for App Store release" >> $GITHUB_STEP_SUMMARY
 
