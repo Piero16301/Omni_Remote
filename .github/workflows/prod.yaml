@@ -33,7 +33,7 @@ jobs:
     needs: [semantic-pull-request, spell-check]
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: 📚 Git Checkout
         uses: actions/checkout@v6
