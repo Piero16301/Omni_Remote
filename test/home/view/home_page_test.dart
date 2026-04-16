@@ -21,7 +21,10 @@ void main() {
       when(() => mockAppCubit.state).thenReturn(const AppState());
 
       await getIt.reset();
-      getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
+      setupServiceLocator(Environment.mock);
+      getIt
+        ..unregister<LocalStorageService>()
+        ..registerSingleton<LocalStorageService>(mockLocalStorageService);
 
       when(mockLocalStorageService.getGroups).thenReturn([]);
       when(mockLocalStorageService.getDevices).thenReturn([]);

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "973688562510",
+    "project_id": "omni-remote-a8a9f",
+    "storage_bucket": "omni-remote-a8a9f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973688562510:android:482bf4117540d6a431b41f",
+        "android_client_info": {
+          "package_name": "com.pmorales.omni.remote"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuFYI_YCbB434-2AVZfhzjON2CveXpJkI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

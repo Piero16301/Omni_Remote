@@ -82,11 +82,11 @@ class MqttTopicsInfo extends StatelessWidget {
         Text(
           l10n.modifyDeviceMqttTopics,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
         Card(
           elevation: 2,
           margin: EdgeInsets.zero,
@@ -137,13 +137,13 @@ class MqttTopicsInfo extends StatelessWidget {
                   Expanded(
                     child: RichText(
                       text: TextSpan(
-                        style: Theme.of(context).textTheme.bodySmall,
+                        style: Theme.of(context).textTheme.bodyMedium,
                         children: [
                           TextSpan(
                             text: '${l10n.modifyDeviceMqttTopicOnline}: ',
                             style: Theme.of(context)
                                 .textTheme
-                                .bodySmall
+                                .bodyMedium
                                 ?.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: Theme.of(context).colorScheme.primary,
@@ -177,7 +177,7 @@ class MqttTopicsInfo extends StatelessWidget {
         Text(
           l10n.modifyDeviceMqttTopics,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
         ),
@@ -243,13 +243,13 @@ class MqttTopicsInfo extends StatelessWidget {
                   Expanded(
                     child: RichText(
                       text: TextSpan(
-                        style: Theme.of(context).textTheme.bodySmall,
+                        style: Theme.of(context).textTheme.bodyMedium,
                         children: [
                           TextSpan(
                             text: '${l10n.modifyDeviceMqttTopicStatus}: ',
                             style: Theme.of(context)
                                 .textTheme
-                                .bodySmall
+                                .bodyMedium
                                 ?.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: Theme.of(context).colorScheme.primary,
@@ -279,13 +279,13 @@ class MqttTopicsInfo extends StatelessWidget {
                   Expanded(
                     child: RichText(
                       text: TextSpan(
-                        style: Theme.of(context).textTheme.bodySmall,
+                        style: Theme.of(context).textTheme.bodyMedium,
                         children: [
                           TextSpan(
                             text: '${l10n.modifyDeviceMqttTopicCommand}: ',
                             style: Theme.of(context)
                                 .textTheme
-                                .bodySmall
+                                .bodyMedium
                                 ?.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: Theme.of(context).colorScheme.primary,
@@ -362,7 +362,7 @@ class _TopicItem extends StatelessWidget {
           width: 90,
           child: Text(
             label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -382,7 +382,7 @@ class _TopicItem extends StatelessWidget {
             ),
             child: Text(
               topic,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontFamily: 'monospace',
                   ),
             ),

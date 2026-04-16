@@ -1,3 +1,4 @@
+import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -19,8 +20,8 @@ class SettingsView extends StatelessWidget {
           appBar: AppBar(
             title: Text(
               l10n.settingsAppBarTitle,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
             ),
             centerTitle: true,
@@ -34,9 +35,9 @@ class SettingsView extends StatelessWidget {
           ),
           body: ListView(
             padding: const EdgeInsets.only(
-              left: 24,
-              right: 24,
-              top: 12,
+              left: 16,
+              right: 16,
+              top: 8,
               bottom: 120,
             ),
             children: const [
@@ -79,9 +80,22 @@ class LocaleSettingsCard extends StatelessWidget {
         (locale) {
           return DropdownMenuItem<Locale>(
             value: locale,
-            child: Text(
-              _getLanguageName(locale, l10n),
-              style: Theme.of(context).textTheme.bodySmall,
+            child: Row(
+              spacing: 12,
+              children: [
+                CountryFlag.fromLanguageCode(
+                  locale.languageCode,
+                  theme: const ImageTheme(
+                    width: 25,
+                    height: 25,
+                    shape: RoundedRectangle(4),
+                  ),
+                ),
+                Text(
+                  _getLanguageName(locale, l10n),
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ],
             ),
           );
         },
@@ -138,7 +152,7 @@ class ThemeSettingsCard extends StatelessWidget {
                 ),
                 Text(
                   _getThemeName(themeMode, l10n),
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
             ),
@@ -199,7 +213,7 @@ class ColorSettingsCard extends StatelessWidget {
                 ),
                 Text(
                   _getColorName(entry.key, l10n),
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
             ),
@@ -274,7 +288,7 @@ class FontSettingsCard extends StatelessWidget {
           value: entry.value,
           child: Text(
             entry.key,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontFamily: entry.value,
                 ),
           ),

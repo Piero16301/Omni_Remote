@@ -14,9 +14,14 @@ void main() {
     late LocalStorageService mockLocalStorageService;
     late HomeCubit cubit;
 
-    setUp(() {
+    setUp(() async {
       mockLocalStorageService = MockLocalStorageService();
-      getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
+      await getIt.reset();
+      setupServiceLocator(Environment.mock);
+
+      getIt
+        ..unregister<LocalStorageService>()
+        ..registerSingleton<LocalStorageService>(mockLocalStorageService);
 
       cubit = HomeCubit();
     });

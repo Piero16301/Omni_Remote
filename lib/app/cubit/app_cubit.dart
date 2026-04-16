@@ -12,6 +12,8 @@ class AppCubit extends Cubit<AppState> {
 
   final LocalStorageService localStorage = getIt<LocalStorageService>();
   final MqttService mqttService = getIt<MqttService>();
+  final CrashService crashService = getIt<CrashService>();
+  final AnalyticsService _analyticsService = getIt<AnalyticsService>();
 
   StreamSubscription<BrokerConnectionStatus>? _connectionStatusSubscription;
 
@@ -48,6 +50,22 @@ class AppCubit extends Cubit<AppState> {
       fontFamily = defaultFont;
     }
 
+    // Add custom keys for CrashService
+    crashService
+      ..setCustomKey(
+        'language',
+        localStorage.getLanguage()?.languageCode ??
+            AppVariables.supportedLocales.first.languageCode,
+      )
+      ..setCustomKey(
+        'theme',
+        localStorage.getTheme()?.name ?? ThemeMode.system.name,
+      )
+      ..setCustomKey(
+        'fontFamily',
+        localStorage.getFontFamily() ?? AppVariables.defaultFontFamily,
+      );
+
     // Emit state with all loaded configurations at once
     emit(
       state.copyWith(
@@ -70,33 +88,55 @@ class AppCubit extends Cubit<AppState> {
 
   void changeLanguage({required Locale language}) {
     localStorage.saveLanguage(language: language);
+    crashService.setCustomKey('language', language.languageCode);
+    _analyticsService.logEvent(
+      name: 'change_language',
+      parameters: {'language': language.languageCode},
+    );
     emit(state.copyWith(language: language));
   }
 
   void changeTheme({required ThemeMode theme}) {
     localStorage.saveTheme(theme: theme);
+    crashService.setCustomKey('theme', theme.name);
+    _analyticsService.logEvent(
+      name: 'change_theme',
+      parameters: {'theme': theme.name},
+    );
     emit(state.copyWith(theme: theme));
   }
 
   void changeBaseColor({required Color baseColor}) {
     localStorage.saveBaseColor(baseColor: baseColor);
+    _analyticsService.logEvent(
+      name: 'change_base_color',
+      parameters: {'color_value': ColorHelper.getColorName(baseColor)},
+    );
     emit(state.copyWith(baseColor: baseColor));
   }
 
   void changeFontFamily({required String fontFamily}) {
     localStorage.saveFontFamily(fontFamily: fontFamily);
+    crashService.setCustomKey('fontFamily', fontFamily);
+    _analyticsService.logEvent(
+      name: 'change_font_family',
+      parameters: {'font_family': fontFamily},
+    );
     emit(state.copyWith(fontFamily: fontFamily));
   }
 
   Future<void> connectMqtt() async {
+    _analyticsService.logEvent(name: 'connect_mqtt');
     await mqttService.connectMqtt();
   }
 
   void disconnectMqtt() {
+    _analyticsService.logEvent(name: 'disconnect_mqtt');
     mqttService.disconnectMqtt();
   }
 
   Future<void> reconnectWithNewSettings() async {
+    _analyticsService.logEvent(name: 'reconnect_mqtt_new_settings');
     await mqttService.reconnectWithNewSettings();
   }
 

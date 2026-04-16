@@ -77,12 +77,11 @@ void main() {
       when(() => mockMqttService.messageStream)
           .thenAnswer((_) => messageController.stream);
 
-      if (!getIt.isRegistered<MqttService>()) {
-        getIt.registerSingleton<MqttService>(mockMqttService);
-      } else {
-        await getIt.unregister<MqttService>();
-        getIt.registerSingleton<MqttService>(mockMqttService);
-      }
+      await getIt.reset();
+      setupServiceLocator(Environment.mock);
+      getIt
+        ..unregister<MqttService>()
+        ..registerSingleton<MqttService>(mockMqttService);
 
       when(() => appCubit.state).thenReturn(
         const AppState(
@@ -215,6 +214,185 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(deleteCalled, isTrue);
+    });
+
+    testWidgets('cancel button in delete dialog closes it', (tester) async {
+      await tester.pumpWidget(buildSubject());
+
+      await tester.longPress(find.byType(InkWell).first);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(ListTile).last);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      await tester.tap(find.byType(AppOutlinedButton));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsNothing);
+    });
+
+    testWidgets('increment button is disabled when groupIsOnline is false',
+        (tester) async {
+      await tester.pumpWidget(buildSubject(groupIsOnline: false));
+
+      final slider = tester.widget<Slider>(find.byType(Slider));
+      expect(slider.onChanged, isNull);
+      expect(slider.onChangeEnd, isNull);
+    });
+
+    testWidgets('does not subscribe when mqttClient is null', (tester) async {
+      when(() => mockMqttService.mqttClient).thenReturn(null);
+
+      await tester.pumpWidget(buildSubject());
+
+      verifyNever(() => mockMqttClient.subscribe(any(), any()));
+    });
+
+    testWidgets('device without subtitle renders without subtitle',
+        (tester) async {
+      final deviceNoSub = DeviceModel(
+        id: 'd2',
+        title: 'Heater',
+        subtitle: '',
+        icon: 'fire',
+        tileType: DeviceTileType.number,
+        groupId: 'g1',
+        rangeMax: 100,
+        divisions: 10,
+        interval: 10,
+      );
+
+      await tester.pumpWidget(
+        MultiBlocProvider(
+          providers: [BlocProvider.value(value: appCubit)],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: DeviceNumberTile(
+                device: deviceNoSub,
+                group: testGroup,
+                groupIsOnline: true,
+                onEdit: () {},
+                onDelete: () {},
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Heater'), findsOneWidget);
+      expect(find.byType(Slider), findsOneWidget);
+    });
+
+    testWidgets('BlocListener handles disconnect state', (tester) async {
+      final stateController = StreamController<AppState>.broadcast();
+      when(() => appCubit.stream).thenAnswer((_) => stateController.stream);
+
+      await tester.pumpWidget(buildSubject());
+
+      when(() => appCubit.state).thenReturn(
+        const AppState(),
+      );
+      stateController.add(
+        const AppState(),
+      );
+      await tester.pump();
+
+      when(() => appCubit.state).thenReturn(
+        const AppState(
+          brokerConnectionStatus: BrokerConnectionStatus.connected,
+        ),
+      );
+      stateController.add(
+        const AppState(
+          brokerConnectionStatus: BrokerConnectionStatus.connected,
+        ),
+      );
+      await tester.pump();
+
+      await stateController.close();
+    });
+
+    testWidgets('updates slider value when MQTT numeric message is received',
+        (tester) async {
+      await tester.pumpWidget(buildSubject());
+
+      final statusTopic = AppVariables.buildDeviceTopic(
+        groupTitle: testGroup.title,
+        deviceTitle: testDevice.title,
+        suffix: AppVariables.statusSuffix,
+      );
+
+      final builder = MqttClientPayloadBuilder()..addString('22.5');
+      final publishMessage = MqttPublishMessage()
+        ..payload.message = builder.payload!;
+
+      messageController.add([
+        MqttReceivedMessage<MqttMessage>(statusTopic, publishMessage),
+      ]);
+      await tester.pump();
+
+      expect(find.text('22.5'), findsOneWidget);
+    });
+
+    testWidgets('publish fires when + button is tapped', (tester) async {
+      await tester.pumpWidget(buildSubject());
+
+      final expectedTopic = AppVariables.buildDeviceTopic(
+        groupTitle: testGroup.title,
+        deviceTitle: testDevice.title,
+        suffix: AppVariables.commandSuffix,
+      );
+
+      final iconButtons = find.byType(IconButton);
+      await tester.tap(iconButtons.last);
+      await tester.pumpAndSettle();
+
+      verify(
+        () => mockMqttClient.publishMessage(
+          expectedTopic,
+          MqttQos.atLeastOnce,
+          any(),
+        ),
+      ).called(1);
+    });
+
+    testWidgets('publish fires when - button is tapped', (tester) async {
+      await tester.pumpWidget(buildSubject());
+
+      final expectedTopic = AppVariables.buildDeviceTopic(
+        groupTitle: testGroup.title,
+        deviceTitle: testDevice.title,
+        suffix: AppVariables.commandSuffix,
+      );
+
+      final statusTopic = AppVariables.buildDeviceTopic(
+        groupTitle: testGroup.title,
+        deviceTitle: testDevice.title,
+        suffix: AppVariables.statusSuffix,
+      );
+
+      final builder = MqttClientPayloadBuilder()..addString('20.0');
+      final publishMessage = MqttPublishMessage()
+        ..payload.message = builder.payload!;
+      messageController
+          .add([MqttReceivedMessage<MqttMessage>(statusTopic, publishMessage)]);
+      await tester.pump();
+
+      final iconButtons = find.byType(IconButton);
+      await tester.tap(iconButtons.first);
+      await tester.pumpAndSettle();
+
+      verify(
+        () => mockMqttClient.publishMessage(
+          expectedTopic,
+          MqttQos.atLeastOnce,
+          any(),
+        ),
+      ).called(greaterThanOrEqualTo(1));
     });
   });
 }

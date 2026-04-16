@@ -35,7 +35,7 @@ class AppFunctions {
               child: Text(
                 message ?? '',
                 style: const TextStyle(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),
               ),

@@ -9,6 +9,8 @@ class ModifyGroupCubit extends Cubit<ModifyGroupState> {
   ModifyGroupCubit() : super(const ModifyGroupState());
 
   final LocalStorageService localStorage = getIt<LocalStorageService>();
+  final CrashService _crashService = getIt<CrashService>();
+  final AnalyticsService _analyticsService = getIt<AnalyticsService>();
 
   void groupReceived(GroupModel? group) {
     emit(
@@ -51,6 +53,10 @@ class ModifyGroupCubit extends Cubit<ModifyGroupState> {
           icon: state.icon,
         );
         localStorage.updateGroup(group: updatedGroup);
+        _analyticsService.logEvent(
+          name: 'update_group',
+          parameters: {'group_id': updatedGroup.id},
+        );
         emit(state.copyWith(saveStatus: ModifyGroupStatus.success));
       } else {
         final newGroup = GroupModel(
@@ -60,14 +66,20 @@ class ModifyGroupCubit extends Cubit<ModifyGroupState> {
           icon: state.icon,
         );
         localStorage.createGroup(group: newGroup);
+        _analyticsService.logEvent(name: 'create_group');
         emit(state.copyWith(saveStatus: ModifyGroupStatus.success));
       }
-    } on Exception catch (e) {
+    } on Exception catch (e, stackTrace) {
       ModifyGroupError modifyGroupError;
       switch (e.toString()) {
         case 'Exception: DUPLICATE_GROUP_NAME':
           modifyGroupError = ModifyGroupError.duplicateGroupName;
         default:
+          _crashService.recordError(
+            e,
+            stackTrace,
+            reason: 'saveGroupModel unknown error',
+          );
           modifyGroupError = ModifyGroupError.unknown;
       }
       emit(

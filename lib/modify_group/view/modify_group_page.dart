@@ -9,9 +9,6 @@ class ModifyGroupPage extends StatelessWidget {
     super.key,
   });
 
-  static const String pageName = 'modify-group';
-  static const String pagePath = '/modify-group';
-
   final GroupModel? group;
 
   @override

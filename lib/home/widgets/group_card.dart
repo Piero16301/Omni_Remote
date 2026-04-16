@@ -8,7 +8,6 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/l10n/l10n.dart';
-import 'package:omni_remote/modify_device/modify_device.dart';
 
 class GroupCard extends StatefulWidget {
   const GroupCard({
@@ -126,6 +125,7 @@ class _GroupCardState extends State<GroupCard> {
     final l10n = AppLocalizations.of(context);
 
     return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         children: [
           InkWell(
@@ -165,14 +165,14 @@ class _GroupCardState extends State<GroupCard> {
                                 .textTheme
                                 .titleLarge
                                 ?.copyWith(
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w600,
                                 ),
                           ),
                           Visibility(
                             visible: widget.group.subtitle.isNotEmpty,
                             child: Text(
                               widget.group.subtitle,
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           ),
                         ],
@@ -254,15 +254,14 @@ class _GroupCardState extends State<GroupCard> {
                     children: [
                       Text(
                         group.title,
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                       if (group.subtitle.isNotEmpty)
                         Text(
                           group.subtitle,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                     ],
                   ),
@@ -274,7 +273,7 @@ class _GroupCardState extends State<GroupCard> {
                   ),
                   title: Text(
                     l10n.homeReconnectOption,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -288,7 +287,7 @@ class _GroupCardState extends State<GroupCard> {
                   ),
                   title: Text(
                     l10n.homeEditOption,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -331,13 +330,13 @@ class _GroupCardState extends State<GroupCard> {
           return AlertDialog(
             title: Text(
               l10n.homeDeleteDialogTitle(group.title),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
             ),
             content: Text(
               l10n.homeDeleteDialogContent(group.title),
-              style: Theme.of(context).textTheme.bodySmall,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             actions: [
               AppOutlinedButton(
@@ -373,7 +372,7 @@ class _GroupCardState extends State<GroupCard> {
               group: group,
               groupIsOnline: _isOnline,
               onEdit: () => context.pushNamed(
-                ModifyDevicePage.pageName,
+                AppRoute.modifyDevice.name,
                 extra: device,
               ),
               onDelete: () => context.read<HomeCubit>().deleteDevice(device),
@@ -386,7 +385,7 @@ class _GroupCardState extends State<GroupCard> {
               group: group,
               groupIsOnline: _isOnline,
               onEdit: () => context.pushNamed(
-                ModifyDevicePage.pageName,
+                AppRoute.modifyDevice.name,
                 extra: device,
               ),
               onDelete: () => context.read<HomeCubit>().deleteDevice(device),

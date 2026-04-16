@@ -45,8 +45,8 @@ class ConnectionView extends StatelessWidget {
           appBar: AppBar(
             title: Text(
               l10n.connectionAppBarTitle,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
             ),
             centerTitle: true,
@@ -62,9 +62,9 @@ class ConnectionView extends StatelessWidget {
             key: state.formKey,
             child: ListView(
               padding: const EdgeInsets.only(
-                left: 24,
-                right: 24,
-                top: 12,
+                left: 16,
+                right: 16,
+                top: 8,
                 bottom: 120,
               ),
               children: [
@@ -190,10 +190,10 @@ class ConnectionView extends StatelessWidget {
                             statusText,
                             style: Theme.of(context)
                                 .textTheme
-                                .titleMedium
+                                .titleLarge
                                 ?.copyWith(
                                   color: statusColor,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w600,
                                 ),
                           ),
                           Row(
@@ -201,12 +201,11 @@ class ConnectionView extends StatelessWidget {
                             children: [
                               const HugeIcon(
                                 icon: HugeIcons.strokeRoundedLink01,
-                                size: 20,
                               ),
                               Expanded(
                                 child: Text(
                                   state.brokerUrl,
-                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                               ),
                             ],
@@ -216,11 +215,10 @@ class ConnectionView extends StatelessWidget {
                             children: [
                               const HugeIcon(
                                 icon: HugeIcons.strokeRoundedGps01,
-                                size: 20,
                               ),
                               Text(
                                 state.brokerPort,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                style: Theme.of(context).textTheme.bodyLarge,
                               ),
                             ],
                           ),

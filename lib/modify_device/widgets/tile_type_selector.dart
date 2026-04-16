@@ -22,8 +22,8 @@ class TileTypeSelector extends StatelessWidget {
       children: [
         Text(
           l10n.modifyDeviceTileTypeLabel,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.bold,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
               ),
         ),
         const SizedBox(height: 8),
@@ -51,9 +51,9 @@ class TileTypeSelector extends StatelessWidget {
                 value: DeviceTileType.boolean,
                 label: Text(
                   l10n.modifyDeviceTileTypeBoolean,
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontWeight: selectedType == DeviceTileType.boolean
-                            ? FontWeight.bold
+                            ? FontWeight.w600
                             : FontWeight.normal,
                         color: selectedType == DeviceTileType.boolean
                             ? Theme.of(context).colorScheme.primary
@@ -73,9 +73,9 @@ class TileTypeSelector extends StatelessWidget {
                 value: DeviceTileType.number,
                 label: Text(
                   l10n.modifyDeviceTileTypeNumber,
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontWeight: selectedType == DeviceTileType.number
-                            ? FontWeight.bold
+                            ? FontWeight.w600
                             : FontWeight.normal,
                         color: selectedType == DeviceTileType.number
                             ? Theme.of(context).colorScheme.primary

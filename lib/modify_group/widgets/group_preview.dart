@@ -24,11 +24,11 @@ class GroupPreview extends StatelessWidget {
         Text(
           l10n.modifyGroupPreview,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.bold,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
               ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
         Card(
           margin: EdgeInsets.zero,
           child: Column(
@@ -65,7 +65,7 @@ class GroupPreview extends StatelessWidget {
                                   .textTheme
                                   .titleLarge
                                   ?.copyWith(
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w600,
                                   ),
                             ),
                             Visibility(
@@ -74,7 +74,7 @@ class GroupPreview extends StatelessWidget {
                                 subtitle.isEmpty
                                     ? l10n.modifyGroupGroupSubtitle
                                     : subtitle,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                style: Theme.of(context).textTheme.bodyLarge,
                               ),
                             ),
                           ],
