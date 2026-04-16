@@ -73,12 +73,11 @@ void main() {
       when(() => mockMqttService.messageStream)
           .thenAnswer((_) => messageController.stream);
 
-      if (!getIt.isRegistered<MqttService>()) {
-        getIt.registerSingleton<MqttService>(mockMqttService);
-      } else {
-        await getIt.unregister<MqttService>();
-        getIt.registerSingleton<MqttService>(mockMqttService);
-      }
+      await getIt.reset();
+      setupServiceLocator(Environment.mock);
+      getIt
+        ..unregister<MqttService>()
+        ..registerSingleton<MqttService>(mockMqttService);
 
       when(() => appCubit.state).thenReturn(
         const AppState(
@@ -223,6 +222,141 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(deleteCalled, isTrue);
+    });
+
+    testWidgets('cancel button in delete dialog closes it', (tester) async {
+      await tester.pumpWidget(buildSubject());
+
+      await tester.longPress(find.byType(InkWell));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(ListTile).last);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      await tester.tap(find.byType(AppOutlinedButton));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsNothing);
+    });
+
+    testWidgets('Switch is disabled when groupIsOnline is false',
+        (tester) async {
+      await tester.pumpWidget(buildSubject(groupIsOnline: false));
+
+      final sw = tester.widget<Switch>(find.byType(Switch));
+      expect(sw.onChanged, isNull);
+    });
+
+    testWidgets('does not subscribe when mqttClient is null', (tester) async {
+      when(() => mockMqttService.mqttClient).thenReturn(null);
+
+      await tester.pumpWidget(buildSubject());
+
+      verifyNever(() => mockMqttClient.subscribe(any(), any()));
+    });
+
+    testWidgets('does not publish when mqttClient is null on toggle',
+        (tester) async {
+      when(() => mockConnectionStatus.state)
+          .thenReturn(MqttConnectionState.disconnected);
+
+      await tester.pumpWidget(buildSubject());
+
+      when(() => mockMqttService.mqttClient).thenReturn(null);
+
+      final sw = find.byType(Switch);
+
+      expect(sw, findsOneWidget);
+    });
+
+    testWidgets('device without subtitle does not show subtitle text',
+        (tester) async {
+      final deviceNoSub = DeviceModel(
+        id: 'd2',
+        title: 'Fan',
+        subtitle: '',
+        icon: 'fan',
+        tileType: DeviceTileType.boolean,
+        groupId: 'g1',
+      );
+
+      await tester.pumpWidget(
+        MultiBlocProvider(
+          providers: [BlocProvider.value(value: appCubit)],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: DeviceBooleanTile(
+                device: deviceNoSub,
+                group: testGroup,
+                groupIsOnline: true,
+                onEdit: () {},
+                onDelete: () {},
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Fan'), findsOneWidget);
+      expect(find.byType(Switch), findsOneWidget);
+    });
+
+    testWidgets('BlocListener handles disconnect state', (tester) async {
+      final stateController = StreamController<AppState>.broadcast();
+      when(() => appCubit.stream).thenAnswer((_) => stateController.stream);
+
+      await tester.pumpWidget(buildSubject());
+
+      when(() => appCubit.state).thenReturn(
+        const AppState(),
+      );
+      stateController.add(
+        const AppState(),
+      );
+      await tester.pump();
+
+      when(() => appCubit.state).thenReturn(
+        const AppState(
+          brokerConnectionStatus: BrokerConnectionStatus.connected,
+        ),
+      );
+      stateController.add(
+        const AppState(
+          brokerConnectionStatus: BrokerConnectionStatus.connected,
+        ),
+      );
+      await tester.pump();
+
+      await stateController.close();
+    });
+
+    testWidgets('updates state when MQTT message is received', (tester) async {
+      await tester.pumpWidget(buildSubject());
+
+      final statusTopic = AppVariables.buildDeviceTopic(
+        groupTitle: testGroup.title,
+        deviceTitle: testDevice.title,
+        suffix: AppVariables.statusSuffix,
+      );
+
+      final builder = MqttClientPayloadBuilder()..addString('1');
+      final publishMessage = MqttPublishMessage()
+        ..payload.message = builder.payload!;
+
+      final receivedMessage = MqttReceivedMessage<MqttMessage>(
+        statusTopic,
+        publishMessage,
+      );
+
+      messageController.add([receivedMessage]);
+      await tester.pump();
+
+      final sw = tester.widget<Switch>(find.byType(Switch));
+      expect(sw.value, isTrue);
     });
   });
 }

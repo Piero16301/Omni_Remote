@@ -8,33 +8,37 @@ environment:
   flutter: ">=3.35.6"
 
 dependencies:
-  bloc: ^9.2.0                        # | Android | iOS | Linux | macOS | web | Windows
-  equatable: ^2.0.8                   # | Android | iOS | Linux | macOS | web | Windows
+  bloc: ^9.2.0                        # | Android | iOS | Linux | macOS | Web | Windows
+  country_flags: ^4.1.2               # | Android | iOS | Linux | macOS |     | Windows
+  equatable: ^2.0.8                   # | Android | iOS | Linux | macOS | Web | Windows
+  firebase_analytics: ^12.3.0         # | Android | iOS |       | macOS | Web |
+  firebase_core: ^4.7.0               # | Android | iOS |       | macOS | Web | Windows
+  firebase_crashlytics: ^5.2.0        # | Android | iOS |       | macOS |     |
+  firebase_performance: ^0.11.3       # | Android | iOS |       |       | Web |
   flutter:
     sdk: flutter
-  flutter_bloc: ^9.1.1                # | Android | iOS | Linux | macOS | web | Windows
+  flutter_bloc: ^9.1.1                # | Android | iOS | Linux | macOS | Web | Windows
   flutter_localizations:
     sdk: flutter
-  get_it: ^9.2.0                      # | Android | iOS | Linux | macOS | web | Windows
-  go_router: ^17.1.0                  # | Android | iOS | Linux | macOS | web | Windows
-  google_fonts: ^8.0.2                # | Android | iOS | Linux | macOS | web | Windows
-  hive: ^2.2.3                        # | Android | iOS | Linux | macOS | web | Windows
-  hive_flutter: ^1.1.0                # | Android | iOS | Linux | macOS | web | Windows
-  hugeicons: ^1.1.5                   # | Android | iOS | Linux | macOS | web | Windows
-  intl: ^0.20.2                       # | Android | iOS | Linux | macOS | web | Windows
-  mqtt_client: ^10.11.9               # | Android | iOS | Linux | macOS | web | Windows
-  package_info_plus: ^9.0.0           # | Android | iOS | Linux | macOS | web | Windows
-  typed_data: ^1.4.0                  # | Android | iOS | Linux | macOS | web | Windows
-  uuid: ^4.5.2                        # | Android | iOS | Linux | macOS | web | Windows
+  get_it: ^9.2.1                      # | Android | iOS | Linux | macOS | Web | Windows
+  go_router: ^17.2.1                  # | Android | iOS | Linux | macOS | Web | Windows
+  hive: ^2.2.3                        # | Android | iOS | Linux | macOS | Web | Windows
+  hive_flutter: ^1.1.0                # | Android | iOS | Linux | macOS | Web | Windows
+  hugeicons: ^1.1.6                   # | Android | iOS | Linux | macOS | Web | Windows
+  intl: ^0.20.2                       # | Android | iOS | Linux | macOS | Web | Windows
+  mqtt_client: ^10.11.10              # | Android | iOS | Linux | macOS | Web | Windows
+  package_info_plus: ^10.0.0          # | Android | iOS | Linux | macOS | Web | Windows
+  typed_data: ^1.4.0                  # | Android | iOS | Linux | macOS | Web | Windows
+  uuid: ^4.5.3                        # | Android | iOS | Linux | macOS | Web | Windows
 
 dev_dependencies:
-  bloc_test: ^10.0.0                  # | Android | iOS | Linux | macOS | web | Windows
-  flutter_launcher_icons: ^0.14.4     # | Android | iOS | Linux | macOS | web | Windows
+  bloc_test: ^10.0.0                  # | Android | iOS | Linux | macOS | Web | Windows
+  flutter_launcher_icons: ^0.14.4     # | Android | iOS | Linux | macOS | Web | Windows
   flutter_test:
     sdk: flutter
-  mockito: ^5.6.3                     # | Android | iOS | Linux | macOS | web | Windows
-  mocktail: ^1.0.4                    # | Android | iOS | Linux | macOS | web | Windows
-  very_good_analysis: ^10.2.0         # | Android | iOS | Linux | macOS | web | Windows
+  mockito: ^5.6.4                     # | Android | iOS | Linux | macOS | Web | Windows
+  mocktail: ^1.0.5                    # | Android | iOS | Linux | macOS | Web | Windows
+  very_good_analysis: ^10.2.0         # | Android | iOS | Linux | macOS | Web | Windows
 
 flutter_launcher_icons:
   android: true
@@ -63,3 +67,90 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/fonts/
+
+  fonts:
+    - family: Merriweather
+      fonts:
+        - asset: assets/fonts/Merriweather-Regular.ttf
+        - asset: assets/fonts/Merriweather-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Merriweather-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Merriweather-Bold.ttf
+          weight: 700
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-Regular.ttf
+        - asset: assets/fonts/Montserrat-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Montserrat-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Montserrat-Bold.ttf
+          weight: 700
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Regular.ttf
+        - asset: assets/fonts/Nunito-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Nunito-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Nunito-Bold.ttf
+          weight: 700
+    - family: Open Sans
+      fonts:
+        - asset: assets/fonts/OpenSans-Regular.ttf
+        - asset: assets/fonts/OpenSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/OpenSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/OpenSans-Bold.ttf
+          weight: 700
+    - family: Orbitron
+      fonts:
+        - asset: assets/fonts/Orbitron-Regular.ttf
+        - asset: assets/fonts/Orbitron-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Orbitron-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Orbitron-Bold.ttf
+          weight: 700
+    - family: Pacifico
+      fonts:
+        - asset: assets/fonts/Pacifico-Regular.ttf
+    - family: Playfair Display
+      fonts:
+        - asset: assets/fonts/PlayfairDisplay-Regular.ttf
+        - asset: assets/fonts/PlayfairDisplay-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/PlayfairDisplay-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/PlayfairDisplay-Bold.ttf
+          weight: 700
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Roboto-Bold.ttf
+          weight: 700
+    - family: Source Code Pro
+      fonts:
+        - asset: assets/fonts/SourceCodePro-Regular.ttf
+        - asset: assets/fonts/SourceCodePro-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/SourceCodePro-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/SourceCodePro-Bold.ttf
+          weight: 700

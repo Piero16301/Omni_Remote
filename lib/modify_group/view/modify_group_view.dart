@@ -42,7 +42,7 @@ class ModifyGroupView extends StatelessWidget {
             state.groupModel == null
                 ? l10n.modifyGroupPageTitleCreate
                 : l10n.modifyGroupPageTitleEdit,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
           ),
@@ -59,9 +59,9 @@ class ModifyGroupView extends StatelessWidget {
           key: state.formKey,
           child: ListView(
             padding: const EdgeInsets.only(
-              left: 24,
-              right: 24,
-              top: 12,
+              left: 16,
+              right: 16,
+              top: 8,
               bottom: 120,
             ),
             children: [
@@ -102,7 +102,7 @@ class ModifyGroupView extends StatelessWidget {
                   strokeWidth: 2,
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               AppIconSelector(
                 label: l10n.modifyGroupSelectIcon,
                 iconOptions: IconHelper.groupIcons,

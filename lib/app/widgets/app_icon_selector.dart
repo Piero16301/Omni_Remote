@@ -22,11 +22,11 @@ class AppIconSelector extends StatelessWidget {
       children: [
         Text(
           label,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.bold,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
               ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
         Card(
           margin: EdgeInsets.zero,
           child: Padding(

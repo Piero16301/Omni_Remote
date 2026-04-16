@@ -17,8 +17,12 @@ void main() {
       mockMqttService = MockMqttService();
 
       await getIt.reset();
+      setupServiceLocator(Environment.mock);
+
       getIt
+        ..unregister<LocalStorageService>()
         ..registerSingleton<LocalStorageService>(mockLocalStorageService)
+        ..unregister<MqttService>()
         ..registerSingleton<MqttService>(mockMqttService);
 
       when(() => mockLocalStorageService.getLanguage()).thenReturn(null);

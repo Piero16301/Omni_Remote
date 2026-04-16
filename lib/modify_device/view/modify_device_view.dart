@@ -44,8 +44,8 @@ class ModifyDeviceView extends StatelessWidget {
             state.deviceModel == null
                 ? l10n.modifyDevicePageTitleCreate
                 : l10n.modifyDevicePageTitleEdit,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
                 ),
           ),
           centerTitle: true,
@@ -61,9 +61,9 @@ class ModifyDeviceView extends StatelessWidget {
           key: state.formKey,
           child: ListView(
             padding: const EdgeInsets.only(
-              left: 24,
-              right: 24,
-              top: 12,
+              left: 16,
+              right: 16,
+              top: 8,
               bottom: 120,
             ),
             children: [
@@ -127,25 +127,25 @@ class ModifyDeviceView extends StatelessWidget {
                     .read<ModifyDeviceCubit>()
                     .changeSelectedGroup(selected),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               AppIconSelector(
                 iconOptions: IconHelper.deviceIcons,
                 selectedIcon: state.icon,
                 onIconSelected: context.read<ModifyDeviceCubit>().changeIcon,
                 label: l10n.modifyDeviceSelectIcon,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               TileTypeSelector(
                 selectedType: state.tileType,
                 onTypeSelected:
                     context.read<ModifyDeviceCubit>().changeTileType,
               ),
               if (state.tileType == DeviceTileType.number) ...[
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 Text(
                   l10n.modifyDeviceRangeConfigurationLabel,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
                 ),
                 const SizedBox(height: 16),

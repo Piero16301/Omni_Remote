@@ -150,6 +150,14 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
       builder.payload!,
     );
 
+    getIt<AnalyticsService>().logEvent(
+      name: 'device_action_number',
+      parameters: {
+        'device_id': widget.device.id,
+        'value': value.toStringAsFixed(1),
+      },
+    );
+
     if (mounted) {
       setState(() {
         _value = value;
@@ -192,7 +200,7 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                     children: [
                       Text(
                         widget.device.title,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                       ),
@@ -200,7 +208,7 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                         visible: widget.device.subtitle.isNotEmpty,
                         child: Text(
                           widget.device.subtitle,
-                          style: Theme.of(context).textTheme.bodySmall,
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
                     ],
@@ -223,7 +231,7 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                     ),
                     Text(
                       _value.toStringAsFixed(1),
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     IconButton(
                       onPressed: widget.groupIsOnline
@@ -288,7 +296,7 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                       if (device.subtitle.isNotEmpty)
                         Text(
                           device.subtitle,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                     ],
                   ),
@@ -300,7 +308,7 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                   ),
                   title: Text(
                     l10n.homeEditOption,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -343,13 +351,13 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
           return AlertDialog(
             title: Text(
               l10n.homeDeleteDialogTitle(device.title),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
             ),
             content: Text(
               l10n.homeDeleteDialogContent(device.title),
-              style: Theme.of(context).textTheme.bodySmall,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             actions: [
               AppOutlinedButton(

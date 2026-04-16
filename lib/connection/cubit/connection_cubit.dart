@@ -9,6 +9,7 @@ class ConnectionCubit extends Cubit<ConnectionState> {
   ConnectionCubit() : super(const ConnectionState());
 
   final LocalStorageService localStorage = getIt<LocalStorageService>();
+  final AnalyticsService _analyticsService = getIt<AnalyticsService>();
 
   void loadSettings() {
     emit(
@@ -54,6 +55,7 @@ class ConnectionCubit extends Cubit<ConnectionState> {
       ..saveBrokerPassword(brokerPassword: state.brokerPassword);
 
     // Conectar al broker MQTT con los nuevos ajustes
+    _analyticsService.logEvent(name: 'save_broker_settings');
     await context.read<AppCubit>().reconnectWithNewSettings();
   }
 

@@ -1,202 +1,77 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:omni_remote/app/app.dart';
 
-class MockLocalStorageService extends Mock implements LocalStorageService {}
+class MockMqttRepository extends Mock implements MqttRepository {}
 
-class MockX509Certificate extends Mock implements X509Certificate {}
+class MockMqttServerClient extends Mock implements MqttServerClient {}
 
 void main() {
-  group('MqttService', () {
-    late MqttService service;
-    late MockLocalStorageService mockLocalStorageService;
+  late MqttRepository repository;
+  late MqttService service;
 
-    setUp(() async {
-      mockLocalStorageService = MockLocalStorageService();
-      if (!getIt.isRegistered<LocalStorageService>()) {
-        getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
-      } else {
-        await getIt.unregister<LocalStorageService>();
-        getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
-      }
-      service = MqttService();
-    });
-
-    tearDown(() {
-      service.dispose();
-      unawaited(getIt.reset());
-    });
-
-    test('initial state and getters', () {
-      expect(service.mqttClient, isNull);
-      expect(service.messageStream, isNotNull);
-      expect(service.connectionStatusStream, isNotNull);
-    });
-
-    test('initializeMqttClient returns early if url is null', () async {
-      when(() => mockLocalStorageService.getBrokerUrl()).thenReturn(null);
-      when(() => mockLocalStorageService.getBrokerPort()).thenReturn(null);
-
-      await service.initializeMqttClient();
-      expect(service.mqttClient, isNull);
-    });
-
-    test('initializeMqttClient returns early if url is empty', () async {
-      when(() => mockLocalStorageService.getBrokerUrl()).thenReturn('');
-      when(() => mockLocalStorageService.getBrokerPort()).thenReturn('');
-
-      await service.initializeMqttClient();
-      expect(service.mqttClient, isNull);
-    });
-
-    test('disconnectMqtt works safely on null client', () {
-      expect(() => service.disconnectMqtt(), returnsNormally);
-    });
-
-    test(
-        'initializeMqttClient creates client and connects, throwing exception '
-        'on invalid broker', () async {
-      when(() => mockLocalStorageService.getBrokerUrl())
-          .thenReturn('127.0.0.1');
-      when(() => mockLocalStorageService.getBrokerPort()).thenReturn('1883');
-      when(() => mockLocalStorageService.getBrokerUsername())
-          .thenReturn('user');
-      when(() => mockLocalStorageService.getBrokerPassword())
-          .thenReturn('pass');
-
-      unawaited(
-        expectLater(
-          service.connectionStatusStream,
-          emitsThrough(
-            BrokerConnectionStatus.disconnected,
-          ),
-        ),
-      );
-
-      await service.initializeMqttClient();
-      expect(service.mqttClient, isNotNull);
-      expect(service.mqttClient?.secure, isFalse);
-    });
-
-    test('initializeMqttClient configures TLS securely', () async {
-      when(() => mockLocalStorageService.getBrokerUrl())
-          .thenReturn('127.0.0.1');
-      when(() => mockLocalStorageService.getBrokerPort()).thenReturn('8883');
-      when(() => mockLocalStorageService.getBrokerUsername())
-          .thenReturn('user');
-      when(() => mockLocalStorageService.getBrokerPassword())
-          .thenReturn('pass');
-
-      unawaited(
-        expectLater(
-          service.connectionStatusStream,
-          emitsThrough(
-            BrokerConnectionStatus.disconnected,
-          ),
-        ),
-      );
-
-      await service.initializeMqttClient();
-      expect(service.mqttClient, isNotNull);
-      expect(service.mqttClient?.secure, isTrue);
-      expect(
-        service.mqttClient?.onBadCertificate?.call(MockX509Certificate()),
-        isTrue,
-      );
-    });
-
-    test(
-        'reconnectWithNewSettings disconnects gracefully and reinitializes '
-        'empty', () async {
-      when(() => mockLocalStorageService.getBrokerUrl())
-          .thenReturn('127.0.0.1');
-      when(() => mockLocalStorageService.getBrokerPort()).thenReturn('1883');
-      when(() => mockLocalStorageService.getBrokerUsername())
-          .thenReturn('user');
-      when(() => mockLocalStorageService.getBrokerPassword())
-          .thenReturn('pass');
-
-      await service.initializeMqttClient();
-      expect(service.mqttClient, isNotNull);
-
-      when(() => mockLocalStorageService.getBrokerUrl()).thenReturn(null);
-      when(() => mockLocalStorageService.getBrokerPort()).thenReturn(null);
-
-      await service.reconnectWithNewSettings();
-      expect(service.mqttClient, isNull);
-    });
-
-    test('connectMqtt ignores when client is null', () async {
-      await service.connectMqtt();
-      expect(service.mqttClient, isNull);
-    });
-
-    test('disconnectMqtt works when client is not null', () async {
-      when(() => mockLocalStorageService.getBrokerUrl())
-          .thenReturn('127.0.0.1');
-      when(() => mockLocalStorageService.getBrokerPort()).thenReturn('1883');
-      when(() => mockLocalStorageService.getBrokerUsername())
-          .thenReturn('user');
-      when(() => mockLocalStorageService.getBrokerPassword())
-          .thenReturn('pass');
-
-      await service.initializeMqttClient();
-
-      unawaited(
-        expectLater(
-          service.connectionStatusStream,
-          emitsThrough(BrokerConnectionStatus.disconnecting),
-        ),
-      );
-
-      service.disconnectMqtt();
-    });
-
-    test('callbacks properly push to stream', () async {
-      when(() => mockLocalStorageService.getBrokerUrl())
-          .thenReturn('127.0.0.1');
-      when(() => mockLocalStorageService.getBrokerPort()).thenReturn('1883');
-      when(() => mockLocalStorageService.getBrokerUsername())
-          .thenReturn('user');
-      when(() => mockLocalStorageService.getBrokerPassword())
-          .thenReturn('pass');
-
-      await service.initializeMqttClient();
-      final client = service.mqttClient!;
-
-      unawaited(
-        expectLater(
-          service.connectionStatusStream,
-          emitsInOrder([
-            BrokerConnectionStatus.connected,
-            BrokerConnectionStatus.disconnected,
-            BrokerConnectionStatus.connecting,
-            BrokerConnectionStatus.connected,
-          ]),
-        ),
-      );
-
-      client.onConnected?.call();
-      await Future<void>.delayed(Duration.zero);
-      client.onDisconnected?.call();
-      await Future<void>.delayed(Duration.zero);
-      client.onAutoReconnect?.call();
-      await Future<void>.delayed(Duration.zero);
-      client.onAutoReconnected?.call();
-    });
+  setUp(() {
+    repository = MockMqttRepository();
+    service = MqttService(mqttRepository: repository);
   });
 
-  group('BrokerConnectionStatus', () {
-    test('returns correct booleans for enum properties', () {
-      expect(BrokerConnectionStatus.disconnected.isDisconnected, isTrue);
-      expect(BrokerConnectionStatus.connecting.isConnecting, isTrue);
-      expect(BrokerConnectionStatus.connected.isConnected, isTrue);
-      expect(BrokerConnectionStatus.disconnecting.isDisconnecting, isTrue);
+  group('MqttService', () {
+    test('mqttClient returns repository.mqttClient', () {
+      final client = MockMqttServerClient();
+      when(() => repository.mqttClient).thenReturn(client);
+      final result = service.mqttClient;
+      expect(result, equals(client));
+      verify(() => repository.mqttClient).called(1);
+    });
 
-      expect(BrokerConnectionStatus.disconnected.isConnected, isFalse);
+    test('messageStream returns repository.messageStream', () {
+      const stream = Stream<List<MqttReceivedMessage<MqttMessage>>>.empty();
+      when(() => repository.messageStream).thenAnswer((_) => stream);
+      final result = service.messageStream;
+      expect(result, equals(stream));
+      verify(() => repository.messageStream).called(1);
+    });
+
+    test('connectionStatusStream returns repository.connectionStatusStream',
+        () {
+      const stream = Stream<BrokerConnectionStatus>.empty();
+      when(() => repository.connectionStatusStream).thenAnswer((_) => stream);
+      final result = service.connectionStatusStream;
+      expect(result, equals(stream));
+      verify(() => repository.connectionStatusStream).called(1);
+    });
+
+    test('initializeMqttClient calls repository.initializeMqttClient',
+        () async {
+      when(() => repository.initializeMqttClient()).thenAnswer((_) async {});
+      await service.initializeMqttClient();
+      verify(() => repository.initializeMqttClient()).called(1);
+    });
+
+    test('connectMqtt calls repository.connectMqtt', () async {
+      when(() => repository.connectMqtt()).thenAnswer((_) async {});
+      await service.connectMqtt();
+      verify(() => repository.connectMqtt()).called(1);
+    });
+
+    test('disconnectMqtt calls repository.disconnectMqtt', () {
+      service.disconnectMqtt();
+      verify(() => repository.disconnectMqtt()).called(1);
+    });
+
+    test('reconnectWithNewSettings calls repository.reconnectWithNewSettings',
+        () async {
+      when(() => repository.reconnectWithNewSettings())
+          .thenAnswer((_) async {});
+      await service.reconnectWithNewSettings();
+      verify(() => repository.reconnectWithNewSettings()).called(1);
+    });
+
+    test('dispose calls repository.dispose', () {
+      service.dispose();
+      verify(() => repository.dispose()).called(1);
     });
   });
 }

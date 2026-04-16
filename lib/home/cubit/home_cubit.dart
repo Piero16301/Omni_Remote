@@ -9,6 +9,8 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(const HomeState());
 
   final LocalStorageService localStorage = getIt<LocalStorageService>();
+  final CrashService _crashService = getIt<CrashService>();
+  final AnalyticsService _analyticsService = getIt<AnalyticsService>();
 
   ValueListenable<List<GroupModel>> getGroupsListenable() {
     return localStorage.getGroupsListenable();
@@ -30,8 +32,12 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(deleteGroupStatus: HomeStatus.loading));
     try {
       localStorage.deleteGroup(groupId: group.id);
+      _analyticsService.logEvent(
+        name: 'delete_group',
+        parameters: {'group_id': group.id},
+      );
       emit(state.copyWith(deleteGroupStatus: HomeStatus.success));
-    } on Exception catch (e) {
+    } on Exception catch (e, stackTrace) {
       GroupDeleteError groupDeleteError;
       switch (e.toString()) {
         case 'Exception: GROUP_NOT_EMPTY':
@@ -39,6 +45,11 @@ class HomeCubit extends Cubit<HomeState> {
         case 'Exception: GROUP_NOT_FOUND':
           groupDeleteError = GroupDeleteError.groupNotFound;
         default:
+          _crashService.recordError(
+            e,
+            stackTrace,
+            reason: 'deleteGroup unknown error',
+          );
           groupDeleteError = GroupDeleteError.unknown;
       }
       emit(
@@ -54,13 +65,22 @@ class HomeCubit extends Cubit<HomeState> {
     emit(state.copyWith(deleteDeviceStatus: HomeStatus.loading));
     try {
       localStorage.deleteDevice(deviceId: device.id);
+      _analyticsService.logEvent(
+        name: 'delete_device',
+        parameters: {'device_id': device.id},
+      );
       emit(state.copyWith(deleteDeviceStatus: HomeStatus.success));
-    } on Exception catch (e) {
+    } on Exception catch (e, stackTrace) {
       DeviceDeleteError deviceDeleteError;
       switch (e.toString()) {
         case 'Exception: DEVICE_NOT_FOUND':
           deviceDeleteError = DeviceDeleteError.deviceNotFound;
         default:
+          _crashService.recordError(
+            e,
+            stackTrace,
+            reason: 'deleteDevice unknown error',
+          );
           deviceDeleteError = DeviceDeleteError.unknown;
       }
       emit(

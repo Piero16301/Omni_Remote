@@ -9,6 +9,8 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
   ModifyDeviceCubit() : super(const ModifyDeviceState());
 
   final LocalStorageService localStorage = getIt<LocalStorageService>();
+  final CrashService _crashService = getIt<CrashService>();
+  final AnalyticsService _analyticsService = getIt<AnalyticsService>();
 
   void deviceReceived(DeviceModel? device) {
     emit(
@@ -89,6 +91,13 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
           interval: state.interval,
         );
         localStorage.updateDevice(device: updatedDevice);
+        _analyticsService.logEvent(
+          name: 'update_device',
+          parameters: {
+            'device_id': updatedDevice.id,
+            'tile_type': updatedDevice.tileType.name,
+          },
+        );
         emit(state.copyWith(saveStatus: ModifyDeviceStatus.success));
       } else {
         if (state.selectedGroupId == null) {
@@ -113,14 +122,25 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
           interval: state.interval,
         );
         localStorage.createDevice(device: newDevice);
+        _analyticsService.logEvent(
+          name: 'create_device',
+          parameters: {
+            'tile_type': newDevice.tileType.name,
+          },
+        );
         emit(state.copyWith(saveStatus: ModifyDeviceStatus.success));
       }
-    } on Exception catch (e) {
+    } on Exception catch (e, stackTrace) {
       ModifyDeviceError modifyDeviceError;
       switch (e.toString()) {
         case 'Exception: DUPLICATE_DEVICE_NAME':
           modifyDeviceError = ModifyDeviceError.duplicateDeviceName;
         default:
+          _crashService.recordError(
+            e,
+            stackTrace,
+            reason: 'saveDeviceModel unknown error',
+          );
           modifyDeviceError = ModifyDeviceError.unknown;
       }
       emit(

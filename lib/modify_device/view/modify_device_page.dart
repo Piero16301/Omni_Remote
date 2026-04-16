@@ -9,9 +9,6 @@ class ModifyDevicePage extends StatelessWidget {
     super.key,
   });
 
-  static const String pageName = 'modify-device';
-  static const String pagePath = '/modify-device';
-
   final DeviceModel? device;
 
   @override

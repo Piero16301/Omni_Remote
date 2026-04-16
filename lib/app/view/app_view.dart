@@ -17,33 +17,41 @@ class _AppViewState extends State<AppView> {
   @override
   void initState() {
     super.initState();
-    _router = AppRouter.router;
+    _router = AppRouter.getRouter();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AppCubit, AppState>(
-      builder: (context, state) => MaterialApp.router(
-        title: AppVariables.appName,
-        routeInformationProvider: _router.routeInformationProvider,
-        routerDelegate: _router.routerDelegate,
-        routeInformationParser: _router.routeInformationParser,
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppVariables.supportedLocales,
-        locale: state.language,
-        theme: AppThemes.lightTheme(
-          baseColor: state.baseColor,
-          fontFamily: state.fontFamily,
-        ),
-        darkTheme: AppThemes.darkTheme(
-          baseColor: state.baseColor,
-          fontFamily: state.fontFamily,
-        ),
-        themeAnimationCurve: Curves.easeInOut,
-        themeAnimationDuration: const Duration(milliseconds: 500),
-        themeMode: state.theme,
-      ),
+      builder: (context, state) {
+        return MaterialApp.router(
+          title: AppVariables.appName,
+          routeInformationProvider: _router.routeInformationProvider,
+          routerDelegate: _router.routerDelegate,
+          routeInformationParser: _router.routeInformationParser,
+          debugShowCheckedModeBanner: false,
+          builder: (context, child) {
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(boldText: false),
+              child: child!,
+            );
+          },
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppVariables.supportedLocales,
+          locale: state.language,
+          theme: AppThemes.lightTheme(
+            baseColor: state.baseColor,
+            fontFamily: state.fontFamily,
+          ),
+          darkTheme: AppThemes.darkTheme(
+            baseColor: state.baseColor,
+            fontFamily: state.fontFamily,
+          ),
+          themeAnimationCurve: Curves.easeInOut,
+          themeAnimationDuration: const Duration(milliseconds: 500),
+          themeMode: state.theme,
+        );
+      },
     );
   }
 }

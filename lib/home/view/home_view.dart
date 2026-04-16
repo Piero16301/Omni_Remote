@@ -3,12 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:omni_remote/app/app.dart';
-import 'package:omni_remote/connection/connection.dart';
 import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/l10n/l10n.dart';
-import 'package:omni_remote/modify_device/modify_device.dart';
-import 'package:omni_remote/modify_group/modify_group.dart';
-import 'package:omni_remote/settings/settings.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -88,8 +84,8 @@ class HomeView extends StatelessWidget {
                   children: [
                     Text(
                       AppVariables.appName,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w600,
                           ),
                     ),
                     Row(
@@ -107,7 +103,7 @@ class HomeView extends StatelessWidget {
                         Text(
                           statusText,
                           style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: statusColor,
                                   ),
                         ),
@@ -117,7 +113,7 @@ class HomeView extends StatelessWidget {
                 ),
                 centerTitle: true,
                 leading: IconButton(
-                  onPressed: () => context.pushNamed(ConnectionPage.pageName),
+                  onPressed: () => context.pushNamed(AppRoute.connection.name),
                   icon: const HugeIcon(
                     icon: HugeIcons.strokeRoundedInternetAntenna04,
                     strokeWidth: 2,
@@ -125,7 +121,7 @@ class HomeView extends StatelessWidget {
                 ),
                 actions: [
                   IconButton(
-                    onPressed: () => context.pushNamed(SettingsPage.pageName),
+                    onPressed: () => context.pushNamed(AppRoute.settings.name),
                     icon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedSettings01,
                       strokeWidth: 2,
@@ -135,9 +131,9 @@ class HomeView extends StatelessWidget {
               ),
               body: ListView(
                 padding: const EdgeInsets.only(
-                  left: 24,
-                  right: 24,
-                  top: 12,
+                  left: 16,
+                  right: 16,
+                  top: 8,
                   bottom: 120,
                 ),
                 children: [
@@ -146,13 +142,13 @@ class HomeView extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
-                        vertical: 12,
+                        vertical: 16,
                       ),
                       child: Center(
                         child: Text(
                           l10n.homeEmptyGroupsMessage,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodySmall,
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
                     ),
@@ -161,7 +157,7 @@ class HomeView extends StatelessWidget {
                     (group) => GroupCard(
                       group: group,
                       onEdit: () => context.pushNamed(
-                        ModifyGroupPage.pageName,
+                        AppRoute.modifyGroup.name,
                         extra: group,
                       ),
                       onDelete: () =>
@@ -169,8 +165,9 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                   Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
                     child: InkWell(
-                      onTap: () => context.pushNamed(ModifyGroupPage.pageName),
+                      onTap: () => context.pushNamed(AppRoute.modifyGroup.name),
                       borderRadius: BorderRadius.circular(16),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -184,7 +181,7 @@ class HomeView extends StatelessWidget {
                             const SizedBox(width: 8),
                             Text(
                               l10n.homeNewGroupButton,
-                              style: Theme.of(context).textTheme.bodySmall,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
                         ),
@@ -196,7 +193,7 @@ class HomeView extends StatelessWidget {
               floatingActionButton: groups.isNotEmpty
                   ? FloatingActionButton(
                       onPressed: () =>
-                          context.pushNamed(ModifyDevicePage.pageName),
+                          context.pushNamed(AppRoute.modifyDevice.name),
                       child: const HugeIcon(
                         icon: HugeIcons.strokeRoundedComputerAdd,
                         size: 28,

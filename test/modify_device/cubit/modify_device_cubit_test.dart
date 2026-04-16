@@ -25,12 +25,11 @@ void main() {
 
     setUp(() async {
       mockLocalStorageService = MockLocalStorageService();
-      if (!getIt.isRegistered<LocalStorageService>()) {
-        getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
-      } else {
-        await getIt.unregister<LocalStorageService>();
-        getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
-      }
+      await getIt.reset();
+      setupServiceLocator(Environment.mock);
+      getIt
+        ..unregister<LocalStorageService>()
+        ..registerSingleton<LocalStorageService>(mockLocalStorageService);
 
       when(() => mockLocalStorageService.getGroups()).thenReturn(testGroups);
     });

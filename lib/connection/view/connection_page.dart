@@ -5,9 +5,6 @@ import 'package:omni_remote/connection/connection.dart';
 class ConnectionPage extends StatelessWidget {
   const ConnectionPage({super.key});
 
-  static const String pageName = 'connection';
-  static const String pagePath = '/connection';
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

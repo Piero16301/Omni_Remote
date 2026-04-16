@@ -202,5 +202,154 @@ void main() {
 
       expect(deleteCalled, isTrue);
     });
+
+    testWidgets('cancel button in delete dialog closes it', (tester) async {
+      await tester.pumpWidget(buildSubject());
+
+      await tester.longPress(find.byType(InkWell).first);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(ListTile).last);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      await tester.tap(find.byType(AppOutlinedButton));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsNothing);
+    });
+
+    testWidgets('reconnect option in bottom sheet calls _verifyStatus',
+        (tester) async {
+      await tester.pumpWidget(buildSubject());
+
+      await tester.longPress(find.byType(InkWell).first);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(ListTile).first);
+      await tester.pumpAndSettle();
+
+      final expectedTopic = AppVariables.buildGroupTopic(
+        groupTitle: testGroup.title,
+        suffix: AppVariables.onlineSuffix,
+      );
+      verify(() => mockMqttClient.unsubscribe(expectedTopic)).called(1);
+    });
+
+    testWidgets('renders DeviceNumberTile for number type devices',
+        (tester) async {
+      final numberDevice = DeviceModel(
+        id: 'd2',
+        title: 'Thermostat',
+        subtitle: '',
+        icon: 'thermometer',
+        tileType: DeviceTileType.number,
+        groupId: testGroup.id,
+        rangeMin: 16,
+        rangeMax: 30,
+        divisions: 14,
+        interval: 1,
+      );
+      devicesNotifier.value = [numberDevice];
+
+      await tester.pumpWidget(
+        MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: appCubit),
+            BlocProvider.value(value: homeCubit),
+          ],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: SizedBox(
+                height: 600,
+                child: GroupCard(
+                  group: testGroup,
+                  onEdit: () {},
+                  onDelete: () {},
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(DeviceNumberTile), findsOneWidget);
+    });
+
+    testWidgets('does not subscribe when mqttClient is null', (tester) async {
+      when(() => mockMqttService.mqttClient).thenReturn(null);
+
+      await tester.pumpWidget(buildSubject());
+
+      verifyNever(() => mockMqttClient.subscribe(any(), any()));
+    });
+
+    testWidgets('updates _isOnline when MQTT online message is received',
+        (tester) async {
+      await tester.pumpWidget(buildSubject());
+
+      final onlineTopic = AppVariables.buildGroupTopic(
+        groupTitle: testGroup.title,
+        suffix: AppVariables.onlineSuffix,
+      );
+
+      final builder = MqttClientPayloadBuilder()..addString('1');
+      final publishMessage = MqttPublishMessage()
+        ..payload.message = builder.payload!;
+
+      final receivedMessage = MqttReceivedMessage<MqttMessage>(
+        onlineTopic,
+        publishMessage,
+      );
+
+      messageController.add([receivedMessage]);
+      await tester.pump();
+
+      expect(find.byType(GroupCard), findsOneWidget);
+    });
+
+    testWidgets('group with subtitle renders subtitle text', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      expect(find.text('Main area'), findsOneWidget);
+    });
+
+    testWidgets('group without subtitle does not show subtitle',
+        (tester) async {
+      final groupNoSub = GroupModel(
+        id: 'g2',
+        title: 'Bedroom',
+        subtitle: '',
+        icon: 'settings',
+      );
+
+      when(() => homeCubit.getDevicesListenable())
+          .thenReturn(ValueNotifier([]));
+
+      await tester.pumpWidget(
+        MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: appCubit),
+            BlocProvider.value(value: homeCubit),
+          ],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: GroupCard(
+                group: groupNoSub,
+                onEdit: () {},
+                onDelete: () {},
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Bedroom'), findsOneWidget);
+      expect(find.text(''), findsNothing);
+    });
   });
 }

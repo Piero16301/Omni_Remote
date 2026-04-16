@@ -33,12 +33,11 @@ void main() {
       mockBuildContext = MockBuildContext();
       mockAppCubit = MockAppCubit();
 
-      if (!getIt.isRegistered<LocalStorageService>()) {
-        getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
-      } else {
-        await getIt.unregister<LocalStorageService>();
-        getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
-      }
+      await getIt.reset();
+      setupServiceLocator(Environment.mock);
+      getIt
+        ..unregister<LocalStorageService>()
+        ..registerSingleton<LocalStorageService>(mockLocalStorageService);
 
       when(() => mockLocalStorageService.getBrokerUrl()).thenReturn('url');
       when(() => mockLocalStorageService.getBrokerPort()).thenReturn('1883');
