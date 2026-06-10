@@ -61,7 +61,7 @@ jobs:
           path: coverage/lcov.info
           min_coverage: 80
       - name: 📊 Codecov Badge
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
@@ -93,9 +93,21 @@ jobs:
 
       - name: 📦 Install Dependencies
         run: flutter pub get
+      - name: 📄 Create dummy .env file
+        run: touch .env
+      - name: 🔢 Compute build name
+        id: build_name
+        run: |
+          RUN=${{ github.run_number }}
+          PADDED=$(printf "%03d" $RUN)
+          MAJOR=${PADDED:0:${#PADDED}-2}
+          MINOR=${PADDED: -2:1}
+          PATCH=${PADDED: -1:1}
+          echo "value=${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
+
       - name: 🛠️ Build the application (AAB)
         run: |
-          flutter build appbundle --flavor production -t lib/main.dart --build-name="1.3.${{ github.run_number }}" --build-number="${{ github.run_number }}"
+          flutter build appbundle --flavor production -t lib/main.dart --build-name="${{ steps.build_name.outputs.value }}" --build-number="${{ github.run_number }}"
 
       - name: ⬇️ Upload AAB to Artifacts
         uses: actions/upload-artifact@master
@@ -134,7 +146,7 @@ jobs:
           serviceAccountJson: ${{ env.SERVICE_ACCOUNT_PATH }}
           packageName: ${{ env.APP_PACKAGE_NAME }}
           releaseFiles: ${{ env.AAB_PATH }}
-          track: beta
+          tracks: beta
           whatsNewDirectory: whatsnew
 
       - name: 🗑️ Delete Artifact
