@@ -8,37 +8,37 @@ environment:
   flutter: ">=3.35.6"
 
 dependencies:
-  bloc: ^9.2.0                        # | Android | iOS | Linux | macOS | Web | Windows
-  country_flags: ^4.1.2               # | Android | iOS | Linux | macOS |     | Windows
-  equatable: ^2.0.8                   # | Android | iOS | Linux | macOS | Web | Windows
-  firebase_analytics: ^12.3.0         # | Android | iOS |       | macOS | Web |
-  firebase_core: ^4.7.0               # | Android | iOS |       | macOS | Web | Windows
-  firebase_crashlytics: ^5.2.0        # | Android | iOS |       | macOS |     |
-  firebase_performance: ^0.11.3       # | Android | iOS |       |       | Web |
+  bloc: ^9.2.1
+  country_flags: ^4.1.2
+  equatable: ^2.0.8
+  firebase_analytics: ^12.4.2
+  firebase_core: ^4.10.0
+  firebase_crashlytics: ^5.2.3
+  firebase_performance: ^0.11.4+2
   flutter:
     sdk: flutter
-  flutter_bloc: ^9.1.1                # | Android | iOS | Linux | macOS | Web | Windows
+  flutter_bloc: ^9.1.1
   flutter_localizations:
     sdk: flutter
-  get_it: ^9.2.1                      # | Android | iOS | Linux | macOS | Web | Windows
-  go_router: ^17.2.1                  # | Android | iOS | Linux | macOS | Web | Windows
-  hive: ^2.2.3                        # | Android | iOS | Linux | macOS | Web | Windows
-  hive_flutter: ^1.1.0                # | Android | iOS | Linux | macOS | Web | Windows
-  hugeicons: ^1.1.6                   # | Android | iOS | Linux | macOS | Web | Windows
-  intl: ^0.20.2                       # | Android | iOS | Linux | macOS | Web | Windows
-  mqtt_client: ^10.11.10              # | Android | iOS | Linux | macOS | Web | Windows
-  package_info_plus: ^10.0.0          # | Android | iOS | Linux | macOS | Web | Windows
-  typed_data: ^1.4.0                  # | Android | iOS | Linux | macOS | Web | Windows
-  uuid: ^4.5.3                        # | Android | iOS | Linux | macOS | Web | Windows
+  get_it: ^9.2.1
+  go_router: ^17.3.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  hugeicons: ^1.1.7
+  intl: ^0.20.2
+  mqtt_client: ^10.11.11
+  package_info_plus: ^10.1.0
+  typed_data: ^1.4.0
+  uuid: ^4.5.3
 
 dev_dependencies:
-  bloc_test: ^10.0.0                  # | Android | iOS | Linux | macOS | Web | Windows
-  flutter_launcher_icons: ^0.14.4     # | Android | iOS | Linux | macOS | Web | Windows
+  bloc_test: ^10.0.0
+  flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
-  mockito: ^5.6.4                     # | Android | iOS | Linux | macOS | Web | Windows
-  mocktail: ^1.0.5                    # | Android | iOS | Linux | macOS | Web | Windows
-  very_good_analysis: ^10.2.0         # | Android | iOS | Linux | macOS | Web | Windows
+  mockito: ^5.6.4
+  mocktail: ^1.0.5
+  very_good_analysis: ^10.2.0
 
 flutter_launcher_icons:
   android: true
