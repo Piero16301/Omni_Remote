@@ -21,14 +21,12 @@ void setupServiceLocator(Environment env) {
         analyticsRepository: ServiceFactory.getAnalyticsRepository(env),
       ),
     )
-
     // 2. Configuración y Almacenamiento Local
     ..registerLazySingleton<LocalStorageService>(
       () => LocalStorageService(
         localStorageRepository: ServiceFactory.getLocalStorageRepository(env),
       ),
     )
-
     // 3. Conectividad de red
     ..registerLazySingleton<MqttService>(
       () => MqttService(

@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:omni_remote/app/app.dart';
 
 class LocalStorageService {
-  LocalStorageService({required LocalStorageRepository localStorageRepository})
-      : _localStorageRepository = localStorageRepository;
+  LocalStorageService({required this._localStorageRepository});
 
   final LocalStorageRepository _localStorageRepository;
 

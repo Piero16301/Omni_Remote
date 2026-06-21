@@ -26,10 +26,12 @@ void main() {
       getIt
         ..unregister<LocalStorageService>()
         ..registerSingleton<LocalStorageService>(mockLocalStorageService);
-      when(() => mockLocalStorageService.getGroupsListenable())
-          .thenReturn(ValueNotifier<List<GroupModel>>([]));
-      when(() => mockLocalStorageService.getDevicesListenable())
-          .thenReturn(ValueNotifier<List<DeviceModel>>([]));
+      when(
+        () => mockLocalStorageService.getGroupsListenable(),
+      ).thenReturn(ValueNotifier<List<GroupModel>>([]));
+      when(
+        () => mockLocalStorageService.getDevicesListenable(),
+      ).thenReturn(ValueNotifier<List<DeviceModel>>([]));
     });
 
     testWidgets('renders ModifyGroupView', (tester) async {

@@ -45,9 +45,9 @@ class HomeState extends Equatable {
 
   @override
   List<Object> get props => [
-        deleteGroupStatus,
-        deleteDeviceStatus,
-        groupDeleteError,
-        deviceDeleteError,
-      ];
+    deleteGroupStatus,
+    deleteDeviceStatus,
+    groupDeleteError,
+    deviceDeleteError,
+  ];
 }

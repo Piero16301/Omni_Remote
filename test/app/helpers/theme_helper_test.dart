@@ -15,12 +15,14 @@ void main() {
       );
     });
 
-    test('getThemeByName returns default ThemeMode (light) for invalid names',
-        () {
-      expect(ThemeHelper.getThemeByName('UNKNOWN_THEME'), ThemeMode.light);
-      expect(ThemeHelper.getThemeByName(''), ThemeMode.light);
-      expect(ThemeHelper.getThemeByName('123'), ThemeMode.light);
-    });
+    test(
+      'getThemeByName returns default ThemeMode (light) for invalid names',
+      () {
+        expect(ThemeHelper.getThemeByName('UNKNOWN_THEME'), ThemeMode.light);
+        expect(ThemeHelper.getThemeByName(''), ThemeMode.light);
+        expect(ThemeHelper.getThemeByName('123'), ThemeMode.light);
+      },
+    );
 
     test('getThemeByName is case-insensitive', () {
       expect(ThemeHelper.getThemeByName('light'), ThemeMode.light);

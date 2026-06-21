@@ -13,8 +13,7 @@ void main() {
       expect(ColorHelper.getColorByName('BLUE_GREY'), Colors.blueGrey);
     });
 
-    test(
-        'getColorByName returns correct color for valid lowercase or '
+    test('getColorByName returns correct color for valid lowercase or '
         'mixed-case names', () {
       expect(ColorHelper.getColorByName('red'), Colors.red);
       expect(ColorHelper.getColorByName('Blue'), Colors.blue);

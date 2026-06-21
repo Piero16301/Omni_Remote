@@ -55,12 +55,12 @@ class ModifyGroupState extends Equatable {
 
   @override
   List<Object?> get props => [
-        title,
-        subtitle,
-        icon,
-        formKey,
-        groupModel,
-        saveStatus,
-        modifyGroupError,
-      ];
+    title,
+    subtitle,
+    icon,
+    formKey,
+    groupModel,
+    saveStatus,
+    modifyGroupError,
+  ];
 }

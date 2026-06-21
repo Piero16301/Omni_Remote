@@ -34,8 +34,15 @@ class AppFunctions {
             Expanded(
               child: Text(
                 message ?? '',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
+                style: TextStyle(
+                  fontVariations: <FontVariation>[
+                    ...(Theme.of(
+                              context,
+                            ).textTheme.labelMedium?.fontVariations ??
+                            const <FontVariation>[])
+                        .where((v) => v.axis != 'wght'),
+                    const FontVariation('wght', 700),
+                  ],
                   color: Colors.white,
                 ),
               ),
@@ -46,10 +53,10 @@ class AppFunctions {
         backgroundColor: type.isSuccess
             ? Colors.green
             : type.isError
-                ? Colors.red
-                : type.isWarning
-                    ? Colors.orange
-                    : Theme.of(context).colorScheme.primary,
+            ? Colors.red
+            : type.isWarning
+            ? Colors.orange
+            : Theme.of(context).colorScheme.primary,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),

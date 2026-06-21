@@ -42,8 +42,9 @@ void main() {
       );
 
       when(() => connectionCubit.togglePasswordVisibility()).thenReturn(null);
-      when(() => connectionCubit.saveAndConnect(context: any(named: 'context')))
-          .thenAnswer((_) async {});
+      when(
+        () => connectionCubit.saveAndConnect(context: any(named: 'context')),
+      ).thenAnswer((_) async {});
       when(
         () => connectionCubit.disconnectBroker(context: any(named: 'context')),
       ).thenAnswer((_) async {});
@@ -90,8 +91,10 @@ void main() {
         (widget) =>
             widget is HugeIcon && widget.icon == HugeIcons.strokeRoundedEye,
       );
-      final visibilityToggle =
-          find.ancestor(of: toggleIcon, matching: find.byType(IconButton));
+      final visibilityToggle = find.ancestor(
+        of: toggleIcon,
+        matching: find.byType(IconButton),
+      );
       tester.widget<IconButton>(visibilityToggle).onPressed?.call();
       verify(() => connectionCubit.togglePasswordVisibility()).called(1);
 

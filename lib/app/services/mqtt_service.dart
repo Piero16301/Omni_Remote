@@ -3,8 +3,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:omni_remote/app/app.dart';
 
 class MqttService {
-  MqttService({required MqttRepository mqttRepository})
-      : _mqttRepository = mqttRepository;
+  MqttService({required this._mqttRepository});
 
   final MqttRepository _mqttRepository;
 

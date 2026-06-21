@@ -46,8 +46,15 @@ class ConnectionView extends StatelessWidget {
             title: Text(
               l10n.connectionAppBarTitle,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                fontVariations: <FontVariation>[
+                  ...(Theme.of(
+                            context,
+                          ).textTheme.titleLarge?.fontVariations ??
+                          const <FontVariation>[])
+                      .where((v) => v.axis != 'wght'),
+                  const FontVariation('wght', 700),
+                ],
+              ),
             ),
             centerTitle: true,
             leading: IconButton(
@@ -105,8 +112,9 @@ class ConnectionView extends StatelessWidget {
                 const SizedBox(height: 16),
                 AppTextField(
                   initialValue: state.brokerUsername,
-                  onChanged:
-                      context.read<ConnectionCubit>().changeBrokerUsername,
+                  onChanged: context
+                      .read<ConnectionCubit>()
+                      .changeBrokerUsername,
                   label: l10n.connectionUsernameLabel,
                   hintText: l10n.connectionUsernameHint,
                   prefix: const HugeIcon(
@@ -123,8 +131,9 @@ class ConnectionView extends StatelessWidget {
                 const SizedBox(height: 16),
                 AppTextField(
                   initialValue: state.brokerPassword,
-                  onChanged:
-                      context.read<ConnectionCubit>().changeBrokerPassword,
+                  onChanged: context
+                      .read<ConnectionCubit>()
+                      .changeBrokerPassword,
                   label: l10n.connectionPasswordLabel,
                   hintText: l10n.connectionPasswordHint,
                   prefix: const HugeIcon(
@@ -152,12 +161,13 @@ class ConnectionView extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
                 AppFilledButton(
-                  onPressed: (connectionStatus.isConnecting ||
+                  onPressed:
+                      (connectionStatus.isConnecting ||
                           connectionStatus.isDisconnecting)
                       ? null
                       : () async => context
-                          .read<ConnectionCubit>()
-                          .saveAndConnect(context: context),
+                            .read<ConnectionCubit>()
+                            .saveAndConnect(context: context),
                   label: l10n.connectionSaveAndConnectButton,
                 ),
                 if (state.brokerUrl.isNotEmpty && state.brokerPort.isNotEmpty)
@@ -166,9 +176,10 @@ class ConnectionView extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.surfaceContainerHighest.withValues(
+                        color:
+                            Theme.of(
+                              context,
+                            ).colorScheme.surfaceContainerHighest.withValues(
                               alpha: 0.5,
                             ),
                         borderRadius: BorderRadius.circular(12),
@@ -188,12 +199,20 @@ class ConnectionView extends StatelessWidget {
                           ),
                           Text(
                             statusText,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
+                            style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(
                                   color: statusColor,
-                                  fontWeight: FontWeight.w600,
+                                  fontVariations: <FontVariation>[
+                                    ...(Theme.of(
+                                                  context,
+                                                )
+                                                .textTheme
+                                                .titleLarge
+                                                ?.fontVariations ??
+                                            const <FontVariation>[])
+                                        .where((v) => v.axis != 'wght'),
+                                    const FontVariation('wght', 700),
+                                  ],
                                 ),
                           ),
                           Row(
@@ -226,8 +245,8 @@ class ConnectionView extends StatelessWidget {
                             AppOutlinedButton(
                               onPressed: connectionStatus.isConnected
                                   ? () => context
-                                      .read<ConnectionCubit>()
-                                      .disconnectBroker(context: context)
+                                        .read<ConnectionCubit>()
+                                        .disconnectBroker(context: context)
                                   : null,
                               icon: HugeIcons.strokeRoundedCancelCircle,
                               label: l10n.connectionDisconnectButton,

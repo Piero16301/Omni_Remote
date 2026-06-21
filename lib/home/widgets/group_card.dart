@@ -141,8 +141,8 @@ class _GroupCardState extends State<GroupCard> {
                   topRight: Radius.circular(16),
                 ),
                 color: Theme.of(context).colorScheme.primary.withValues(
-                      alpha: 0.1,
-                    ),
+                  alpha: 0.1,
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -161,11 +161,19 @@ class _GroupCardState extends State<GroupCard> {
                         children: [
                           Text(
                             widget.group.title,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
+                            style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(
-                                  fontWeight: FontWeight.w600,
+                                  fontVariations: <FontVariation>[
+                                    ...(Theme.of(
+                                                  context,
+                                                )
+                                                .textTheme
+                                                .titleLarge
+                                                ?.fontVariations ??
+                                            const <FontVariation>[])
+                                        .where((v) => v.axis != 'wght'),
+                                    const FontVariation('wght', 700),
+                                  ],
                                 ),
                           ),
                           Visibility(
@@ -198,17 +206,17 @@ class _GroupCardState extends State<GroupCard> {
                   .toList();
 
               return Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 16,
+                ),
                 child: Column(
                   spacing: 18,
                   children: devicesInGroup.isEmpty
                       ? [
                           Text(
                             l10n.homeGroupEmptyDevicesMessage,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
                                   fontStyle: FontStyle.italic,
                                   color: Theme.of(
@@ -255,8 +263,15 @@ class _GroupCardState extends State<GroupCard> {
                       Text(
                         group.title,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+                          fontVariations: <FontVariation>[
+                            ...(Theme.of(
+                                      context,
+                                    ).textTheme.titleLarge?.fontVariations ??
+                                    const <FontVariation>[])
+                                .where((v) => v.axis != 'wght'),
+                            const FontVariation('wght', 700),
+                          ],
+                        ),
                       ),
                       if (group.subtitle.isNotEmpty)
                         Text(
@@ -302,10 +317,9 @@ class _GroupCardState extends State<GroupCard> {
                   ),
                   title: Text(
                     l10n.homeDeleteOption,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge
-                        ?.copyWith(color: Theme.of(context).colorScheme.error),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -331,24 +345,40 @@ class _GroupCardState extends State<GroupCard> {
             title: Text(
               l10n.homeDeleteDialogTitle(group.title),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                fontVariations: <FontVariation>[
+                  ...(Theme.of(
+                            context,
+                          ).textTheme.titleLarge?.fontVariations ??
+                          const <FontVariation>[])
+                      .where((v) => v.axis != 'wght'),
+                  const FontVariation('wght', 700),
+                ],
+              ),
             ),
             content: Text(
               l10n.homeDeleteDialogContent(group.title),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             actions: [
-              AppOutlinedButton(
-                onPressed: () => Navigator.pop(context),
-                label: l10n.homeDeleteDialogCancel,
-              ),
-              AppFilledButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  widget.onDelete();
-                },
-                label: l10n.homeDeleteDialogConfirm,
+              Row(
+                spacing: 10,
+                children: [
+                  Expanded(
+                    child: AppOutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      label: l10n.homeDeleteDialogCancel,
+                    ),
+                  ),
+                  Expanded(
+                    child: AppFilledButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        widget.onDelete();
+                      },
+                      label: l10n.homeDeleteDialogConfirm,
+                    ),
+                  ),
+                ],
               ),
             ],
           );

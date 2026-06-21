@@ -45,8 +45,15 @@ class ModifyDeviceView extends StatelessWidget {
                 ? l10n.modifyDevicePageTitleCreate
                 : l10n.modifyDevicePageTitleEdit,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+              fontVariations: <FontVariation>[
+                ...(Theme.of(
+                          context,
+                        ).textTheme.titleLarge?.fontVariations ??
+                        const <FontVariation>[])
+                    .where((v) => v.axis != 'wght'),
+                const FontVariation('wght', 700),
+              ],
+            ),
           ),
           centerTitle: true,
           leading: IconButton(
@@ -137,16 +144,24 @@ class ModifyDeviceView extends StatelessWidget {
               const SizedBox(height: 16),
               TileTypeSelector(
                 selectedType: state.tileType,
-                onTypeSelected:
-                    context.read<ModifyDeviceCubit>().changeTileType,
+                onTypeSelected: context
+                    .read<ModifyDeviceCubit>()
+                    .changeTileType,
               ),
               if (state.tileType == DeviceTileType.number) ...[
                 const SizedBox(height: 16),
                 Text(
                   l10n.modifyDeviceRangeConfigurationLabel,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                    fontVariations: <FontVariation>[
+                      ...(Theme.of(
+                                context,
+                              ).textTheme.titleMedium?.fontVariations ??
+                              const <FontVariation>[])
+                          .where((v) => v.axis != 'wght'),
+                      const FontVariation('wght', 700),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -158,14 +173,14 @@ class ModifyDeviceView extends StatelessWidget {
                         initialValue: state.deviceModel != null
                             ? state.rangeMin.toString()
                             : (state.rangeMin != 0
-                                ? state.rangeMin.toString()
-                                : ''),
+                                  ? state.rangeMin.toString()
+                                  : ''),
                         onChanged: (value) {
                           final doubleValue = double.tryParse(value);
                           if (doubleValue != null) {
                             context.read<ModifyDeviceCubit>().changeRangeMin(
-                                  doubleValue,
-                                );
+                              doubleValue,
+                            );
                           }
                         },
                         keyboardType: const TextInputType.numberWithOptions(
@@ -197,8 +212,8 @@ class ModifyDeviceView extends StatelessWidget {
                           final doubleValue = double.tryParse(value);
                           if (doubleValue != null) {
                             context.read<ModifyDeviceCubit>().changeRangeMax(
-                                  doubleValue,
-                                );
+                              doubleValue,
+                            );
                           }
                         },
                         keyboardType: const TextInputType.numberWithOptions(
@@ -234,8 +249,8 @@ class ModifyDeviceView extends StatelessWidget {
                           final intValue = int.tryParse(value);
                           if (intValue != null) {
                             context.read<ModifyDeviceCubit>().changeDivisions(
-                                  intValue,
-                                );
+                              intValue,
+                            );
                           }
                         },
                         keyboardType: TextInputType.number,
@@ -265,8 +280,8 @@ class ModifyDeviceView extends StatelessWidget {
                           final doubleValue = double.tryParse(value);
                           if (doubleValue != null) {
                             context.read<ModifyDeviceCubit>().changeInterval(
-                                  doubleValue,
-                                );
+                              doubleValue,
+                            );
                           }
                         },
                         keyboardType: const TextInputType.numberWithOptions(

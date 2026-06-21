@@ -28,10 +28,12 @@ void main() {
 
       when(mockLocalStorageService.getGroups).thenReturn([]);
       when(mockLocalStorageService.getDevices).thenReturn([]);
-      when(mockLocalStorageService.getGroupsListenable)
-          .thenReturn(ValueNotifier<List<GroupModel>>([]));
-      when(mockLocalStorageService.getDevicesListenable)
-          .thenReturn(ValueNotifier<List<DeviceModel>>([]));
+      when(
+        mockLocalStorageService.getGroupsListenable,
+      ).thenReturn(ValueNotifier<List<GroupModel>>([]));
+      when(
+        mockLocalStorageService.getDevicesListenable,
+      ).thenReturn(ValueNotifier<List<DeviceModel>>([]));
     });
 
     testWidgets('renders HomeView', (tester) async {

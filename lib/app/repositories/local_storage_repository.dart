@@ -226,8 +226,9 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
 
   @override
   Locale? getLanguage() {
-    final languageString =
-        _settingsBox.get(LocalStorageRepository.kUserLanguage);
+    final languageString = _settingsBox.get(
+      LocalStorageRepository.kUserLanguage,
+    );
     if (languageString == null) {
       return null;
     }
@@ -266,8 +267,9 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
 
   @override
   Color? getBaseColor() {
-    final baseColorString =
-        _settingsBox.get(LocalStorageRepository.kUserBaseColor);
+    final baseColorString = _settingsBox.get(
+      LocalStorageRepository.kUserBaseColor,
+    );
     if (baseColorString == null) {
       return null;
     }
@@ -417,8 +419,9 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
     final performance = getIt<PerformanceService>();
     final trace = performance.startTrace('create_device');
     try {
-      final groupDevices =
-          _devicesBox.values.where((d) => d.groupId == device.groupId).toList();
+      final groupDevices = _devicesBox.values
+          .where((d) => d.groupId == device.groupId)
+          .toList();
       final normalizedName = device.title.toLowerCase().replaceAll(' ', '-');
 
       final isDuplicate = groupDevices.any(
@@ -448,8 +451,9 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
 
   @override
   void updateDevice({required DeviceModel device}) {
-    final groupDevices =
-        _devicesBox.values.where((d) => d.groupId == device.groupId).toList();
+    final groupDevices = _devicesBox.values
+        .where((d) => d.groupId == device.groupId)
+        .toList();
     final normalizedName = device.title.toLowerCase().replaceAll(' ', '-');
 
     final isDuplicate = groupDevices.any(

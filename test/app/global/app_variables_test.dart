@@ -36,7 +36,10 @@ void main() {
     });
 
     test('availableFonts contains default font', () {
-      expect(AppVariables.availableFonts.containsKey('Poppins'), isTrue);
+      expect(
+        AppVariables.availableFonts.containsKey('Google Sans Flex'),
+        isTrue,
+      );
     });
 
     group('SnackBarType', () {

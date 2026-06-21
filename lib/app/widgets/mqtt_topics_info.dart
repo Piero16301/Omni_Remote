@@ -83,8 +83,15 @@ class MqttTopicsInfo extends StatelessWidget {
           l10n.modifyDeviceMqttTopics,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+            fontVariations: <FontVariation>[
+              ...(Theme.of(
+                        context,
+                      ).textTheme.titleMedium?.fontVariations ??
+                      const <FontVariation>[])
+                  .where((v) => v.axis != 'wght'),
+              const FontVariation('wght', 700),
+            ],
+          ),
         ),
         const SizedBox(height: 8),
         Card(
@@ -141,11 +148,19 @@ class MqttTopicsInfo extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: '${l10n.modifyDeviceMqttTopicOnline}: ',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                                  fontWeight: FontWeight.w600,
+                                  fontVariations: <FontVariation>[
+                                    ...(Theme.of(
+                                                  context,
+                                                )
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.fontVariations ??
+                                            const <FontVariation>[])
+                                        .where((v) => v.axis != 'wght'),
+                                    const FontVariation('wght', 700),
+                                  ],
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
                           ),
@@ -178,8 +193,15 @@ class MqttTopicsInfo extends StatelessWidget {
           l10n.modifyDeviceMqttTopics,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+            fontVariations: <FontVariation>[
+              ...(Theme.of(
+                        context,
+                      ).textTheme.titleMedium?.fontVariations ??
+                      const <FontVariation>[])
+                  .where((v) => v.axis != 'wght'),
+              const FontVariation('wght', 700),
+            ],
+          ),
         ),
         const SizedBox(height: 16),
         Card(
@@ -247,11 +269,19 @@ class MqttTopicsInfo extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: '${l10n.modifyDeviceMqttTopicStatus}: ',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                                  fontWeight: FontWeight.w600,
+                                  fontVariations: <FontVariation>[
+                                    ...(Theme.of(
+                                                  context,
+                                                )
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.fontVariations ??
+                                            const <FontVariation>[])
+                                        .where((v) => v.axis != 'wght'),
+                                    const FontVariation('wght', 700),
+                                  ],
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
                           ),
@@ -283,11 +313,19 @@ class MqttTopicsInfo extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: '${l10n.modifyDeviceMqttTopicCommand}: ',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
+                            style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                                  fontWeight: FontWeight.w600,
+                                  fontVariations: <FontVariation>[
+                                    ...(Theme.of(
+                                                  context,
+                                                )
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.fontVariations ??
+                                            const <FontVariation>[])
+                                        .where((v) => v.axis != 'wght'),
+                                    const FontVariation('wght', 700),
+                                  ],
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
                           ),
@@ -363,9 +401,16 @@ class _TopicItem extends StatelessWidget {
           child: Text(
             label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+              fontVariations: <FontVariation>[
+                ...(Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.fontVariations ??
+                        const <FontVariation>[])
+                    .where((v) => v.axis != 'wght'),
+                const FontVariation('wght', 700),
+              ],
+              color: Theme.of(context).colorScheme.primary,
+            ),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),
@@ -383,8 +428,8 @@ class _TopicItem extends StatelessWidget {
             child: Text(
               topic,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontFamily: 'monospace',
-                  ),
+                fontFamily: 'monospace',
+              ),
             ),
           ),
         ),

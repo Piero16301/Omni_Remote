@@ -85,8 +85,15 @@ class HomeView extends StatelessWidget {
                     Text(
                       AppVariables.appName,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                        fontVariations: <FontVariation>[
+                          ...(Theme.of(
+                                    context,
+                                  ).textTheme.bodyLarge?.fontVariations ??
+                                  const <FontVariation>[])
+                              .where((v) => v.axis != 'wght'),
+                          const FontVariation('wght', 700),
+                        ],
+                      ),
                     ),
                     Row(
                       mainAxisSize: MainAxisSize.min,
@@ -102,10 +109,10 @@ class HomeView extends StatelessWidget {
                         const SizedBox(width: 6),
                         Text(
                           statusText,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: statusColor,
-                                  ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: statusColor,
+                              ),
                         ),
                       ],
                     ),

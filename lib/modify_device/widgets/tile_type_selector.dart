@@ -23,8 +23,15 @@ class TileTypeSelector extends StatelessWidget {
         Text(
           l10n.modifyDeviceTileTypeLabel,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+            fontVariations: <FontVariation>[
+              ...(Theme.of(
+                        context,
+                      ).textTheme.titleMedium?.fontVariations ??
+                      const <FontVariation>[])
+                  .where((v) => v.axis != 'wght'),
+              const FontVariation('wght', 700),
+            ],
+          ),
         ),
         const SizedBox(height: 8),
         SizedBox(
@@ -52,13 +59,21 @@ class TileTypeSelector extends StatelessWidget {
                 label: Text(
                   l10n.modifyDeviceTileTypeBoolean,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        fontWeight: selectedType == DeviceTileType.boolean
-                            ? FontWeight.w600
-                            : FontWeight.normal,
-                        color: selectedType == DeviceTileType.boolean
-                            ? Theme.of(context).colorScheme.primary
-                            : null,
+                    fontVariations: <FontVariation>[
+                      ...(Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.fontVariations ??
+                              const <FontVariation>[])
+                          .where((v) => v.axis != 'wght'),
+                      FontVariation(
+                        'wght',
+                        selectedType == DeviceTileType.boolean ? 700 : 500,
                       ),
+                    ],
+                    color: selectedType == DeviceTileType.boolean
+                        ? Theme.of(context).colorScheme.primary
+                        : null,
+                  ),
                 ),
                 icon: HugeIcon(
                   icon: HugeIcons.strokeRoundedToggleOn,
@@ -74,13 +89,21 @@ class TileTypeSelector extends StatelessWidget {
                 label: Text(
                   l10n.modifyDeviceTileTypeNumber,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        fontWeight: selectedType == DeviceTileType.number
-                            ? FontWeight.w600
-                            : FontWeight.normal,
-                        color: selectedType == DeviceTileType.number
-                            ? Theme.of(context).colorScheme.primary
-                            : null,
+                    fontVariations: <FontVariation>[
+                      ...(Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.fontVariations ??
+                              const <FontVariation>[])
+                          .where((v) => v.axis != 'wght'),
+                      FontVariation(
+                        'wght',
+                        selectedType == DeviceTileType.number ? 700 : 500,
                       ),
+                    ],
+                    color: selectedType == DeviceTileType.number
+                        ? Theme.of(context).colorScheme.primary
+                        : null,
+                  ),
                 ),
                 icon: HugeIcon(
                   icon: HugeIcons.strokeRoundedLeftToRightListNumber,

@@ -5,7 +5,7 @@ class AppState extends Equatable {
     this.language = const Locale('en', 'US'),
     this.theme = ThemeMode.system,
     this.baseColor = Colors.green,
-    this.fontFamily = 'Poppins',
+    this.fontFamily = 'GoogleSansFlex',
     this.brokerConnectionStatus = BrokerConnectionStatus.disconnected,
   });
 
@@ -34,10 +34,10 @@ class AppState extends Equatable {
 
   @override
   List<Object?> get props => [
-        language,
-        theme,
-        baseColor,
-        fontFamily,
-        brokerConnectionStatus,
-      ];
+    language,
+    theme,
+    baseColor,
+    fontFamily,
+    brokerConnectionStatus,
+  ];
 }

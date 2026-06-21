@@ -78,8 +78,9 @@ void main() {
             language: any<Locale>(named: 'language'),
           ),
         ).called(1);
-        verify(() => mockLocalStorageService.saveTheme(theme: ThemeMode.system))
-            .called(1);
+        verify(
+          () => mockLocalStorageService.saveTheme(theme: ThemeMode.system),
+        ).called(1);
         verify(
           () => mockLocalStorageService.saveBaseColor(
             baseColor: AppVariables.defaultBaseColor,
@@ -93,8 +94,11 @@ void main() {
       build: () => appCubit,
       act: (cubit) => cubit.changeLanguage(language: const Locale('es', 'ES')),
       expect: () => [
-        isA<AppState>()
-            .having((s) => s.language, 'language', const Locale('es', 'ES')),
+        isA<AppState>().having(
+          (s) => s.language,
+          'language',
+          const Locale('es', 'ES'),
+        ),
       ],
       verify: (_) {
         verify(
@@ -119,8 +123,9 @@ void main() {
         isA<AppState>().having((s) => s.theme, 'theme', ThemeMode.dark),
       ],
       verify: (_) {
-        verify(() => mockLocalStorageService.saveTheme(theme: ThemeMode.dark))
-            .called(1);
+        verify(
+          () => mockLocalStorageService.saveTheme(theme: ThemeMode.dark),
+        ).called(1);
         verify(
           () => mockAnalyticsService.logEvent(
             name: 'change_theme',
@@ -176,8 +181,9 @@ void main() {
         when(() => mockMqttService.connectionStatusStream).thenAnswer(
           (_) => Stream.fromIterable([BrokerConnectionStatus.connected]),
         );
-        when(() => mockMqttService.initializeMqttClient())
-            .thenAnswer((_) async {});
+        when(
+          () => mockMqttService.initializeMqttClient(),
+        ).thenAnswer((_) async {});
         return appCubit;
       },
       act: (cubit) => cubit.initializeMqttClient(),
@@ -211,28 +217,35 @@ void main() {
       verify(() => mockMqttService.disconnectMqtt()).called(1);
     });
 
-    test('reconnectWithNewSettings calls mqttService.reconnectWithNewSettings',
-        () async {
-      when(() => mockMqttService.reconnectWithNewSettings())
-          .thenAnswer((_) async {});
-      when(
-        () => mockAnalyticsService.logEvent(name: any<String>(named: 'name')),
-      ).thenReturn(null);
-      await appCubit.reconnectWithNewSettings();
-      verify(() => mockMqttService.reconnectWithNewSettings()).called(1);
-    });
+    test(
+      'reconnectWithNewSettings calls mqttService.reconnectWithNewSettings',
+      () async {
+        when(
+          () => mockMqttService.reconnectWithNewSettings(),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockAnalyticsService.logEvent(name: any<String>(named: 'name')),
+        ).thenReturn(null);
+        await appCubit.reconnectWithNewSettings();
+        verify(() => mockMqttService.reconnectWithNewSettings()).called(1);
+      },
+    );
 
     blocTest<AppCubit, AppState>(
       'initialize does not save again if values are already set',
       build: () {
-        when(() => mockLocalStorageService.getLanguage())
-            .thenReturn(const Locale('en', 'US'));
-        when(() => mockLocalStorageService.getTheme())
-            .thenReturn(ThemeMode.dark);
-        when(() => mockLocalStorageService.getBaseColor())
-            .thenReturn(Colors.green);
-        when(() => mockLocalStorageService.getFontFamily())
-            .thenReturn('Poppins');
+        when(
+          () => mockLocalStorageService.getLanguage(),
+        ).thenReturn(const Locale('en', 'US'));
+        when(
+          () => mockLocalStorageService.getTheme(),
+        ).thenReturn(ThemeMode.dark);
+        when(
+          () => mockLocalStorageService.getBaseColor(),
+        ).thenReturn(Colors.green);
+        when(
+          () => mockLocalStorageService.getFontFamily(),
+        ).thenReturn('GoogleSansFlex');
         return appCubit;
       },
       act: (cubit) => cubit.initialize(),
@@ -241,7 +254,7 @@ void main() {
             .having((s) => s.language, 'language', const Locale('en', 'US'))
             .having((s) => s.theme, 'theme', ThemeMode.dark)
             .having((s) => s.baseColor, 'baseColor', Colors.green)
-            .having((s) => s.fontFamily, 'fontFamily', 'Poppins'),
+            .having((s) => s.fontFamily, 'fontFamily', 'GoogleSansFlex'),
       ],
       verify: (_) {
         verifyNever(
@@ -270,14 +283,18 @@ void main() {
     blocTest<AppCubit, AppState>(
       'initialize saves default font if current font is not supported',
       build: () {
-        when(() => mockLocalStorageService.getLanguage())
-            .thenReturn(const Locale('en', 'US'));
-        when(() => mockLocalStorageService.getTheme())
-            .thenReturn(ThemeMode.dark);
-        when(() => mockLocalStorageService.getBaseColor())
-            .thenReturn(Colors.green);
-        when(() => mockLocalStorageService.getFontFamily())
-            .thenReturn('UnsupportedFont');
+        when(
+          () => mockLocalStorageService.getLanguage(),
+        ).thenReturn(const Locale('en', 'US'));
+        when(
+          () => mockLocalStorageService.getTheme(),
+        ).thenReturn(ThemeMode.dark);
+        when(
+          () => mockLocalStorageService.getBaseColor(),
+        ).thenReturn(Colors.green);
+        when(
+          () => mockLocalStorageService.getFontFamily(),
+        ).thenReturn('UnsupportedFont');
         return appCubit;
       },
       act: (cubit) => cubit.initialize(),
@@ -286,7 +303,7 @@ void main() {
           () => mockLocalStorageService.saveFontFamily(
             fontFamily:
                 AppVariables.availableFonts[AppVariables.defaultFontFamily] ??
-                    AppVariables.defaultFontFamily,
+                AppVariables.defaultFontFamily,
           ),
         ).called(1);
       },

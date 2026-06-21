@@ -21,8 +21,15 @@ class SettingsView extends StatelessWidget {
             title: Text(
               l10n.settingsAppBarTitle,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                fontVariations: <FontVariation>[
+                  ...(Theme.of(
+                            context,
+                          ).textTheme.titleLarge?.fontVariations ??
+                          const <FontVariation>[])
+                      .where((v) => v.axis != 'wght'),
+                  const FontVariation('wght', 700),
+                ],
+              ),
             ),
             centerTitle: true,
             leading: IconButton(
@@ -116,6 +123,12 @@ class LocaleSettingsCard extends StatelessWidget {
         return l10n.settingsLanguageSpanish;
       case 'it':
         return l10n.settingsLanguageItalian;
+      case 'fr':
+        return l10n.settingsLanguageFrench;
+      case 'de':
+        return l10n.settingsLanguageGerman;
+      case 'pt':
+        return l10n.settingsLanguagePortuguese;
       default:
         return locale.languageCode;
     }
@@ -145,8 +158,8 @@ class ThemeSettingsCard extends StatelessWidget {
                   icon: themeMode == ThemeMode.light
                       ? HugeIcons.strokeRoundedSun03
                       : (themeMode == ThemeMode.dark
-                          ? HugeIcons.strokeRoundedMoon02
-                          : HugeIcons.strokeRoundedFan01),
+                            ? HugeIcons.strokeRoundedMoon02
+                            : HugeIcons.strokeRoundedFan01),
                   size: 20,
                   strokeWidth: 2,
                 ),
@@ -204,10 +217,9 @@ class ColorSettingsCard extends StatelessWidget {
                     color: entry.value,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .outline
-                          .withValues(alpha: 0.3),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.outline.withValues(alpha: 0.3),
                     ),
                   ),
                 ),
@@ -289,8 +301,8 @@ class FontSettingsCard extends StatelessWidget {
           child: Text(
             entry.key,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontFamily: entry.value,
-                ),
+              fontFamily: entry.value,
+            ),
           ),
         );
       },
@@ -299,8 +311,8 @@ class FontSettingsCard extends StatelessWidget {
     final validValue = fontItems.any((item) => item.value == state.fontFamily)
         ? state.fontFamily
         : (AppVariables.availableFonts[state.fontFamily] ??
-            fontItems.firstOrNull?.value ??
-            state.fontFamily);
+              fontItems.firstOrNull?.value ??
+              state.fontFamily);
 
     return SettingsCardBlock<String>(
       title: l10n.settingsFontTitle,

@@ -20,18 +20,19 @@ class AppOutlinedButton extends StatelessWidget {
     return OutlinedButton.icon(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        padding: innerPadding ??
-            const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        padding: innerPadding ?? const EdgeInsets.all(12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       icon: icon != null ? HugeIcon(icon: icon!, strokeWidth: 2) : null,
       label: Text(
         label ?? '',
-        style: TextStyle(
-          fontSize: Theme.of(context).textTheme.titleMedium?.fontSize,
-          fontWeight: FontWeight.w600,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          fontVariations: [
+            ...(Theme.of(context).textTheme.titleMedium?.fontVariations ??
+                    const <FontVariation>[])
+                .where((v) => v.axis != 'wght'),
+            const FontVariation('wght', 700),
+          ],
         ),
       ),
     );

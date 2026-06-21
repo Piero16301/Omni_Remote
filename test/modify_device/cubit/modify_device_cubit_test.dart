@@ -47,8 +47,11 @@ void main() {
       build: ModifyDeviceCubit.new,
       act: (cubit) => cubit.deviceReceived(null),
       expect: () => [
-        isA<ModifyDeviceState>()
-            .having((s) => s.selectedGroupId, 'selectedGroupId', 'g1'),
+        isA<ModifyDeviceState>().having(
+          (s) => s.selectedGroupId,
+          'selectedGroupId',
+          'g1',
+        ),
       ],
     );
 
@@ -101,17 +104,26 @@ void main() {
       },
       expect: () => [
         isA<ModifyDeviceState>().having((s) => s.title, 'title', 'New Title'),
-        isA<ModifyDeviceState>()
-            .having((s) => s.subtitle, 'subtitle', 'New Sub'),
+        isA<ModifyDeviceState>().having(
+          (s) => s.subtitle,
+          'subtitle',
+          'New Sub',
+        ),
         isA<ModifyDeviceState>().having((s) => s.icon, 'icon', 'New Icon'),
-        isA<ModifyDeviceState>()
-            .having((s) => s.tileType, 'tileType', DeviceTileType.number),
+        isA<ModifyDeviceState>().having(
+          (s) => s.tileType,
+          'tileType',
+          DeviceTileType.number,
+        ),
         isA<ModifyDeviceState>().having((s) => s.rangeMin, 'rangeMin', 1.0),
         isA<ModifyDeviceState>().having((s) => s.rangeMax, 'rangeMax', 100.0),
         isA<ModifyDeviceState>().having((s) => s.divisions, 'divisions', 10),
         isA<ModifyDeviceState>().having((s) => s.interval, 'interval', 2.0),
-        isA<ModifyDeviceState>()
-            .having((s) => s.selectedGroupId, 'selectedGroupId', 'g2'),
+        isA<ModifyDeviceState>().having(
+          (s) => s.selectedGroupId,
+          'selectedGroupId',
+          'g2',
+        ),
       ],
     );
 
@@ -173,8 +185,9 @@ void main() {
       unawaited(cubit.close());
     });
 
-    testWidgets('saveDeviceModel fails when no group is selected',
-        (tester) async {
+    testWidgets('saveDeviceModel fails when no group is selected', (
+      tester,
+    ) async {
       final cubit = ModifyDeviceCubit();
 
       await tester.pumpWidget(

@@ -7,8 +7,7 @@ import 'package:omni_remote/app/models/device_model.dart';
 
 void main() {
   group('DeviceModel', () {
-    test(
-        'supports value equality (by properties since no equatable, we test '
+    test('supports value equality (by properties since no equatable, we test '
         'instantiating)', () {
       final device = DeviceModel(
         title: 'Light 1',

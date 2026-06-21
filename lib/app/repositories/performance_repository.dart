@@ -21,7 +21,7 @@ class MockPerformanceRepository implements PerformanceRepository {
 
 class FirebasePerformanceRepository implements PerformanceRepository {
   FirebasePerformanceRepository({FirebasePerformance? performance})
-      : _performance = performance ?? FirebasePerformance.instance;
+    : _performance = performance ?? FirebasePerformance.instance;
 
   final FirebasePerformance _performance;
 

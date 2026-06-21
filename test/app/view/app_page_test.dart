@@ -29,14 +29,18 @@ void main() {
       when(() => mockLocalStorageService.getTheme()).thenReturn(null);
       when(() => mockLocalStorageService.getBaseColor()).thenReturn(null);
       when(() => mockLocalStorageService.getFontFamily()).thenReturn(null);
-      when(() => mockLocalStorageService.getGroupsListenable())
-          .thenReturn(ValueNotifier<List<GroupModel>>([]));
-      when(() => mockLocalStorageService.getDevicesListenable())
-          .thenReturn(ValueNotifier<List<DeviceModel>>([]));
-      when(() => mockMqttService.connectionStatusStream)
-          .thenAnswer((_) => const Stream.empty());
-      when(() => mockMqttService.initializeMqttClient())
-          .thenAnswer((_) async {});
+      when(
+        () => mockLocalStorageService.getGroupsListenable(),
+      ).thenReturn(ValueNotifier<List<GroupModel>>([]));
+      when(
+        () => mockLocalStorageService.getDevicesListenable(),
+      ).thenReturn(ValueNotifier<List<DeviceModel>>([]));
+      when(
+        () => mockMqttService.connectionStatusStream,
+      ).thenAnswer((_) => const Stream.empty());
+      when(
+        () => mockMqttService.initializeMqttClient(),
+      ).thenAnswer((_) async {});
     });
 
     testWidgets('renders AppView', (tester) async {

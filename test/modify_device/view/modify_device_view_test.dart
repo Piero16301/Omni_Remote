@@ -89,8 +89,9 @@ void main() {
       verify(() => modifyDeviceCubit.changeSubtitle('New Subtitle')).called(1);
     });
 
-    testWidgets('triggers cubit methods on number tile configuration fields',
-        (tester) async {
+    testWidgets('triggers cubit methods on number tile configuration fields', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(1080, 2400);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() {

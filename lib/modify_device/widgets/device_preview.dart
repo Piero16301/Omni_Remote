@@ -34,8 +34,15 @@ class DevicePreview extends StatelessWidget {
         Text(
           l10n.modifyDevicePreview,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+            fontVariations: <FontVariation>[
+              ...(Theme.of(
+                        context,
+                      ).textTheme.titleMedium?.fontVariations ??
+                      const <FontVariation>[])
+                  .where((v) => v.axis != 'wght'),
+              const FontVariation('wght', 700),
+            ],
+          ),
         ),
         const SizedBox(height: 8),
         DevicePreviewTile(
@@ -151,8 +158,15 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
                             ? l10n.modifyDeviceDeviceTitle
                             : widget.title,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+                          fontVariations: <FontVariation>[
+                            ...(Theme.of(
+                                      context,
+                                    ).textTheme.bodyLarge?.fontVariations ??
+                                    const <FontVariation>[])
+                                .where((v) => v.axis != 'wght'),
+                            const FontVariation('wght', 700),
+                          ],
+                        ),
                       ),
                       Visibility(
                         visible: widget.subtitle.isNotEmpty,
@@ -210,10 +224,20 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
                             widget.title.isEmpty
                                 ? l10n.modifyDeviceDeviceTitle
                                 : widget.title,
-                            style:
-                                Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(
+                                  fontVariations: <FontVariation>[
+                                    ...(Theme.of(
+                                                  context,
+                                                )
+                                                .textTheme
+                                                .bodyLarge
+                                                ?.fontVariations ??
+                                            const <FontVariation>[])
+                                        .where((v) => v.axis != 'wght'),
+                                    const FontVariation('wght', 700),
+                                  ],
+                                ),
                           ),
                           Text(
                             widget.subtitle.isEmpty
