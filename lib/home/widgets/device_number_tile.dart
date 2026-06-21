@@ -201,8 +201,15 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                       Text(
                         widget.device.title,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+                          fontVariations: <FontVariation>[
+                            ...(Theme.of(
+                                      context,
+                                    ).textTheme.bodyLarge?.fontVariations ??
+                                    const <FontVariation>[])
+                                .where((v) => v.axis != 'wght'),
+                            const FontVariation('wght', 700),
+                          ],
+                        ),
                       ),
                       Visibility(
                         visible: widget.device.subtitle.isNotEmpty,
@@ -221,8 +228,8 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                     IconButton(
                       onPressed: widget.groupIsOnline
                           ? () => _publishCommand(
-                                _value - widget.device.interval,
-                              )
+                              _value - widget.device.interval,
+                            )
                           : null,
                       icon: const HugeIcon(
                         icon: HugeIcons.strokeRoundedRemove01,
@@ -236,8 +243,8 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                     IconButton(
                       onPressed: widget.groupIsOnline
                           ? () => _publishCommand(
-                                _value + widget.device.interval,
-                              )
+                              _value + widget.device.interval,
+                            )
                           : null,
                       icon: const HugeIcon(
                         icon: HugeIcons.strokeRoundedAdd01,
@@ -255,8 +262,8 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
               value: _value,
               onChanged: widget.groupIsOnline
                   ? (value) => setState(() {
-                        _value = value;
-                      })
+                      _value = value;
+                    })
                   : null,
               onChangeEnd: widget.groupIsOnline ? _publishCommand : null,
             ),
@@ -290,8 +297,15 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                       Text(
                         device.title,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
+                          fontVariations: <FontVariation>[
+                            ...(Theme.of(
+                                      context,
+                                    ).textTheme.titleLarge?.fontVariations ??
+                                    const <FontVariation>[])
+                                .where((v) => v.axis != 'wght'),
+                            const FontVariation('wght', 700),
+                          ],
+                        ),
                       ),
                       if (device.subtitle.isNotEmpty)
                         Text(
@@ -323,10 +337,9 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                   ),
                   title: Text(
                     l10n.homeDeleteOption,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge
-                        ?.copyWith(color: Theme.of(context).colorScheme.error),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -352,24 +365,40 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
             title: Text(
               l10n.homeDeleteDialogTitle(device.title),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                fontVariations: <FontVariation>[
+                  ...(Theme.of(
+                            context,
+                          ).textTheme.titleLarge?.fontVariations ??
+                          const <FontVariation>[])
+                      .where((v) => v.axis != 'wght'),
+                  const FontVariation('wght', 700),
+                ],
+              ),
             ),
             content: Text(
               l10n.homeDeleteDialogContent(device.title),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             actions: [
-              AppOutlinedButton(
-                onPressed: () => Navigator.pop(context),
-                label: l10n.homeDeleteDialogCancel,
-              ),
-              AppFilledButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  widget.onDelete();
-                },
-                label: l10n.homeDeleteDialogConfirm,
+              Row(
+                spacing: 10,
+                children: [
+                  Expanded(
+                    child: AppOutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      label: l10n.homeDeleteDialogCancel,
+                    ),
+                  ),
+                  Expanded(
+                    child: AppFilledButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        widget.onDelete();
+                      },
+                      label: l10n.homeDeleteDialogConfirm,
+                    ),
+                  ),
+                ],
               ),
             ],
           );

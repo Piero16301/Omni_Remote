@@ -82,7 +82,8 @@ class AppTextField extends StatelessWidget {
       maxLines: maxLines,
       maxLength: maxLength,
       initialValue: initialValue,
-      validator: validator ??
+      validator:
+          validator ??
           (isRequired
               ? (value) {
                   if (value == null || value.isEmpty) {

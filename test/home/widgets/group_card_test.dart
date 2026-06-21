@@ -39,7 +39,7 @@ void main() {
     late MqttServerClient mockMqttClient;
     late MqttClientConnectionStatus mockConnectionStatus;
     late StreamController<List<MqttReceivedMessage<MqttMessage>>>
-        messageController;
+    messageController;
     late ValueNotifier<List<DeviceModel>> devicesNotifier;
 
     final testGroup = GroupModel(
@@ -59,18 +59,22 @@ void main() {
           StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast();
       devicesNotifier = ValueNotifier<List<DeviceModel>>([]);
 
-      when(() => mockConnectionStatus.state)
-          .thenReturn(MqttConnectionState.connected);
-      when(() => mockMqttClient.connectionStatus)
-          .thenReturn(mockConnectionStatus);
+      when(
+        () => mockConnectionStatus.state,
+      ).thenReturn(MqttConnectionState.connected);
+      when(
+        () => mockMqttClient.connectionStatus,
+      ).thenReturn(mockConnectionStatus);
       when(() => mockMqttClient.subscribe(any(), any())).thenReturn(null);
       when(() => mockMqttClient.unsubscribe(any())).thenAnswer((_) {});
-      when(() => mockMqttClient.publishMessage(any(), any(), any()))
-          .thenReturn(1);
+      when(
+        () => mockMqttClient.publishMessage(any(), any(), any()),
+      ).thenReturn(1);
 
       when(() => mockMqttService.mqttClient).thenReturn(mockMqttClient);
-      when(() => mockMqttService.messageStream)
-          .thenAnswer((_) => messageController.stream);
+      when(
+        () => mockMqttService.messageStream,
+      ).thenAnswer((_) => messageController.stream);
 
       if (!getIt.isRegistered<MqttService>()) {
         getIt.registerSingleton<MqttService>(mockMqttService);
@@ -116,8 +120,9 @@ void main() {
       );
     }
 
-    testWidgets('renders group details correctly without devices',
-        (tester) async {
+    testWidgets('renders group details correctly without devices', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject());
 
       expect(find.text('Living Room'), findsOneWidget);
@@ -152,8 +157,9 @@ void main() {
         suffix: AppVariables.onlineSuffix,
       );
 
-      verify(() => mockMqttClient.subscribe(expectedTopic, MqttQos.atLeastOnce))
-          .called(1);
+      verify(
+        () => mockMqttClient.subscribe(expectedTopic, MqttQos.atLeastOnce),
+      ).called(1);
     });
 
     testWidgets('shows group options on long press', (tester) async {
@@ -220,8 +226,9 @@ void main() {
       expect(find.byType(AlertDialog), findsNothing);
     });
 
-    testWidgets('reconnect option in bottom sheet calls _verifyStatus',
-        (tester) async {
+    testWidgets('reconnect option in bottom sheet calls _verifyStatus', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject());
 
       await tester.longPress(find.byType(InkWell).first);
@@ -237,8 +244,9 @@ void main() {
       verify(() => mockMqttClient.unsubscribe(expectedTopic)).called(1);
     });
 
-    testWidgets('renders DeviceNumberTile for number type devices',
-        (tester) async {
+    testWidgets('renders DeviceNumberTile for number type devices', (
+      tester,
+    ) async {
       final numberDevice = DeviceModel(
         id: 'd2',
         title: 'Thermostat',
@@ -287,8 +295,9 @@ void main() {
       verifyNever(() => mockMqttClient.subscribe(any(), any()));
     });
 
-    testWidgets('updates _isOnline when MQTT online message is received',
-        (tester) async {
+    testWidgets('updates _isOnline when MQTT online message is received', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject());
 
       final onlineTopic = AppVariables.buildGroupTopic(
@@ -316,8 +325,9 @@ void main() {
       expect(find.text('Main area'), findsOneWidget);
     });
 
-    testWidgets('group without subtitle does not show subtitle',
-        (tester) async {
+    testWidgets('group without subtitle does not show subtitle', (
+      tester,
+    ) async {
       final groupNoSub = GroupModel(
         id: 'g2',
         title: 'Bedroom',
@@ -325,8 +335,9 @@ void main() {
         icon: 'settings',
       );
 
-      when(() => homeCubit.getDevicesListenable())
-          .thenReturn(ValueNotifier([]));
+      when(
+        () => homeCubit.getDevicesListenable(),
+      ).thenReturn(ValueNotifier([]));
 
       await tester.pumpWidget(
         MultiBlocProvider(

@@ -4,8 +4,9 @@ import 'package:omni_remote/app/app.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  testWidgets('AppFunctions.showSnackBar displays correct snackbar',
-      (tester) async {
+  testWidgets('AppFunctions.showSnackBar displays correct snackbar', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(

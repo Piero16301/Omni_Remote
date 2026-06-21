@@ -35,8 +35,9 @@ void main() {
           [GroupModel(id: '1', title: 'Test', subtitle: '', icon: '')],
         ),
       );
-      when(() => mockLocalStorageService.getDevicesListenable())
-          .thenReturn(ValueNotifier<List<DeviceModel>>([]));
+      when(
+        () => mockLocalStorageService.getDevicesListenable(),
+      ).thenReturn(ValueNotifier<List<DeviceModel>>([]));
     });
 
     testWidgets('renders ModifyDeviceView', (tester) async {

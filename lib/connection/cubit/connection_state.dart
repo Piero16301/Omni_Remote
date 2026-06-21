@@ -37,11 +37,11 @@ class ConnectionState extends Equatable {
 
   @override
   List<Object> get props => [
-        brokerUrl,
-        brokerPort,
-        brokerUsername,
-        brokerPassword,
-        hidePassword,
-        formKey,
-      ];
+    brokerUrl,
+    brokerPort,
+    brokerUsername,
+    brokerPassword,
+    hidePassword,
+    formKey,
+  ];
 }

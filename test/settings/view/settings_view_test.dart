@@ -27,12 +27,15 @@ void main() {
       appCubit = MockAppCubit();
       when(() => appCubit.state).thenReturn(const AppState());
 
-      when(() => appCubit.changeLanguage(language: any(named: 'language')))
-          .thenReturn(null);
-      when(() => appCubit.changeTheme(theme: any(named: 'theme')))
-          .thenReturn(null);
-      when(() => appCubit.changeBaseColor(baseColor: any(named: 'baseColor')))
-          .thenReturn(null);
+      when(
+        () => appCubit.changeLanguage(language: any(named: 'language')),
+      ).thenReturn(null);
+      when(
+        () => appCubit.changeTheme(theme: any(named: 'theme')),
+      ).thenReturn(null);
+      when(
+        () => appCubit.changeBaseColor(baseColor: any(named: 'baseColor')),
+      ).thenReturn(null);
       when(
         () => appCubit.changeFontFamily(fontFamily: any(named: 'fontFamily')),
       ).thenReturn(null);
@@ -88,8 +91,9 @@ void main() {
           .widget<DropdownButton<Locale>>(localeDropdown)
           .onChanged
           ?.call(const Locale('es'));
-      verify(() => appCubit.changeLanguage(language: const Locale('es')))
-          .called(1);
+      verify(
+        () => appCubit.changeLanguage(language: const Locale('es')),
+      ).called(1);
 
       final themeDropdown = find.descendant(
         of: find.byType(ThemeSettingsCard),

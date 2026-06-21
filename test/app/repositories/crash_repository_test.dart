@@ -56,8 +56,9 @@ void main() {
       const key = 'test_key';
       const value = 'test_value';
 
-      when(() => crashlytics.setCustomKey(any<String>(), any<Object>()))
-          .thenAnswer((_) async {});
+      when(
+        () => crashlytics.setCustomKey(any<String>(), any<Object>()),
+      ).thenAnswer((_) async {});
 
       repository.setCustomKey(key, value);
 

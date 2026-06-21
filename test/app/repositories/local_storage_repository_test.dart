@@ -16,19 +16,20 @@ class MockTrace extends Mock implements Trace {}
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  final tempDirForPathProvider =
-      Directory.systemTemp.createTempSync('path_provider_mock');
+  final tempDirForPathProvider = Directory.systemTemp.createTempSync(
+    'path_provider_mock',
+  );
 
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(
-    const MethodChannel('plugins.flutter.io/path_provider'),
-    (methodCall) async {
-      if (methodCall.method == 'getApplicationDocumentsDirectory') {
-        return tempDirForPathProvider.path;
-      }
-      return null;
-    },
-  );
+        const MethodChannel('plugins.flutter.io/path_provider'),
+        (methodCall) async {
+          if (methodCall.method == 'getApplicationDocumentsDirectory') {
+            return tempDirForPathProvider.path;
+          }
+          return null;
+        },
+      );
   late HiveLocalStorageRepository repository;
   late PerformanceService performanceService;
   late Trace trace;
@@ -154,12 +155,20 @@ void main() {
     test('updateGroup throws if duplicate name', () {
       repository
         ..createGroup(
-          group:
-              GroupModel(id: '1', title: 'Group-U1', subtitle: 'S', icon: 'i'),
+          group: GroupModel(
+            id: '1',
+            title: 'Group-U1',
+            subtitle: 'S',
+            icon: 'i',
+          ),
         )
         ..createGroup(
-          group:
-              GroupModel(id: '2', title: 'Group-U2', subtitle: 'S', icon: 'i'),
+          group: GroupModel(
+            id: '2',
+            title: 'Group-U2',
+            subtitle: 'S',
+            icon: 'i',
+          ),
         );
       final groups = repository.getGroups();
       final group1 = groups.firstWhere((g) => g.title == 'Group-U1');
@@ -187,8 +196,9 @@ void main() {
           icon: 'i',
         ),
       );
-      final group =
-          repository.getGroups().firstWhere((g) => g.title == 'Group-DE');
+      final group = repository.getGroups().firstWhere(
+        (g) => g.title == 'Group-DE',
+      );
 
       repository.createDevice(
         device: DeviceModel(
@@ -222,8 +232,9 @@ void main() {
           icon: 'i',
         ),
       );
-      final group =
-          repository.getGroups().firstWhere((g) => g.title == 'Group-Dup');
+      final group = repository.getGroups().firstWhere(
+        (g) => g.title == 'Group-Dup',
+      );
 
       final device1 = DeviceModel(
         id: 'd1',
@@ -258,8 +269,9 @@ void main() {
           tileType: DeviceTileType.boolean,
         ),
       );
-      final createdDevice2 =
-          repository.getDevices().firstWhere((d) => d.title == 'Device-D2');
+      final createdDevice2 = repository.getDevices().firstWhere(
+        (d) => d.title == 'Device-D2',
+      );
 
       expect(
         () => repository.updateDevice(
@@ -310,8 +322,9 @@ void main() {
       expect(groupsListenable.value.length, equals(initialGroups + 1));
 
       final initialDevices = devicesListenable.value.length;
-      final group =
-          repository.getGroups().firstWhere((g) => g.title == 'G-Listenable');
+      final group = repository.getGroups().firstWhere(
+        (g) => g.title == 'G-Listenable',
+      );
       repository.createDevice(
         device: DeviceModel(
           id: 'd-l',

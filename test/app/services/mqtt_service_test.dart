@@ -34,21 +34,25 @@ void main() {
       verify(() => repository.messageStream).called(1);
     });
 
-    test('connectionStatusStream returns repository.connectionStatusStream',
-        () {
-      const stream = Stream<BrokerConnectionStatus>.empty();
-      when(() => repository.connectionStatusStream).thenAnswer((_) => stream);
-      final result = service.connectionStatusStream;
-      expect(result, equals(stream));
-      verify(() => repository.connectionStatusStream).called(1);
-    });
+    test(
+      'connectionStatusStream returns repository.connectionStatusStream',
+      () {
+        const stream = Stream<BrokerConnectionStatus>.empty();
+        when(() => repository.connectionStatusStream).thenAnswer((_) => stream);
+        final result = service.connectionStatusStream;
+        expect(result, equals(stream));
+        verify(() => repository.connectionStatusStream).called(1);
+      },
+    );
 
-    test('initializeMqttClient calls repository.initializeMqttClient',
-        () async {
-      when(() => repository.initializeMqttClient()).thenAnswer((_) async {});
-      await service.initializeMqttClient();
-      verify(() => repository.initializeMqttClient()).called(1);
-    });
+    test(
+      'initializeMqttClient calls repository.initializeMqttClient',
+      () async {
+        when(() => repository.initializeMqttClient()).thenAnswer((_) async {});
+        await service.initializeMqttClient();
+        verify(() => repository.initializeMqttClient()).called(1);
+      },
+    );
 
     test('connectMqtt calls repository.connectMqtt', () async {
       when(() => repository.connectMqtt()).thenAnswer((_) async {});
@@ -61,13 +65,16 @@ void main() {
       verify(() => repository.disconnectMqtt()).called(1);
     });
 
-    test('reconnectWithNewSettings calls repository.reconnectWithNewSettings',
-        () async {
-      when(() => repository.reconnectWithNewSettings())
-          .thenAnswer((_) async {});
-      await service.reconnectWithNewSettings();
-      verify(() => repository.reconnectWithNewSettings()).called(1);
-    });
+    test(
+      'reconnectWithNewSettings calls repository.reconnectWithNewSettings',
+      () async {
+        when(
+          () => repository.reconnectWithNewSettings(),
+        ).thenAnswer((_) async {});
+        await service.reconnectWithNewSettings();
+        verify(() => repository.reconnectWithNewSettings()).called(1);
+      },
+    );
 
     test('dispose calls repository.dispose', () {
       service.dispose();

@@ -23,8 +23,15 @@ class AppIconSelector extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+            fontVariations: <FontVariation>[
+              ...(Theme.of(
+                        context,
+                      ).textTheme.titleMedium?.fontVariations ??
+                      const <FontVariation>[])
+                  .where((v) => v.axis != 'wght'),
+              const FontVariation('wght', 700),
+            ],
+          ),
         ),
         const SizedBox(height: 8),
         Card(
@@ -56,12 +63,12 @@ class AppIconSelector extends StatelessWidget {
                           ? Theme.of(
                               context,
                             ).colorScheme.primary.withValues(
-                                alpha: 0.2,
-                              )
+                              alpha: 0.2,
+                            )
                           : Theme.of(context)
-                              .colorScheme
-                              .surfaceContainerHighest
-                              .withValues(alpha: 0.3),
+                                .colorScheme
+                                .surfaceContainerHighest
+                                .withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: isSelected

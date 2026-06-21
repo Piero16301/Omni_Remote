@@ -60,8 +60,9 @@ void main() {
     when(() => trace.stop()).thenAnswer((_) async {});
 
     when(() => mqttClient.connectionStatus).thenReturn(connectionStatus);
-    when(() => mqttClient.connect(any<String?>(), any<String?>()))
-        .thenAnswer((_) async => connectionStatus);
+    when(
+      () => mqttClient.connect(any<String?>(), any<String?>()),
+    ).thenAnswer((_) async => connectionStatus);
     when(() => mqttClient.disconnect()).thenAnswer((_) {});
 
     repository = ServerMqttRepository(
@@ -69,8 +70,9 @@ void main() {
       clientFactory: (host, clientId, port) {
         final newMock = MockMqttServerClient();
         when(() => newMock.connectionStatus).thenReturn(connectionStatus);
-        when(() => newMock.connect(any<String?>(), any<String?>()))
-            .thenAnswer((_) async => connectionStatus);
+        when(
+          () => newMock.connect(any<String?>(), any<String?>()),
+        ).thenAnswer((_) async => connectionStatus);
         when(newMock.disconnect).thenAnswer((_) {});
         return newMock;
       },
@@ -92,8 +94,9 @@ void main() {
       when(() => localStorageService.getBrokerPort()).thenReturn('1883');
       when(() => localStorageService.getBrokerUsername()).thenReturn('user');
       when(() => localStorageService.getBrokerPassword()).thenReturn('pass');
-      when(() => connectionStatus.state)
-          .thenReturn(MqttConnectionState.connected);
+      when(
+        () => connectionStatus.state,
+      ).thenReturn(MqttConnectionState.connected);
 
       await repository.initializeMqttClient();
 
@@ -104,8 +107,9 @@ void main() {
     test('connectMqtt handles failure', () async {
       when(() => localStorageService.getBrokerUsername()).thenReturn('user');
       when(() => localStorageService.getBrokerPassword()).thenReturn('pass');
-      when(() => connectionStatus.state)
-          .thenReturn(MqttConnectionState.faulted);
+      when(
+        () => connectionStatus.state,
+      ).thenReturn(MqttConnectionState.faulted);
 
       final expectation = expectLater(
         repository.connectionStatusStream,
@@ -121,8 +125,9 @@ void main() {
     test('connectMqtt handles exception', () async {
       when(() => localStorageService.getBrokerUsername()).thenReturn('user');
       when(() => localStorageService.getBrokerPassword()).thenReturn('pass');
-      when(() => mqttClient.connect(any<String?>(), any<String?>()))
-          .thenThrow(Exception('Failed'));
+      when(
+        () => mqttClient.connect(any<String?>(), any<String?>()),
+      ).thenThrow(Exception('Failed'));
       when(
         () => crashService.recordError(
           any<Object>(),
@@ -158,8 +163,9 @@ void main() {
       when(() => localStorageService.getBrokerPort()).thenReturn('8883');
       when(() => localStorageService.getBrokerUsername()).thenReturn('u');
       when(() => localStorageService.getBrokerPassword()).thenReturn('p');
-      when(() => connectionStatus.state)
-          .thenReturn(MqttConnectionState.connected);
+      when(
+        () => connectionStatus.state,
+      ).thenReturn(MqttConnectionState.connected);
 
       await repository.reconnectWithNewSettings();
 

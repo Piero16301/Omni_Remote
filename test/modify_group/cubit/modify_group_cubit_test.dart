@@ -82,8 +82,11 @@ void main() {
       },
       expect: () => [
         isA<ModifyGroupState>().having((s) => s.title, 'title', 'New Title'),
-        isA<ModifyGroupState>()
-            .having((s) => s.subtitle, 'subtitle', 'New Sub'),
+        isA<ModifyGroupState>().having(
+          (s) => s.subtitle,
+          'subtitle',
+          'New Sub',
+        ),
         isA<ModifyGroupState>().having((s) => s.icon, 'icon', 'New Icon'),
       ],
     );

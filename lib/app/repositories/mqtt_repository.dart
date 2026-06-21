@@ -81,18 +81,17 @@ class ServerMqttRepository implements MqttRepository {
   ServerMqttRepository({
     LocalStorageService? localStorage,
     CrashService? crashService,
-    MqttServerClient? mqttClient,
+    this._mqttClient,
     MqttServerClient Function(String host, String clientId, int port)?
-        clientFactory,
-  })  : _localStorage = localStorage ?? getIt<LocalStorageService>(),
-        _crashService = crashService ?? getIt<CrashService>(),
-        _mqttClient = mqttClient,
-        _clientFactory = clientFactory ?? MqttServerClient.withPort;
+    clientFactory,
+  }) : _localStorage = localStorage ?? getIt<LocalStorageService>(),
+       _crashService = crashService ?? getIt<CrashService>(),
+       _clientFactory = clientFactory ?? MqttServerClient.withPort;
 
   final LocalStorageService _localStorage;
   final CrashService _crashService;
   final MqttServerClient Function(String host, String clientId, int port)
-      _clientFactory;
+  _clientFactory;
 
   MqttServerClient? _mqttClient;
   StreamSubscription<List<MqttReceivedMessage<MqttMessage>>>? _mqttSubscription;

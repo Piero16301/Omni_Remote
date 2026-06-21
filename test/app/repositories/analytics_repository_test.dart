@@ -33,25 +33,27 @@ void main() {
       ).called(1);
     });
 
-    test('setCurrentScreen calls analytics.logEvent with screen_view',
-        () async {
-      const screenName = 'test_screen';
+    test(
+      'setCurrentScreen calls analytics.logEvent with screen_view',
+      () async {
+        const screenName = 'test_screen';
 
-      when(
-        () => analytics.logEvent(
-          name: any<String>(named: 'name'),
-          parameters: any<Map<String, Object>?>(named: 'parameters'),
-        ),
-      ).thenAnswer((_) async {});
+        when(
+          () => analytics.logEvent(
+            name: any<String>(named: 'name'),
+            parameters: any<Map<String, Object>?>(named: 'parameters'),
+          ),
+        ).thenAnswer((_) async {});
 
-      repository.setCurrentScreen(screenName: screenName);
+        repository.setCurrentScreen(screenName: screenName);
 
-      verify(
-        () => analytics.logEvent(
-          name: 'screen_view',
-          parameters: {'screen_name': screenName},
-        ),
-      ).called(1);
-    });
+        verify(
+          () => analytics.logEvent(
+            name: 'screen_view',
+            parameters: {'screen_name': screenName},
+          ),
+        ).called(1);
+      },
+    );
   });
 }

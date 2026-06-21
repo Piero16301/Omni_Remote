@@ -35,7 +35,7 @@ void main() {
     late MqttServerClient mockMqttClient;
     late MqttClientConnectionStatus mockConnectionStatus;
     late StreamController<List<MqttReceivedMessage<MqttMessage>>>
-        messageController;
+    messageController;
 
     final testGroup = GroupModel(
       id: 'g1',
@@ -60,18 +60,22 @@ void main() {
       messageController =
           StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast();
 
-      when(() => mockConnectionStatus.state)
-          .thenReturn(MqttConnectionState.connected);
-      when(() => mockMqttClient.connectionStatus)
-          .thenReturn(mockConnectionStatus);
+      when(
+        () => mockConnectionStatus.state,
+      ).thenReturn(MqttConnectionState.connected);
+      when(
+        () => mockMqttClient.connectionStatus,
+      ).thenReturn(mockConnectionStatus);
       when(() => mockMqttClient.subscribe(any(), any())).thenReturn(null);
       when(() => mockMqttClient.unsubscribe(any())).thenAnswer((_) {});
-      when(() => mockMqttClient.publishMessage(any(), any(), any()))
-          .thenReturn(1);
+      when(
+        () => mockMqttClient.publishMessage(any(), any(), any()),
+      ).thenReturn(1);
 
       when(() => mockMqttService.mqttClient).thenReturn(mockMqttClient);
-      when(() => mockMqttService.messageStream)
-          .thenAnswer((_) => messageController.stream);
+      when(
+        () => mockMqttService.messageStream,
+      ).thenAnswer((_) => messageController.stream);
 
       await getIt.reset();
       setupServiceLocator(Environment.mock);
@@ -190,8 +194,9 @@ void main() {
       expect(editCalled, isTrue);
     });
 
-    testWidgets('shows delete confirmation when Delete is tapped',
-        (tester) async {
+    testWidgets('shows delete confirmation when Delete is tapped', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject());
 
       await tester.longPress(find.byType(InkWell));
@@ -203,8 +208,9 @@ void main() {
       expect(find.byType(AlertDialog), findsOneWidget);
     });
 
-    testWidgets('calls onDelete when Delete confirmation is accepted',
-        (tester) async {
+    testWidgets('calls onDelete when Delete confirmation is accepted', (
+      tester,
+    ) async {
       var deleteCalled = false;
       await tester.pumpWidget(
         buildSubject(
@@ -241,8 +247,9 @@ void main() {
       expect(find.byType(AlertDialog), findsNothing);
     });
 
-    testWidgets('Switch is disabled when groupIsOnline is false',
-        (tester) async {
+    testWidgets('Switch is disabled when groupIsOnline is false', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildSubject(groupIsOnline: false));
 
       final sw = tester.widget<Switch>(find.byType(Switch));
@@ -257,10 +264,12 @@ void main() {
       verifyNever(() => mockMqttClient.subscribe(any(), any()));
     });
 
-    testWidgets('does not publish when mqttClient is null on toggle',
-        (tester) async {
-      when(() => mockConnectionStatus.state)
-          .thenReturn(MqttConnectionState.disconnected);
+    testWidgets('does not publish when mqttClient is null on toggle', (
+      tester,
+    ) async {
+      when(
+        () => mockConnectionStatus.state,
+      ).thenReturn(MqttConnectionState.disconnected);
 
       await tester.pumpWidget(buildSubject());
 
@@ -271,8 +280,9 @@ void main() {
       expect(sw, findsOneWidget);
     });
 
-    testWidgets('device without subtitle does not show subtitle text',
-        (tester) async {
+    testWidgets('device without subtitle does not show subtitle text', (
+      tester,
+    ) async {
       final deviceNoSub = DeviceModel(
         id: 'd2',
         title: 'Fan',

@@ -43,8 +43,15 @@ class ModifyGroupView extends StatelessWidget {
                 ? l10n.modifyGroupPageTitleCreate
                 : l10n.modifyGroupPageTitleEdit,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+              fontVariations: <FontVariation>[
+                ...(Theme.of(
+                          context,
+                        ).textTheme.titleLarge?.fontVariations ??
+                        const <FontVariation>[])
+                    .where((v) => v.axis != 'wght'),
+                const FontVariation('wght', 700),
+              ],
+            ),
           ),
           centerTitle: true,
           leading: IconButton(

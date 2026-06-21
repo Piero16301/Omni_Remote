@@ -21,7 +21,7 @@ jobs:
       is_dev_merge: ${{ steps.check_commit.outputs.is_dev_merge }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 2
       - name: Check if commit is merge from dev
@@ -59,7 +59,7 @@ jobs:
       contents: read
     steps:
       - name: 📚 Git Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: 🐦 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -95,7 +95,7 @@ jobs:
       SERVICE_ACCOUNT_PATH: service-account.json
     steps:
       - name: 📚 Git Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: 🔑 Decode Service Account
         run: echo "${{ secrets.ANDROID_RELEASE_SERVICE_ACCOUNT }}" | base64 --decode > ${{ env.SERVICE_ACCOUNT_PATH }}
       - name: 🚀 Promote to Production

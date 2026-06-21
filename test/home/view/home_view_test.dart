@@ -39,8 +39,9 @@ void main() {
       devicesNotifier = ValueNotifier<List<DeviceModel>>([]);
 
       when(() => mockMqttService.mqttClient).thenReturn(null);
-      when(() => mockMqttService.messageStream)
-          .thenAnswer((_) => const Stream.empty());
+      when(
+        () => mockMqttService.messageStream,
+      ).thenAnswer((_) => const Stream.empty());
       getIt.registerSingleton<MqttService>(mockMqttService);
 
       when(() => appCubit.state).thenReturn(
@@ -88,8 +89,9 @@ void main() {
       expect(find.byType(FloatingActionButton), findsNothing);
     });
 
-    testWidgets('renders group cards and FAB when groups exist',
-        (tester) async {
+    testWidgets('renders group cards and FAB when groups exist', (
+      tester,
+    ) async {
       groupsNotifier.value = [
         GroupModel(id: 'g1', title: 'Living Room', subtitle: '', icon: ''),
       ];

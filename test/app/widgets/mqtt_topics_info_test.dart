@@ -26,8 +26,9 @@ void main() {
       );
     }
 
-    testWidgets('renders empty when groupTitle is null for group type',
-        (tester) async {
+    testWidgets('renders empty when groupTitle is null for group type', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         buildSubject(
           topicInfoType: TopicInfoType.group,
@@ -56,8 +57,9 @@ void main() {
       expect(find.byType(IconButton), findsWidgets);
     });
 
-    testWidgets('renders empty when missing parameters for device type',
-        (tester) async {
+    testWidgets('renders empty when missing parameters for device type', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         buildSubject(
           topicInfoType: TopicInfoType.device,
@@ -124,8 +126,9 @@ void main() {
       expect(find.byType(IconButton), findsNWidgets(2));
     });
 
-    testWidgets('copies topic to clipboard and shows snackbar on tap',
-        (tester) async {
+    testWidgets('copies topic to clipboard and shows snackbar on tap', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         buildSubject(
           topicInfoType: TopicInfoType.group,

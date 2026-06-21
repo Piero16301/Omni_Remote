@@ -31,8 +31,9 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('renders properly with empty title and subtitle for boolean',
-        (tester) async {
+    testWidgets('renders properly with empty title and subtitle for boolean', (
+      tester,
+    ) async {
       await tester.pumpApp(
         const DevicePreview(
           title: '',
@@ -136,8 +137,9 @@ void main() {
       expect(find.text('7.0'), findsOneWidget);
     });
 
-    testWidgets('inits safely when rangeMin >= rangeMax for Number type',
-        (tester) async {
+    testWidgets('inits safely when rangeMin >= rangeMax for Number type', (
+      tester,
+    ) async {
       await tester.pumpApp(
         const Scaffold(
           body: DevicePreviewTile(
