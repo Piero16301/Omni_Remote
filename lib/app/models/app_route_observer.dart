@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/app/app.dart';
 
 class AppRouteObserver extends NavigatorObserver {

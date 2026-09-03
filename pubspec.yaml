@@ -5,27 +5,28 @@ publish_to: none
 
 environment:
   sdk: '>=3.12.0 <4.0.0'
-  flutter: ">=3.44.0"
+  flutter: ">=3.47.0"
 
 dependencies:
   bloc: ^9.2.1
   country_flags: ^4.1.2
   equatable: ^2.1.0
-  firebase_analytics: ^12.4.6
-  firebase_core: ^4.13.0
-  firebase_crashlytics: ^5.2.7
-  firebase_performance: ^0.11.4+2
+  firebase_analytics: ^12.5.0
+  firebase_core: ^4.14.0
+  firebase_crashlytics: ^5.3.0
+  firebase_performance: ^0.11.5
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
   flutter_localizations:
     sdk: flutter
   get_it: ^9.2.1
-  go_router: ^17.4.0
+  go_router: ^18.0.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   hugeicons: ^1.1.7
-  intl: ^0.20.2
+  intl: ^0.20.3
+  material_ui: ^1.1.1
   mqtt_client: ^10.11.11
   package_info_plus: ^10.2.1
   typed_data: ^1.4.0
@@ -36,7 +37,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
-  mockito: ^5.6.4
+  mockito: ^5.8.1
   mocktail: ^1.0.5
   very_good_analysis: ^10.3.0
 

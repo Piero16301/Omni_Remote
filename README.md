@@ -6,254 +6,391 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/sanjuanpamk)
 
-Welcome to the comprehensive documentation for the **Omni Remote** application. This guide covers all key Dart files, organized by functional modules, explains their responsibilities, and illustrates how they interconnect to send and receive data from Arduino and ESP boards using an MQTT broker and custom topics.
+Welcome to the comprehensive documentation for the **Omni Remote** application. Omni Remote is a cross-platform Flutter application designed to monitor and remotely control IoT hardware devices (ESP32, ESP8266, Arduino) in real-time through an MQTT broker with custom Pub/Sub topic hierarchies.
 
 ---
 
 ## 📑 Table of Contents
 
-1. [Architecture](#%EF%B8%8F-architecture)
-2. [App Core](#app-core)
-   2.1 [State Management (AppCubit)](#state-management-appcubit)
-   2.2 [Global Utilities](#global-utilities)
-   2.3 [Routing & Themes](#routing--themes)
-   2.4 [Services](#services)
-   2.5 [UI Layer (View & Widgets)](#ui-layer-view--widgets)
-3. [Feature Modules](#feature-modules)
-   3.1 [Connection](#connection)
-   3.2 [Home](#home)
-   3.3 [Modify Device](#modify-device)
-   3.4 [Modify Group](#modify-group)
-   3.5 [Settings](#settings)
-4. [Localization (l10n)](#localization-l10n)
-5. [Bootstrap & Entrypoint](#bootstrap--entrypoint)
-6. [Packages & Data Models](#packages--data-models)
-7. [Configuration (`pubspec.yaml`)](#configuration-pubspecyaml)
+1. [Project Status & Quality](#-project-status--quality)
+2. [System Architecture](#-system-architecture)
+   - [Architectural Overview](#architectural-overview)
+   - [Layered Clean Architecture](#layered-clean-architecture)
+3. [MQTT Communication Protocol](#-mqtt-communication-protocol)
+   - [Topic Structure & Normalization](#topic-structure--normalization)
+   - [Payload Formats & Last Will](#payload-formats--last-will)
+4. [Project Structure](#-project-structure)
+5. [Core App Layer (`lib/app`)](#-core-app-layer-libapp)
+   - [State Management (`AppCubit`)](#state-management-appcubit)
+   - [Dependency Injection & Environments (`app_dependencies.dart`)](#dependency-injection--environments)
+   - [Repositories (`lib/app/repositories`)](#repositories-libapprepositories)
+   - [Services (`lib/app/services`)](#services-libappservices)
+   - [Routing & Navigation (`app_router.dart`)](#routing--navigation)
+   - [Theming & Fonts (`app_themes.dart`)](#theming--fonts)
+   - [Data Models & Hive Adapters (`lib/app/models`)](#data-models--hive-adapters)
+   - [Global Widgets & Helpers](#global-widgets--helpers)
+6. [Feature Modules](#-feature-modules)
+   - [Connection](#1-connection)
+   - [Home](#2-home)
+   - [Modify Device](#3-modify-device)
+   - [Modify Group](#4-modify-group)
+   - [Settings](#5-settings)
+7. [Internationalization & Localization (`l10n`)](#-internationalization--localization-l10n)
+8. [Bootstrap & Entrypoint](#-bootstrap--entrypoint)
+9. [Testing & Quality Assurance](#-testing--quality-assurance)
+10. [Development & Build Commands](#-development--build-commands)
 
 ---
 
-# 🏗️ Architecture
+## 📊 Project Status & Quality
+
+- **Flutter SDK:** `>=3.47.0` (Dart SDK `>=3.12.0 <4.0.0`)
+- **Linting & Code Style:** Adheres to strict [`very_good_analysis`](https://pub.dev/packages/very_good_analysis) rules with zero analysis issues (`fvm flutter analyze` passing).
+- **Code Coverage:** **92.4% line coverage** across 61 source files (unit, bloc, widget, and repository tests).
+- **Formatting:** 100% formatted according to `dart format`.
+- **Telemetry & Monitoring:** Integrated with Firebase Core, Analytics, Crashlytics, and Performance Monitoring.
+- **Security:** Encrypted Hive box for sensitive MQTT broker credentials via `EncryptionHelper`.
+
+---
+
+## 🏗️ System Architecture
+
+### Architectural Overview
 
 ```mermaid
 flowchart TD
-  subgraph "Mobile Application"
-  UI[Flutter Interface]
-  State[State - Bloc/Cubit]
-  Store[(Local DB - Hive)]
-  Service[MQTT Service]
+  subgraph "Mobile Client (Omni Remote)"
+    subgraph "Presentation Layer"
+      UI[Flutter UI - Views & Widgets]
+      Bloc[State Management - Cubits]
+    end
+
+    subgraph "Domain / Service Layer"
+      Services[Services - Mqtt, Storage, Analytics, Crash, Perf]
+    end
+
+    subgraph "Data / Repository Layer"
+      ServiceFactory[ServiceFactory - DI Locator]
+      Repos[Repositories - Prod / Mock Implementations]
+      LocalDB[(Hive Local Storage / AES Encrypted Box)]
+    end
   end
 
-  subgraph Infrastructure
-  Broker((MQTT Broker))
+  subgraph "Infrastructure & Cloud"
+    Broker((MQTT Broker - TCP / TLS 8883))
+    Firebase[(Firebase Cloud - Analytics / Crashlytics / Perf)]
   end
 
-  subgraph Hardware
-  ESP[ESP-32]
+  subgraph "IoT Hardware"
+    ESP[ESP32 / ESP8266 / Arduino]
   end
 
-  UI -->|Events| State
-  State -->|Read/Write| Store
-  State -->|Connect| Service
-  UI -->|Subscribe/Publish| Service
-  Service <-->|Pub/Sub| Broker
-  ESP <-->|Pub/Sub| Broker
+  UI -->|Dispatches Actions| Bloc
+  Bloc -->|Consumes| Services
+  Services -->|Delegates to| Repos
+  ServiceFactory -->|Injects Environment| Repos
+  Repos -->|Reads / Writes| LocalDB
+  Repos -->|Pub / Sub Socket| Broker
+  Repos -->|Reports Telemetry| Firebase
+  Broker <-->|Pub / Sub Topics| ESP
 ```
 
-- **UI (Flutter Interface)**: Standardized presentation layer that sends events to the State and directly publishes/subscribes via the MQTT Service.
-- **State (Bloc/Cubit)**: Manages the application logic, handles read/write operations with the Local DB, and connects to the MQTT Service.
-- **Store (Local DB - Hive)**: Handles local data persistence on the device.
-- **Service (MQTT Service)**: Main communication gateway managing the Pub/Sub connection between the mobile application and the external MQTT Broker.
-- **Hardware & Infrastructure**: The ESP-32 hardware communicates in real-time with the mobile app through the MQTT Broker using the Pub/Sub model.
+### Layered Clean Architecture
+
+The application is structured into decoupled layers following Clean Architecture principles:
+
+1. **Presentation Layer (`lib/<feature>/view`, `lib/<feature>/widgets`):**
+   - Pure UI widgets driven by `flutter_bloc` state observers (`BlocBuilder`, `BlocConsumer`, `BlocListener`).
+   - Uses `material_ui` design components with dynamic theme brightness and custom primary color seeds.
+2. **State Layer (`lib/<feature>/cubit`):**
+   - Business logic isolated in `Cubit` classes with immutable state models supporting `copyWith`.
+3. **Service Layer (`lib/app/services`):**
+   - Application services that coordinate repositories and provide high-level operations (`MqttService`, `LocalStorageService`, `AnalyticsService`, `CrashService`, `PerformanceService`).
+4. **Repository Layer (`lib/app/repositories`):**
+   - Abstract repository contracts with dual implementations:
+     - **Production (`*Repository`):** Communicates with real external systems (Hive, `MqttServerClient`, Firebase SDKs).
+     - **Mock (`Mock*Repository`):** In-memory deterministic implementations enabling offline unit and widget testing without external hardware or cloud dependencies.
+5. **Service Locator & Factory (`lib/app/global/app_dependencies.dart`):**
+   - Uses `GetIt` with a `ServiceFactory` configuring the application based on `Environment.prod` or `Environment.mock`.
 
 ---
 
-## App Core
+## 📡 MQTT Communication Protocol
 
-### 1. State Management (AppCubit)
+Omni Remote communicates bidirectionally with hardware microcontrollers using MQTT topics.
 
-| File                             | Role                                                                                          |
-|----------------------------------|-----------------------------------------------------------------------------------------------|
-| **lib/app/cubit/app_cubit.dart** | Manages **global app state**: core configurations and fundamental app states during runtime. |
-| **lib/app/cubit/app_state.dart** | Immutable state variables serving core elements. Supports `copyWith`.        |
+### Topic Structure & Normalization
 
-**Core Methods in `AppCubit`:**
-- `initialLoad()`  
-  - Reads saved configurations and connects core UI constraints.  
-  - Emits updated `AppState`.
+All group and device names are automatically normalized (converted to lowercase, accents replaced, whitespace converted to hyphens):
 
----
+| Level | Topic Format | Example | Description |
+| :--- | :--- | :--- | :--- |
+| **Group Command** | `{group}/command` | `living-room/command` | Publishes actions targeting all devices in a group |
+| **Group Status** | `{group}/status` | `living-room/status` | Subscribes to telemetry of group status |
+| **Group Online** | `{group}/online` | `living-room/online` | Online/offline availability status of the group |
+| **Device Command** | `{group}/{device}/command` | `living-room/ceiling-light/command` | Publishes actuation commands for a specific device |
+| **Device Status** | `{group}/{device}/status` | `living-room/ceiling-light/status` | Subscribes to real-time status updates of a specific device |
+| **Device Online** | `{group}/{device}/online` | `living-room/ceiling-light/online` | Microcontroller heartbeat / availability status |
 
-### 2. Global Utilities
+### Payload Formats & Last Will
 
-| File                             | Role                                                                                          |
-|----------------------------------|-----------------------------------------------------------------------------------------------|
-| **lib/app/helpers/***            | Collection of UI/data helper functions:  <br> - `ColorHelper`, `IconHelper`, `ThemeHelper`, `EncryptionHelper` for app-wide UI/logic processing. |
-| **lib/app/global/app_variables.dart**  | App-wide constants, strings, and configuration variables. |
-| **lib/app/global/global.dart**   | Barrel exporting core global functions and variables.                                      |
-
----
-
-### 3. Routing & Themes
-
-| File                                  | Role                                                                                  |
-|---------------------------------------|---------------------------------------------------------------------------------------|
-| **lib/app/global/app_router.dart**    | Defines the `GoRouter` navigation graph defining paths to connection, home, settings, and forms. |
-| **lib/app/global/app_themes.dart**    | Defines light and dark themes using `ThemeData` to adjust UI accents, card shapes, and typography. |
-| **lib/app/global/app_dependencies.dart** | Configuration setup for singletons and dependency injection (using `get_it`). |
+- **Boolean Device:** Receives and transmits string payloads `'true'` or `'false'`.
+- **Number / Range Device:** Transmits formatted numeric values within configured `rangeMin` and `rangeMax` bounds, supporting stepped `divisions` and custom `interval` steps.
+- **Last Will and Testament (LWT):**
+  - Topic: `application/lastwill`
+  - Message: `Client disconnected unexpectedly`
+  - QoS: `MqttQos.atLeastOnce`
+- **Security:** Supports TLS/SSL certificate negotiation on secure ports (e.g., `8883`) with auto-reconnect and 60-second keep-alive intervals.
 
 ---
 
-### 4. Services
+## 📂 Project Structure
 
-| File                                            | Role                                                                                |
-|-------------------------------------------------|-------------------------------------------------------------------------------------|
-| **lib/app/services/local_storage_service.dart** | Singleton managing local database persistence using `Hive`:  <br> - Initializes and opens `Hive` boxes. <br> - Registers local models (e.g. `DeviceModelAdapter`). |
-| **lib/app/services/mqtt_service.dart**          | Service holding main MQTT logic wrapping `MqttServerClient`:  <br> - Subscribes and publishes to topics from/to Arduino and ESP. <br> - Manages connection status via `BrokerConnectionStatus` enum. |
-| **lib/app/services/services.dart**              | Barrel exporting the main application services.                                                  |
-
----
-
-### 5. UI Layer (View & Widgets)
-
-#### View
-
-| File                               | Role                                                                                          |
-|------------------------------------|-----------------------------------------------------------------------------------------------|
-| **lib/app/view/app_page.dart**     | Top-level widget setting up application provider injections linking the bloc logic to the widget tree. |
-| **lib/app/view/app_view.dart**     | Consumes `AppCubit`, and configures `MaterialApp` including themes, routing, and l10n. |
-| **lib/app/view/view.dart**         | Barrel exporting `app_page.dart` & `app_view.dart`.                                          |
-
-#### Widgets
-
-| File                          | Role                                                                                                             |
-|-------------------------------|------------------------------------------------------------------------------------------------------------------|
-| **app_icon_selector.dart**    | UI widget providing a symmetric grid structure to pick customizable icons.                                       |
-| **app_text_field.dart**       | Custom reusable stylized text field for standardized forms.                                                      |
-| **mqtt_topics_info.dart**     | Information display element for viewing current active MQTT topics.                                              |
-| **widgets.dart**              | Barrel exporting global shared UI custom components (buttons, dropdowns, inputs).                                |
-
----
-
-## Feature Modules
-
-Each feature follows a standard Bloc/Cubit architecture pattern structure:
-1. **barrel** file (`feature.dart`) exporting `cubit/` and `view/`.
-2. **Cubit**: `feature_cubit.dart` + `feature_state.dart`.
-3. **Page**: Stateless widget providing the specific cubit.
-4. **View**: Stateful or stateless widget using a state builder to display the UI depending on logic emitted by the cubit.
+```
+Omni_Remote/
+├── assets/
+│   ├── fonts/               # 9 bundled variable typography font families
+│   └── images/              # Application icon, branding, and platform logos
+├── lib/
+│   ├── app/
+│   │   ├── cubit/           # Global app state (theme, language, font, MQTT status)
+│   │   ├── global/          # Router, dependencies, themes, constants, snackbars
+│   │   ├── helpers/         # Color, encryption, icon, and theme helper utilities
+│   │   ├── models/          # DeviceModel, GroupModel, AppRouteObserver
+│   │   ├── repositories/    # Abstract & concrete repositories (Prod & Mock)
+│   │   ├── services/        # Service facades wrapping repositories
+│   │   ├── view/            # Top-level AppPage & AppView configurations
+│   │   └── widgets/         # App-wide reusable UI components
+│   ├── connection/          # Broker connection configuration feature
+│   ├── home/                # Main dashboard with real-time device & group tiles
+│   ├── modify_device/       # Device creation & modification form
+│   ├── modify_group/        # Group creation & modification form
+│   ├── settings/            # Application settings (theme, font, locale, telemetry)
+│   ├── l10n/                # Localization ARB files and generated delegates
+│   ├── bootstrap.dart       # Error interceptors, Crashlytics, and BlocObserver
+│   ├── firebase_options.dart# Firebase multi-platform configuration
+│   └── main.dart            # Execution entrypoint & dependency initialization
+└── test/                    # Comprehensive unit, widget, and bloc test suites (92%+ coverage)
+```
 
 ---
 
-### Connection
+## ⚙️ Core App Layer (`lib/app`)
 
-- **lib/connection/connection.dart**  
-- **lib/connection/cubit/connection_cubit.dart**  
-- **lib/connection/cubit/connection_state.dart**  
-- **lib/connection/view/connection_page.dart**  
-- **lib/connection/view/connection_view.dart**  
+### State Management (`AppCubit`)
 
-**Features:**  
-Provides the gateway screen for establishing settings required to connect to the external MQTT broker. It bridges the details over to the decoupled `MqttService`.
+`AppCubit` (`lib/app/cubit/app_cubit.dart`) manages global runtime preferences and connectivity status:
 
----
+- `initialize()`: Reads persisted settings for locale, theme mode, base color, and font family; emits initial `AppState` and assigns Crashlytics diagnostic keys.
+- `initializeMqttClient()`: Listens to the `MqttService.connectionStatusStream` and initializes broker connectivity asynchronously.
+- `changeLanguage(Locale)`: Updates application language and logs analytics event.
+- `changeTheme(ThemeMode)`: Switches between Light, Dark, and System theme modes.
+- `changeBaseColor(Color)`: Dynamically re-seeds Material 3 color palettes across the entire app.
+- `changeFontFamily(String)`: Switches between 9 available bundled font families in real-time.
+- `connectMqtt()`, `disconnectMqtt()`, `reconnectWithNewSettings()`: Controls active broker connections.
 
-### Home
+### Dependency Injection & Environments
 
-- **lib/home/home.dart**  
-- **lib/home/cubit/home_cubit.dart**  
-- **lib/home/cubit/home_state.dart**  
-- **lib/home/view/home_page.dart**  
-- **lib/home/view/home_view.dart**  
+Configured in `lib/app/global/app_dependencies.dart` via `GetIt`:
 
-**Highlights:**  
-- Acts as the main application dashboard exposing tiles mapped directly to device statuses.
-- Utilizes custom specific widgets (e.g., `DeviceBooleanTile`, `DeviceNumberTile`, `GroupCard`) to format data cleanly depending on the expected broker payload types.
+```dart
+void setupServiceLocator(Environment env);
+```
 
----
+- Supported environments: `Environment.prod` and `Environment.mock`.
+- `ServiceFactory` creates the appropriate repository instances:
+  - `CrashRepository` (`CrashlyticsCrashRepository` vs `MockCrashRepository`)
+  - `PerformanceRepository` (`FirebasePerformanceRepository` vs `MockPerformanceRepository`)
+  - `AnalyticsRepository` (`FirebaseAnalyticsRepository` vs `MockAnalyticsRepository`)
+  - `LocalStorageRepository` (`HiveLocalStorageRepository` vs `MockLocalStorageRepository`)
+  - `MqttRepository` (`ServerMqttRepository` vs `MockMqttRepository`)
 
-### Modify Device
+### Repositories (`lib/app/repositories`)
 
-- **lib/modify_device/modify_device.dart**  
-- **lib/modify_device/cubit/modify_device_cubit.dart**  
-- **lib/modify_device/cubit/modify_device_state.dart**  
-- **lib/modify_device/view/modify_device_page.dart**  
-- **lib/modify_device/view/modify_device_view.dart**  
+| Repository | Production Class | Mock Class | Responsibilities |
+| :--- | :--- | :--- | :--- |
+| **`MqttRepository`** | `ServerMqttRepository` | `MockMqttRepository` | MQTT client lifecycle, TLS config, auto-reconnect, message streams, LWT. |
+| **`LocalStorageRepository`** | `HiveLocalStorageRepository` | `MockLocalStorageRepository` | Hive box persistence, encrypted credential storage, reactive list observers. |
+| **`AnalyticsRepository`** | `FirebaseAnalyticsRepository` | `MockAnalyticsRepository` | Event tracking, screen navigation logging. |
+| **`CrashRepository`** | `CrashlyticsCrashRepository` | `MockCrashRepository` | Fatal and non-fatal error reporting, diagnostic keys, log breadcrumbs. |
+| **`PerformanceRepository`** | `FirebasePerformanceRepository` | `MockPerformanceRepository` | Custom execution traces (initialization, MQTT connection, Hive operations). |
 
-**Capabilities:**  
-- Data entry form dedicated to generating or updating `DeviceModel` parameters (names, specific topic strings, visual colors/icons) stored inside the active `Hive` persistence box.
+### Services (`lib/app/services`)
 
----
+Thin coordination facades injected as lazy singletons:
+- `MqttService`: Exposes connection status stream and message stream.
+- `LocalStorageService`: Manages device CRUD, group CRUD, and user preferences.
+- `AnalyticsService`: User interactions and screen view telemetry.
+- `CrashService`: Application error recording.
+- `PerformanceService`: Startup and runtime trace monitoring.
 
-### Modify Group
+### Routing & Navigation
 
-- **lib/modify_group/modify_group.dart**  
-- **lib/modify_group/cubit/modify_group_cubit.dart**  
-- **lib/modify_group/cubit/modify_group_state.dart**  
-- **lib/modify_group/view/modify_group_page.dart**  
-- **lib/modify_group/view/modify_group_view.dart**  
+Defined in `lib/app/global/app_router.dart` using `GoRouter`:
 
-**Features:**  
-- Analogous structured form matching the device equivalent context, solely handling the creation/modification parameters for `GroupModel` components interacting simultaneously with multiple devices.
+- `/`: `HomePage` — Main dashboard.
+- `/connection`: `ConnectionPage` — MQTT broker settings.
+- `/settings`: `SettingsPage` — Personalization, language, and theme.
+- `/modify-group`: `ModifyGroupPage` — Create or edit device groups.
+- `/modify-device`: `ModifyDevicePage` — Create or edit individual devices.
+- Includes `AppRouteObserver` linked to `AnalyticsService` for automatic screen tracking on every route push, pop, and replace.
 
----
+### Theming & Fonts
 
-### Settings
+- **Material UI / Material 3:** Supports full dynamic seeding based on `AppState.baseColor`.
+- **Bundled Fonts:** 9 variable typography families available without network calls:
+  - *Google Sans Flex* (Default), *Merriweather*, *Montserrat*, *Nunito*, *Open Sans*, *Orbitron*, *Playfair Display*, *Roboto*, *Source Code Pro*.
 
-- **lib/settings/settings.dart**  
-- **lib/settings/cubit/settings_cubit.dart**  
-- **lib/settings/cubit/settings_state.dart**  
-- **lib/settings/view/settings_page.dart**  
-- **lib/settings/view/settings_view.dart**  
+### Data Models & Hive Adapters
 
-**Controls:**  
-- Unified hub altering universal parameters (theme configurations, localization language). Passes preferences backward to be maintained securely inside `LocalStorageService`.
+Persisted locally using Hive binary storage:
 
----
+1. **`DeviceModel` (Type ID: 1):**
+   - Fields: `id`, `title`, `subtitle`, `icon`, `tileType`, `groupId`, `rangeMin`, `rangeMax`, `divisions`, `interval`.
+   - `DeviceTileType` enum (Type ID: 0): `boolean` or `number`.
+2. **`GroupModel` (Type ID: 2):**
+   - Fields: `id`, `title`, `subtitle`, `icon`.
 
-## Localization (l10n)
+### Global Widgets & Helpers
 
-| File                               | Role                                                  |
-|------------------------------------|-------------------------------------------------------|
-| **lib/l10n/app_en.arb**            | English string dictionary values.                     |
-| **lib/l10n/app_es.arb**            | Spanish translation map values.                       |
-| **lib/l10n/app_it.arb**            | Italian translation map values.                       |
-| **lib/l10n/gen/***                 | Folder containing dynamically generated delegates.    |
-
-**Mechanism:** Utilizing Flutter standard `l10n` capabilities based on `.arb` file configurations generating standard translation accessors.
-
----
-
-## Bootstrap & Entrypoint
-
-| File                          | Role                                                                                   |
-|-------------------------------|----------------------------------------------------------------------------------------|
-| **lib/bootstrap.dart**        | Intercepts application initialization, configuring error logging and calling `runApp()`. |
-| **lib/main.dart**             |  <br> 1. Triggers initial execution context. <br> 2. Sets up `AppDependencies` initializing singletons (`LocalStorageService`, `MqttService`). <br> 3. Dispatches execution flow over to `bootstrap`. |
-
----
-
-## Packages & Data Models
-
-Unlike complex distributed projects, Omni Remote centralizes its specific entity interactions locally through internal declarative records. 
-
-### Data Models
-
-- **lib/app/models/device_model.dart**  
-Contains the physical parameters of an individual device mapped cleanly via Hive annotations (`HiveType`) saving references directly without remote synchronization mechanisms.
-
-- **lib/app/models/group_model.dart**  
-Similar Hive annotated model used purely to combine properties of independent devices establishing hierarchical commands across different grouped endpoints.
-
-These classes interact seamlessly as the main underlying format populating the `home` application views.
+- **Widgets (`lib/app/widgets`):** `AppDropdownField`, `AppFilledButton`, `AppOutlinedButton`, `AppIconSelector`, `AppTextField`, `MqttTopicsInfo`.
+- **Helpers (`lib/app/helpers`):**
+  - `ColorHelper`: Color mapping and hexadecimal translation.
+  - `EncryptionHelper`: Secure 256-bit AES encryption cipher management for Hive boxes.
+  - `IconHelper`: Icon parsing and rendering.
+  - `ThemeHelper`: Theme mode conversion.
+  - `AppFunctions`: Floating custom SnackBar notifications (`success`, `error`, `warning`, `info`).
 
 ---
 
-## Configuration (`pubspec.yaml`)
+## 📱 Feature Modules
 
-- Core dependencies defining internal toolings: `flutter_bloc` & `equatable` (handling deterministic state propagation), `hive` & `hive_flutter` (speed-focused cache store), `go_router` (URI routing maps) and `mqtt_client` (TCP socket broker streaming).
-- Defines environment constraints formatting image assets matching platform icon specs (`assets/images`).
-- Includes code quality lint rules extending `very_good_analysis`.
+### 1. Connection
+- **Path:** `lib/connection/`
+- **Cubit:** `ConnectionCubit` / `ConnectionState`
+- **View:** `ConnectionPage` / `ConnectionView`
+- **Capabilities:** Configure broker URL, port (supporting TLS on 8883), username, and password. Stores credentials in an encrypted Hive box and triggers client reconnection.
+
+### 2. Home
+- **Path:** `lib/home/`
+- **Cubit:** `HomeCubit` / `HomeState`
+- **View:** `HomePage` / `HomeView`
+- **Widgets:**
+  - `GroupCard`: Displays group identity, contains device tiles, and publishes group-wide commands.
+  - `DeviceBooleanTile`: Toggle switch tile publishing boolean MQTT payloads and listening to status topics.
+  - `DeviceNumberTile`: Slider and stepper tile for numeric control with configured intervals.
+
+### 3. Modify Device
+- **Path:** `lib/modify_device/`
+- **Cubit:** `ModifyDeviceCubit` / `ModifyDeviceState`
+- **View:** `ModifyDevicePage` / `ModifyDeviceView`
+- **Widgets:** `DevicePreview`, `TileTypeSelector`
+- **Capabilities:** Form validation, duplicate title prevention per group, icon picker, group assignment, and tile type configuration.
+
+### 4. Modify Group
+- **Path:** `lib/modify_group/`
+- **Cubit:** `ModifyGroupCubit` / `ModifyGroupState`
+- **View:** `ModifyGroupPage` / `ModifyGroupView`
+- **Widgets:** `GroupPreview`
+- **Capabilities:** Create and edit device groups, validate unique group titles, select representative icons, and preview group cards in real-time.
+
+### 5. Settings
+- **Path:** `lib/settings/`
+- **Cubit:** `SettingsCubit` / `SettingsState`
+- **View:** `SettingsPage` / `SettingsView`
+- **Widgets:** `SettingsAppSpecs`, `SettingsCardBlock`
+- **Capabilities:** Dynamic language switcher, theme mode selection (System/Light/Dark), dynamic accent color palette selector, font family selector, and application specifications display (version, build, packages).
 
 ---
 
-> **Enjoy building and extending the Omni Remote app!**
+## 🌐 Internationalization & Localization (`l10n`)
+
+Omni Remote supports **6 languages** out of the box using Flutter's native ARB localization workflow:
+
+| Language | Locale Code | ARB File |
+| :--- | :--- | :--- |
+| **English** | `en_US` | `lib/l10n/arb/app_en.arb` |
+| **Spanish** | `es_ES` | `lib/l10n/arb/app_es.arb` |
+| **Italian** | `it_IT` | `lib/l10n/arb/app_it.arb` |
+| **French** | `fr_FR` | `lib/l10n/arb/app_fr.arb` |
+| **German** | `de_DE` | `lib/l10n/arb/app_de.arb` |
+| **Portuguese** | `pt_PT` | `lib/l10n/arb/app_pt.arb` |
+
+Access translation strings via the context extension:
+```dart
+context.l10n.someStringKey
+```
+
+---
+
+## 🚀 Bootstrap & Entrypoint
+
+### `lib/main.dart`
+1. Ensures Flutter widget bindings are initialized.
+2. Initializes Firebase with `DefaultFirebaseOptions.currentPlatform`.
+3. Calls `setupServiceLocator(Environment.prod)`.
+4. Starts performance traces for startup profiling.
+5. Initializes `LocalStorageService` (Hive boxes & adapters).
+6. Dispatches to `bootstrap(() => const AppPage())`.
+
+### `lib/bootstrap.dart`
+- Captures uncaught Flutter framework errors via `FlutterError.onError` and logs them to `CrashService`.
+- Captures asynchronous platform errors via `PlatformDispatcher.instance.onError`.
+- Sets `Bloc.observer = const AppBlocObserver()` to log and trace all Cubit transitions and errors.
+
+---
+
+## 🧪 Testing & Quality Assurance
+
+The test suite mirrors the structure of `lib/` and achieves **92.4% test coverage**:
+
+```
+test/
+├── app/
+│   ├── cubit/              # AppCubit tests
+│   ├── global/             # Functions, themes, router, dependencies tests
+│   ├── helpers/            # Color, encryption, icon, theme helper tests
+│   ├── models/             # DeviceModel and GroupModel serialization tests
+│   ├── repositories/       # Production and mock repository tests
+│   ├── services/           # Service unit tests
+│   ├── view/               # AppPage and AppView widget tests
+│   └── widgets/            # Shared widget tests
+├── connection/             # Connection Cubit and View tests
+├── helpers/                # pump_app test helper with l10n, routing, and bloc providers
+├── home/                   # Home Cubit, View, and Tile widget tests
+├── l10n/                   # Translation key completeness tests
+├── modify_device/          # Device creation Cubit, View, and widget tests
+├── modify_group/           # Group creation Cubit, View, and widget tests
+└── settings/               # Settings Cubit, View, and widget tests
+```
+
+---
+
+## 🛠️ Development & Build Commands
+
+All Flutter commands can be run using [FVM](https://fvm.app/) or standard Flutter CLI:
+
+```bash
+# Analyze code for errors and lint warnings
+fvm flutter analyze
+
+# Format all Dart files
+fvm dart format --set-exit-if-changed lib test
+
+# Run all tests with coverage
+fvm flutter test --coverage
+
+# Generate HTML coverage report (macOS/Linux)
+genhtml coverage/lcov.info -o coverage/html && open coverage/html/index.html
+
+# Regenerate code generation files (Hive adapters, l10n)
+fvm dart run build_runner build --delete-conflicting-outputs
+fvm flutter gen-l10n
+
+# Update launcher icons
+fvm dart run flutter_launcher_icons
+```
+
+---
+
+> **Omni Remote** — Engineered with clean architecture, robust testing, and real-time MQTT telemetry.

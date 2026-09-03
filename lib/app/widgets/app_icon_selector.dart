@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AppIconSelector extends StatelessWidget {
   const AppIconSelector({
