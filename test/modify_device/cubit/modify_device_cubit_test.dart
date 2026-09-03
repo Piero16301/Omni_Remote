@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/modify_device/modify_device.dart';

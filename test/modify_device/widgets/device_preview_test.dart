@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/modify_device/widgets/device_preview.dart';
 

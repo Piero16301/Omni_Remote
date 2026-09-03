@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 import 'package:omni_remote/modify_group/cubit/modify_group_cubit.dart';
