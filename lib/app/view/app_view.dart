@@ -36,7 +36,10 @@ class _AppViewState extends State<AppView> {
               child: child!,
             );
           },
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            ...GlobalMaterialLocalizations.delegates,
+          ],
           supportedLocales: AppVariables.supportedLocales,
           locale: state.language,
           theme: AppThemes.lightTheme(
