@@ -72,9 +72,7 @@ class _GroupCardState extends State<GroupCard> {
     unawaited(_subscription?.cancel());
 
     // Listen to the broadcast stream from MqttService FIRST
-    _subscription = mqttService.messageStream.listen((
-      messages,
-    ) {
+    _subscription = mqttService.messageStream.listen((messages) {
       for (final message in messages) {
         if (message.topic == online) {
           final payload = message.payload as MqttPublishMessage;
@@ -140,9 +138,9 @@ class _GroupCardState extends State<GroupCard> {
                   topLeft: Radius.circular(16),
                   topRight: Radius.circular(16),
                 ),
-                color: Theme.of(context).colorScheme.primary.withValues(
-                  alpha: 0.1,
-                ),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.1),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -164,9 +162,7 @@ class _GroupCardState extends State<GroupCard> {
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(
                                   fontVariations: <FontVariation>[
-                                    ...(Theme.of(
-                                                  context,
-                                                )
+                                    ...(Theme.of(context)
                                                 .textTheme
                                                 .titleLarge
                                                 ?.fontVariations ??
@@ -346,9 +342,7 @@ class _GroupCardState extends State<GroupCard> {
               l10n.homeDeleteDialogTitle(group.title),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontVariations: <FontVariation>[
-                  ...(Theme.of(
-                            context,
-                          ).textTheme.titleLarge?.fontVariations ??
+                  ...(Theme.of(context).textTheme.titleLarge?.fontVariations ??
                           const <FontVariation>[])
                       .where((v) => v.axis != 'wght'),
                   const FontVariation('wght', 700),
@@ -401,10 +395,8 @@ class _GroupCardState extends State<GroupCard> {
               device: device,
               group: group,
               groupIsOnline: _isOnline,
-              onEdit: () => context.pushNamed(
-                AppRoute.modifyDevice.name,
-                extra: device,
-              ),
+              onEdit: () =>
+                  context.pushNamed(AppRoute.modifyDevice.name, extra: device),
               onDelete: () => context.read<HomeCubit>().deleteDevice(device),
             ),
           );
@@ -414,10 +406,8 @@ class _GroupCardState extends State<GroupCard> {
               device: device,
               group: group,
               groupIsOnline: _isOnline,
-              onEdit: () => context.pushNamed(
-                AppRoute.modifyDevice.name,
-                extra: device,
-              ),
+              onEdit: () =>
+                  context.pushNamed(AppRoute.modifyDevice.name, extra: device),
               onDelete: () => context.read<HomeCubit>().deleteDevice(device),
             ),
           );

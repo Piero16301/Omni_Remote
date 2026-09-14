@@ -4,10 +4,7 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/modify_group/modify_group.dart';
 
 class ModifyGroupPage extends StatelessWidget {
-  const ModifyGroupPage({
-    this.group,
-    super.key,
-  });
+  const ModifyGroupPage({this.group, super.key});
 
   final GroupModel? group;
 

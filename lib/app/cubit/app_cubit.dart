@@ -79,11 +79,11 @@ class AppCubit extends Cubit<AppState> {
   }
 
   Future<void> initializeMqttClient() async {
-    _connectionStatusSubscription = mqttService.connectionStatusStream.listen(
-      (status) {
-        emit(state.copyWith(brokerConnectionStatus: status));
-      },
-    );
+    _connectionStatusSubscription = mqttService.connectionStatusStream.listen((
+      status,
+    ) {
+      emit(state.copyWith(brokerConnectionStatus: status));
+    });
     await mqttService.initializeMqttClient();
   }
 

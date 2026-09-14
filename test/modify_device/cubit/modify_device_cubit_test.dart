@@ -136,9 +136,7 @@ void main() {
           home: Scaffold(
             body: Form(
               key: cubit.state.formKey,
-              child: TextFormField(
-                validator: (_) => 'Error',
-              ),
+              child: TextFormField(validator: (_) => 'Error'),
             ),
           ),
         ),
@@ -153,9 +151,8 @@ void main() {
       final cubit = ModifyDeviceCubit();
       when(() => mockLocalStorageService.getGroups()).thenReturn(testGroups);
       when(
-        () => mockLocalStorageService.createDevice(
-          device: any(named: 'device'),
-        ),
+        () =>
+            mockLocalStorageService.createDevice(device: any(named: 'device')),
       ).thenAnswer((_) async {});
 
       cubit.deviceReceived(null);
@@ -178,9 +175,8 @@ void main() {
 
       expect(cubit.state.saveStatus, ModifyDeviceStatus.success);
       verify(
-        () => mockLocalStorageService.createDevice(
-          device: any(named: 'device'),
-        ),
+        () =>
+            mockLocalStorageService.createDevice(device: any(named: 'device')),
       ).called(1);
       unawaited(cubit.close());
     });
@@ -215,9 +211,8 @@ void main() {
       final cubit = ModifyDeviceCubit();
       when(() => mockLocalStorageService.getGroups()).thenReturn(testGroups);
       when(
-        () => mockLocalStorageService.updateDevice(
-          device: any(named: 'device'),
-        ),
+        () =>
+            mockLocalStorageService.updateDevice(device: any(named: 'device')),
       ).thenAnswer((_) async {});
 
       cubit.deviceReceived(
@@ -249,9 +244,8 @@ void main() {
 
       expect(cubit.state.saveStatus, ModifyDeviceStatus.success);
       verify(
-        () => mockLocalStorageService.updateDevice(
-          device: any(named: 'device'),
-        ),
+        () =>
+            mockLocalStorageService.updateDevice(device: any(named: 'device')),
       ).called(1);
       unawaited(cubit.close());
     });
@@ -260,9 +254,8 @@ void main() {
       final cubit = ModifyDeviceCubit();
       when(() => mockLocalStorageService.getGroups()).thenReturn(testGroups);
       when(
-        () => mockLocalStorageService.createDevice(
-          device: any(named: 'device'),
-        ),
+        () =>
+            mockLocalStorageService.createDevice(device: any(named: 'device')),
       ).thenThrow(Exception('DUPLICATE_DEVICE_NAME'));
 
       cubit.deviceReceived(null);
@@ -295,9 +288,8 @@ void main() {
       final cubit = ModifyDeviceCubit();
       when(() => mockLocalStorageService.getGroups()).thenReturn(testGroups);
       when(
-        () => mockLocalStorageService.createDevice(
-          device: any(named: 'device'),
-        ),
+        () =>
+            mockLocalStorageService.createDevice(device: any(named: 'device')),
       ).thenThrow(Exception('UNKNOWN_ERROR'));
 
       cubit.deviceReceived(null);

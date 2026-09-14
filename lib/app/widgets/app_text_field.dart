@@ -59,23 +59,14 @@ class AppTextField extends StatelessWidget {
         hintText: hintText,
         errorText: overrideErrorText,
         prefixIcon: prefix != null
-            ? Padding(
-                padding: const EdgeInsets.all(12),
-                child: prefix,
-              )
+            ? Padding(padding: const EdgeInsets.all(12), child: prefix)
             : null,
         prefixIconConstraints: prefix != null
-            ? const BoxConstraints(
-                minWidth: 48,
-                minHeight: 48,
-              )
+            ? const BoxConstraints(minWidth: 48, minHeight: 48)
             : null,
         suffixIcon: suffix,
         suffixIconConstraints: suffix != null
-            ? const BoxConstraints(
-                minWidth: 48,
-                minHeight: 48,
-              )
+            ? const BoxConstraints(minWidth: 48, minHeight: 48)
             : null,
         alignLabelWithHint: true,
       ),

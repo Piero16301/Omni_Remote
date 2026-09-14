@@ -24,9 +24,7 @@ class AppIconSelector extends StatelessWidget {
           label,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontVariations: <FontVariation>[
-              ...(Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.fontVariations ??
+              ...(Theme.of(context).textTheme.titleMedium?.fontVariations ??
                       const <FontVariation>[])
                   .where((v) => v.axis != 'wght'),
               const FontVariation('wght', 700),
@@ -62,9 +60,7 @@ class AppIconSelector extends StatelessWidget {
                       color: isSelected
                           ? Theme.of(
                               context,
-                            ).colorScheme.primary.withValues(
-                              alpha: 0.2,
-                            )
+                            ).colorScheme.primary.withValues(alpha: 0.2)
                           : Theme.of(context)
                                 .colorScheme
                                 .surfaceContainerHighest

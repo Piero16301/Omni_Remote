@@ -124,9 +124,7 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
         localStorage.createDevice(device: newDevice);
         _analyticsService.logEvent(
           name: 'create_device',
-          parameters: {
-            'tile_type': newDevice.tileType.name,
-          },
+          parameters: {'tile_type': newDevice.tileType.name},
         );
         emit(state.copyWith(saveStatus: ModifyDeviceStatus.success));
       }

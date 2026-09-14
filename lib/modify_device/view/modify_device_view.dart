@@ -46,9 +46,7 @@ class ModifyDeviceView extends StatelessWidget {
                 : l10n.modifyDevicePageTitleEdit,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontVariations: <FontVariation>[
-                ...(Theme.of(
-                          context,
-                        ).textTheme.titleLarge?.fontVariations ??
+                ...(Theme.of(context).textTheme.titleLarge?.fontVariations ??
                         const <FontVariation>[])
                     .where((v) => v.axis != 'wght'),
                 const FontVariation('wght', 700),
@@ -325,11 +323,8 @@ class ModifyDeviceView extends StatelessWidget {
                       .groups
                       .firstWhere(
                         (g) => g.id == state.selectedGroupId,
-                        orElse: () => GroupModel(
-                          title: '',
-                          subtitle: '',
-                          icon: '',
-                        ),
+                        orElse: () =>
+                            GroupModel(title: '', subtitle: '', icon: ''),
                       )
                       .title,
                   deviceTitle: state.title,
@@ -359,11 +354,7 @@ class ModifyDeviceView extends StatelessWidget {
   }) {
     final group = groups.firstWhere(
       (g) => g.id == selectedGroupId,
-      orElse: () => GroupModel(
-        title: '',
-        subtitle: '',
-        icon: '',
-      ),
+      orElse: () => GroupModel(title: '', subtitle: '', icon: ''),
     );
     switch (error) {
       case ModifyDeviceError.noGroupSelected:

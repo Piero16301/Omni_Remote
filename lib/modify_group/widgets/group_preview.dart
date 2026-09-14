@@ -26,9 +26,7 @@ class GroupPreview extends StatelessWidget {
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontVariations: <FontVariation>[
-              ...(Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.fontVariations ??
+              ...(Theme.of(context).textTheme.titleMedium?.fontVariations ??
                       const <FontVariation>[])
                   .where((v) => v.axis != 'wght'),
               const FontVariation('wght', 700),
@@ -42,12 +40,10 @@ class GroupPreview extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(16),
-                  ),
-                  color: Theme.of(context).colorScheme.primary.withValues(
-                    alpha: 0.1,
-                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.1),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -71,9 +67,7 @@ class GroupPreview extends StatelessWidget {
                               style: Theme.of(context).textTheme.titleLarge
                                   ?.copyWith(
                                     fontVariations: <FontVariation>[
-                                      ...(Theme.of(
-                                                    context,
-                                                  )
+                                      ...(Theme.of(context)
                                                   .textTheme
                                                   .titleLarge
                                                   ?.fontVariations ??

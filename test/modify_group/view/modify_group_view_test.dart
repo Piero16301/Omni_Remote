@@ -24,12 +24,9 @@ void main() {
     setUp(() {
       modifyGroupCubit = MockModifyGroupCubit();
 
-      when(() => modifyGroupCubit.state).thenReturn(
-        ModifyGroupState(
-          formKey: GlobalKey<FormState>(),
-          icon: '',
-        ),
-      );
+      when(
+        () => modifyGroupCubit.state,
+      ).thenReturn(ModifyGroupState(formKey: GlobalKey<FormState>(), icon: ''));
 
       when(() => modifyGroupCubit.saveGroupModel()).thenReturn(null);
       when(() => modifyGroupCubit.resetSaveStatus()).thenReturn(null);
@@ -120,6 +117,79 @@ void main() {
 
       expect(find.byType(SnackBar), findsOneWidget);
       verify(() => modifyGroupCubit.resetSaveStatus()).called(1);
+    });
+
+    testWidgets('renders edit title when groupModel is not null', (
+      tester,
+    ) async {
+      when(() => modifyGroupCubit.state).thenReturn(
+        ModifyGroupState(
+          formKey: GlobalKey<FormState>(),
+          icon: '',
+          groupModel: GroupModel(
+            id: '1',
+            title: 'Test',
+            subtitle: '',
+            icon: '',
+          ),
+        ),
+      );
+
+      await tester.pumpWidget(buildSubject());
+      expect(find.byType(AppBar), findsOneWidget);
+    });
+
+    testWidgets('pops navigation when back button tapped', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.tap(find.byType(IconButton).first);
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('title validator validates input correctly', (tester) async {
+      await tester.pumpWidget(buildSubject());
+      final titleField = tester.widget<AppTextField>(
+        find.byType(AppTextField).first,
+      );
+
+      expect(titleField.validator?.call(null), isNotNull);
+      expect(titleField.validator?.call(''), isNotNull);
+      expect(titleField.validator?.call('Invalid@#%'), isNotNull);
+      expect(titleField.validator?.call('Invalid  DoubleSpaces'), isNotNull);
+      expect(titleField.validator?.call('Valid Title'), isNull);
+    });
+
+    testWidgets('getFailureMessage covers all enum values', (tester) async {
+      late AppLocalizations l10n;
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (context) {
+              l10n = AppLocalizations.of(context);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      const view = ModifyGroupView();
+      expect(
+        view.getFailureMessage(
+          ModifyGroupError.duplicateGroupName,
+          'Title',
+          l10n,
+        ),
+        equals(l10n.modifyGroupSaveDuplicateError('Title')),
+      );
+      expect(
+        view.getFailureMessage(ModifyGroupError.unknown, 'Title', l10n),
+        equals(l10n.modifyGroupSaveDefaultError('Title')),
+      );
+      expect(
+        view.getFailureMessage(ModifyGroupError.none, 'Title', l10n),
+        isEmpty,
+      );
     });
   });
 }

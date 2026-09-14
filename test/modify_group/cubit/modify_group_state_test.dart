@@ -17,26 +17,20 @@ void main() {
     const formKey = GlobalObjectKey<FormState>('modify_group_form_test');
 
     test('supports value equality', () {
-      expect(
-        const ModifyGroupState(),
-        const ModifyGroupState(),
-      );
+      expect(const ModifyGroupState(), const ModifyGroupState());
     });
 
     test('props are correct', () {
       const state = ModifyGroupState();
-      expect(
-        state.props,
-        <Object?>[
-          '',
-          '',
-          IconHelper.getGroupFirstIcon,
-          state.formKey,
-          null,
-          ModifyGroupStatus.initial,
-          ModifyGroupError.none,
-        ],
-      );
+      expect(state.props, <Object?>[
+        '',
+        '',
+        IconHelper.getGroupFirstIcon,
+        state.formKey,
+        null,
+        ModifyGroupStatus.initial,
+        ModifyGroupError.none,
+      ]);
     });
 
     test('copyWith returns object with updated properties', () {

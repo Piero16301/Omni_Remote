@@ -239,10 +239,7 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
   @override
   void saveTheme({required ThemeMode theme}) {
     _settingsBox
-        .put(
-          LocalStorageRepository.kUserTheme,
-          ThemeHelper.getThemeName(theme),
-        )
+        .put(LocalStorageRepository.kUserTheme, ThemeHelper.getThemeName(theme))
         .ignore();
   }
 
@@ -279,10 +276,7 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
   @override
   void saveFontFamily({required String fontFamily}) {
     _settingsBox
-        .put(
-          LocalStorageRepository.kUserFontFamily,
-          fontFamily,
-        )
+        .put(LocalStorageRepository.kUserFontFamily, fontFamily)
         .ignore();
   }
 

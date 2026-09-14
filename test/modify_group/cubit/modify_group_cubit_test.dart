@@ -99,9 +99,7 @@ void main() {
           home: Scaffold(
             body: Form(
               key: cubit.state.formKey,
-              child: TextFormField(
-                validator: (_) => 'Error',
-              ),
+              child: TextFormField(validator: (_) => 'Error'),
             ),
           ),
         ),

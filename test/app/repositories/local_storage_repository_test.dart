@@ -63,16 +63,6 @@ void main() {
 
     repository = HiveLocalStorageRepository();
 
-    if (!Hive.isAdapterRegistered(GroupModelAdapter().typeId)) {
-      Hive.registerAdapter(GroupModelAdapter());
-    }
-    if (!Hive.isAdapterRegistered(DeviceModelAdapter().typeId)) {
-      Hive.registerAdapter(DeviceModelAdapter());
-    }
-    if (!Hive.isAdapterRegistered(DeviceTileTypeAdapter().typeId)) {
-      Hive.registerAdapter(DeviceTileTypeAdapter());
-    }
-
     await repository.initialize();
   });
 
@@ -88,6 +78,17 @@ void main() {
   });
 
   group('HiveLocalStorageRepository', () {
+    test('returns null when settings are not saved', () {
+      expect(repository.getLanguage(), isNull);
+      expect(repository.getTheme(), isNull);
+      expect(repository.getBaseColor(), isNull);
+      expect(repository.getFontFamily(), isNull);
+      expect(repository.getBrokerUrl(), isNull);
+      expect(repository.getBrokerPort(), isNull);
+      expect(repository.getBrokerUsername(), isNull);
+      expect(repository.getBrokerPassword(), isNull);
+    });
+
     test('saveLanguage and getLanguage', () {
       const locale = Locale('es', 'ES');
       repository.saveLanguage(language: locale);
@@ -299,6 +300,92 @@ void main() {
         ),
       );
     });
+
+    test('updateGroup updates group successfully', () {
+      repository.createGroup(
+        group: GroupModel(
+          id: '1',
+          title: 'Initial Title',
+          subtitle: 'Sub',
+          icon: 'ic',
+        ),
+      );
+      final createdGroup = repository.getGroups().firstWhere(
+        (g) => g.title == 'Initial Title',
+      );
+      final updated = createdGroup.copyWith(title: 'Updated Title');
+      repository.updateGroup(group: updated);
+      final found = repository.getGroups().firstWhere(
+        (g) => g.id == createdGroup.id,
+      );
+      expect(found.title, equals('Updated Title'));
+    });
+
+    test('deleteGroup deletes empty group and throws if not found', () {
+      repository.createGroup(
+        group: GroupModel(
+          id: 'to-delete',
+          title: 'Delete Me Group',
+          subtitle: 'Sub',
+          icon: 'ic',
+        ),
+      );
+      final group = repository.getGroups().firstWhere(
+        (g) => g.title == 'Delete Me Group',
+      );
+      repository.deleteGroup(groupId: group.id);
+      expect(repository.getGroups().any((g) => g.id == group.id), isFalse);
+
+      expect(
+        () => repository.deleteGroup(groupId: 'non-existent-group'),
+        throwsA(
+          isA<Exception>().having(
+            (e) => e.toString(),
+            'message',
+            contains('GROUP_NOT_FOUND'),
+          ),
+        ),
+      );
+    });
+
+    test(
+      'updateDevice and deleteDevice updates and deletes device successfully',
+      () {
+        repository.createGroup(
+          group: GroupModel(
+            id: 'g-up',
+            title: 'Group Up Dev',
+            subtitle: 'S',
+            icon: 'i',
+          ),
+        );
+        final group = repository.getGroups().firstWhere(
+          (g) => g.title == 'Group Up Dev',
+        );
+        repository.createDevice(
+          device: DeviceModel(
+            id: 'd-up',
+            title: 'Device Up Dev',
+            subtitle: 'S',
+            groupId: group.id,
+            icon: 'i',
+            tileType: DeviceTileType.boolean,
+          ),
+        );
+        final device = repository.getDevices().firstWhere(
+          (d) => d.title == 'Device Up Dev',
+        );
+        final updated = device.copyWith(title: 'Device Updated Dev');
+        repository.updateDevice(device: updated);
+        final found = repository.getDevices().firstWhere(
+          (d) => d.id == device.id,
+        );
+        expect(found.title, equals('Device Updated Dev'));
+
+        repository.deleteDevice(deviceId: device.id);
+        expect(repository.getDevices().any((d) => d.id == device.id), isFalse);
+      },
+    );
 
     test('Listenable functionality', () {
       final groupsListenable = repository.getGroupsListenable();

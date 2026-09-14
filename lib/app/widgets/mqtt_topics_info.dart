@@ -22,10 +22,7 @@ class MqttTopicsInfo extends StatelessWidget {
 
   void _copyToClipboard(BuildContext context, String message, String text) {
     unawaited(Clipboard.setData(ClipboardData(text: text)));
-    AppFunctions.showSnackBar(
-      context,
-      message: message,
-    );
+    AppFunctions.showSnackBar(context, message: message);
   }
 
   @override
@@ -41,10 +38,7 @@ class MqttTopicsInfo extends StatelessWidget {
           suffix: AppVariables.onlineSuffix,
         );
 
-        return topicInfoGroup(
-          context: context,
-          onlineTopic: onlineTopic,
-        );
+        return topicInfoGroup(context: context, onlineTopic: onlineTopic);
       case TopicInfoType.device:
         if (groupTitle == null ||
             deviceTitle == null ||
@@ -84,9 +78,7 @@ class MqttTopicsInfo extends StatelessWidget {
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontVariations: <FontVariation>[
-              ...(Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.fontVariations ??
+              ...(Theme.of(context).textTheme.titleMedium?.fontVariations ??
                       const <FontVariation>[])
                   .where((v) => v.axis != 'wght'),
               const FontVariation('wght', 700),
@@ -151,9 +143,7 @@ class MqttTopicsInfo extends StatelessWidget {
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
                                   fontVariations: <FontVariation>[
-                                    ...(Theme.of(
-                                                  context,
-                                                )
+                                    ...(Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium
                                                 ?.fontVariations ??
@@ -194,9 +184,7 @@ class MqttTopicsInfo extends StatelessWidget {
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontVariations: <FontVariation>[
-              ...(Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.fontVariations ??
+              ...(Theme.of(context).textTheme.titleMedium?.fontVariations ??
                       const <FontVariation>[])
                   .where((v) => v.axis != 'wght'),
               const FontVariation('wght', 700),
@@ -272,9 +260,7 @@ class MqttTopicsInfo extends StatelessWidget {
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
                                   fontVariations: <FontVariation>[
-                                    ...(Theme.of(
-                                                  context,
-                                                )
+                                    ...(Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium
                                                 ?.fontVariations ??
@@ -316,9 +302,7 @@ class MqttTopicsInfo extends StatelessWidget {
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
                                   fontVariations: <FontVariation>[
-                                    ...(Theme.of(
-                                                  context,
-                                                )
+                                    ...(Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium
                                                 ?.fontVariations ??
@@ -402,9 +386,7 @@ class _TopicItem extends StatelessWidget {
             label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontVariations: <FontVariation>[
-                ...(Theme.of(
-                          context,
-                        ).textTheme.bodyMedium?.fontVariations ??
+                ...(Theme.of(context).textTheme.bodyMedium?.fontVariations ??
                         const <FontVariation>[])
                     .where((v) => v.axis != 'wght'),
                 const FontVariation('wght', 700),
@@ -417,19 +399,16 @@ class _TopicItem extends StatelessWidget {
         ),
         Expanded(
           child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
               topic,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontFamily: 'monospace',
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontFamily: 'monospace'),
             ),
           ),
         ),

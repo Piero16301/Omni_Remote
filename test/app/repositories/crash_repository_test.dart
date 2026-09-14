@@ -52,6 +52,44 @@ void main() {
       ).called(1);
     });
 
+    test(
+      'recordError calls crashlytics.recordError with fatal and information',
+      () async {
+        final exception = Exception('test fatal');
+        final stack = StackTrace.current;
+        const reason = 'fatal error';
+        final info = ['extra_info', 123];
+
+        when(
+          () => crashlytics.recordError(
+            any<dynamic>(),
+            any<StackTrace?>(),
+            reason: any<dynamic>(named: 'reason'),
+            information: any<Iterable<Object>>(named: 'information'),
+            fatal: any<bool>(named: 'fatal'),
+          ),
+        ).thenAnswer((_) async {});
+
+        repository.recordError(
+          exception,
+          stack,
+          reason: reason,
+          information: info,
+          fatal: true,
+        );
+
+        verify(
+          () => crashlytics.recordError(
+            exception,
+            stack,
+            reason: reason,
+            information: info,
+            fatal: true,
+          ),
+        ).called(1);
+      },
+    );
+
     test('setCustomKey calls crashlytics.setCustomKey', () async {
       const key = 'test_key';
       const value = 'test_value';
@@ -63,6 +101,24 @@ void main() {
       repository.setCustomKey(key, value);
 
       verify(() => crashlytics.setCustomKey(key, value)).called(1);
+    });
+  });
+
+  group('MockCrashRepository', () {
+    test('handles log, recordError and setCustomKey without errors', () {
+      final mock = MockCrashRepository();
+      expect(() => mock.log('log message'), returnsNormally);
+      expect(
+        () => mock.recordError(
+          Exception('error'),
+          StackTrace.current,
+          reason: 'reason',
+          information: ['info'],
+          fatal: true,
+        ),
+        returnsNormally,
+      );
+      expect(() => mock.setCustomKey('key', 'val'), returnsNormally);
     });
   });
 }

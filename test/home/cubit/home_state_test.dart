@@ -13,22 +13,16 @@ void main() {
 
   group('HomeState', () {
     test('supports value equality', () {
-      expect(
-        const HomeState(),
-        const HomeState(),
-      );
+      expect(const HomeState(), const HomeState());
     });
 
     test('props are correct', () {
-      expect(
-        const HomeState().props,
-        <Object?>[
-          HomeStatus.initial,
-          HomeStatus.initial,
-          GroupDeleteError.none,
-          DeviceDeleteError.none,
-        ],
-      );
+      expect(const HomeState().props, <Object?>[
+        HomeStatus.initial,
+        HomeStatus.initial,
+        GroupDeleteError.none,
+        DeviceDeleteError.none,
+      ]);
     });
 
     test('copyWith returns object with updated properties', () {

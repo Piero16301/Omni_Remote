@@ -86,12 +86,7 @@ void main() {
 
       var readCount = 0;
       when(() => reader.read()).thenAnswer((_) {
-        final values = [
-          'id1',
-          'title1',
-          'sub1',
-          'icon1',
-        ];
+        final values = ['id1', 'title1', 'sub1', 'icon1'];
         final val = values[readCount];
         readCount++;
         return val;

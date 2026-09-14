@@ -22,9 +22,7 @@ class SettingsView extends StatelessWidget {
               l10n.settingsAppBarTitle,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontVariations: <FontVariation>[
-                  ...(Theme.of(
-                            context,
-                          ).textTheme.titleLarge?.fontVariations ??
+                  ...(Theme.of(context).textTheme.titleLarge?.fontVariations ??
                           const <FontVariation>[])
                       .where((v) => v.axis != 'wght'),
                   const FontVariation('wght', 700),
@@ -50,10 +48,7 @@ class SettingsView extends StatelessWidget {
             children: const [
               Row(
                 spacing: 12,
-                children: [
-                  LocaleSettingsCard(),
-                  ThemeSettingsCard(),
-                ],
+                children: [LocaleSettingsCard(), ThemeSettingsCard()],
               ),
               SizedBox(height: 12),
               ColorSettingsCard(),
@@ -83,30 +78,28 @@ class LocaleSettingsCard extends StatelessWidget {
       isExpanded: true,
       title: l10n.settingsLanguageTitle,
       value: state.language,
-      items: AppVariables.supportedLocales.map(
-        (locale) {
-          return DropdownMenuItem<Locale>(
-            value: locale,
-            child: Row(
-              spacing: 12,
-              children: [
-                CountryFlag.fromLanguageCode(
-                  locale.languageCode,
-                  theme: const ImageTheme(
-                    width: 25,
-                    height: 25,
-                    shape: RoundedRectangle(4),
-                  ),
+      items: AppVariables.supportedLocales.map((locale) {
+        return DropdownMenuItem<Locale>(
+          value: locale,
+          child: Row(
+            spacing: 12,
+            children: [
+              CountryFlag.fromLanguageCode(
+                locale.languageCode,
+                theme: const ImageTheme(
+                  width: 25,
+                  height: 25,
+                  shape: RoundedRectangle(4),
                 ),
-                Text(
-                  _getLanguageName(locale, l10n),
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ],
-            ),
-          );
-        },
-      ).toList(),
+              ),
+              Text(
+                _getLanguageName(locale, l10n),
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        );
+      }).toList(),
       onChanged: (value) {
         if (value != null) {
           context.read<AppCubit>().changeLanguage(language: value);
@@ -147,31 +140,29 @@ class ThemeSettingsCard extends StatelessWidget {
       isExpanded: true,
       title: l10n.settingsThemeTitle,
       value: state.theme,
-      items: ThemeMode.values.map(
-        (themeMode) {
-          return DropdownMenuItem<ThemeMode>(
-            value: themeMode,
-            child: Row(
-              spacing: 12,
-              children: [
-                HugeIcon(
-                  icon: themeMode == ThemeMode.light
-                      ? HugeIcons.strokeRoundedSun03
-                      : (themeMode == ThemeMode.dark
-                            ? HugeIcons.strokeRoundedMoon02
-                            : HugeIcons.strokeRoundedFan01),
-                  size: 20,
-                  strokeWidth: 2,
-                ),
-                Text(
-                  _getThemeName(themeMode, l10n),
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ],
-            ),
-          );
-        },
-      ).toList(),
+      items: ThemeMode.values.map((themeMode) {
+        return DropdownMenuItem<ThemeMode>(
+          value: themeMode,
+          child: Row(
+            spacing: 12,
+            children: [
+              HugeIcon(
+                icon: themeMode == ThemeMode.light
+                    ? HugeIcons.strokeRoundedSun03
+                    : (themeMode == ThemeMode.dark
+                          ? HugeIcons.strokeRoundedMoon02
+                          : HugeIcons.strokeRoundedFan01),
+                size: 20,
+                strokeWidth: 2,
+              ),
+              Text(
+                _getThemeName(themeMode, l10n),
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        );
+      }).toList(),
       onChanged: (value) {
         if (value != null) {
           context.read<AppCubit>().changeTheme(theme: value);
@@ -203,35 +194,33 @@ class ColorSettingsCard extends StatelessWidget {
     return SettingsCardBlock<Color>(
       title: l10n.settingsBaseColorTitle,
       value: state.baseColor,
-      items: ColorHelper.colorMap.entries.map(
-        (entry) {
-          return DropdownMenuItem<Color>(
-            value: entry.value,
-            child: Row(
-              spacing: 12,
-              children: [
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: entry.value,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.outline.withValues(alpha: 0.3),
-                    ),
+      items: ColorHelper.colorMap.entries.map((entry) {
+        return DropdownMenuItem<Color>(
+          value: entry.value,
+          child: Row(
+            spacing: 12,
+            children: [
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: entry.value,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outline.withValues(alpha: 0.3),
                   ),
                 ),
-                Text(
-                  _getColorName(entry.key, l10n),
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ],
-            ),
-          );
-        },
-      ).toList(),
+              ),
+              Text(
+                _getColorName(entry.key, l10n),
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        );
+      }).toList(),
       onChanged: (value) {
         if (value != null) {
           context.read<AppCubit>().changeBaseColor(baseColor: value);
@@ -294,19 +283,17 @@ class FontSettingsCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final state = context.watch<AppCubit>().state;
 
-    final fontItems = AppVariables.availableFonts.entries.map(
-      (entry) {
-        return DropdownMenuItem<String>(
-          value: entry.value,
-          child: Text(
-            entry.key,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontFamily: entry.value,
-            ),
-          ),
-        );
-      },
-    ).toList();
+    final fontItems = AppVariables.availableFonts.entries.map((entry) {
+      return DropdownMenuItem<String>(
+        value: entry.value,
+        child: Text(
+          entry.key,
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(fontFamily: entry.value),
+        ),
+      );
+    }).toList();
 
     final validValue = fontItems.any((item) => item.value == state.fontFamily)
         ? state.fontFamily

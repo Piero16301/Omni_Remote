@@ -47,5 +47,26 @@ void main() {
       );
       expect(find.byType(ModifyGroupView), findsOneWidget);
     });
+
+    testWidgets('renders ModifyGroupView with group provided', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: BlocProvider<AppCubit>.value(
+            value: mockAppCubit,
+            child: ModifyGroupPage(
+              group: GroupModel(
+                id: '1',
+                title: 'Living Room',
+                subtitle: 'Sub',
+                icon: 'ic',
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(find.byType(ModifyGroupView), findsOneWidget);
+    });
   });
 }

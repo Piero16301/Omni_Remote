@@ -5,10 +5,7 @@ class AnalyticsService {
 
   final AnalyticsRepository _analyticsRepository;
 
-  void logEvent({
-    required String name,
-    Map<String, Object>? parameters,
-  }) {
+  void logEvent({required String name, Map<String, Object>? parameters}) {
     _analyticsRepository.logEvent(name: name, parameters: parameters);
   }
 

@@ -101,9 +101,7 @@ void main() {
       void Function()? onDelete,
     }) {
       return MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: appCubit),
-        ],
+        providers: [BlocProvider.value(value: appCubit)],
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
@@ -179,11 +177,7 @@ void main() {
 
     testWidgets('calls onEdit when Edit is tapped', (tester) async {
       var editCalled = false;
-      await tester.pumpWidget(
-        buildSubject(
-          onEdit: () => editCalled = true,
-        ),
-      );
+      await tester.pumpWidget(buildSubject(onEdit: () => editCalled = true));
 
       await tester.longPress(find.byType(InkWell));
       await tester.pumpAndSettle();
@@ -213,9 +207,7 @@ void main() {
     ) async {
       var deleteCalled = false;
       await tester.pumpWidget(
-        buildSubject(
-          onDelete: () => deleteCalled = true,
-        ),
+        buildSubject(onDelete: () => deleteCalled = true),
       );
 
       await tester.longPress(find.byType(InkWell));
@@ -321,12 +313,8 @@ void main() {
 
       await tester.pumpWidget(buildSubject());
 
-      when(() => appCubit.state).thenReturn(
-        const AppState(),
-      );
-      stateController.add(
-        const AppState(),
-      );
+      when(() => appCubit.state).thenReturn(const AppState());
+      stateController.add(const AppState());
       await tester.pump();
 
       when(() => appCubit.state).thenReturn(

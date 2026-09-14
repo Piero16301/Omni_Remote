@@ -23,10 +23,7 @@ void main() {
 
     test('getColorByName returns default color (Green) for invalid names', () {
       expect(ColorHelper.getColorByName('NON_EXISTENT_COLOR'), Colors.green);
-      expect(
-        ColorHelper.getColorByName('magenta'),
-        Colors.green,
-      );
+      expect(ColorHelper.getColorByName('magenta'), Colors.green);
       expect(ColorHelper.getColorByName(''), Colors.green);
       expect(ColorHelper.getColorByName('123'), Colors.green);
     });
@@ -46,10 +43,7 @@ void main() {
           () => ColorHelper.getColorName(const Color(0xFF000000)),
           throwsStateError,
         );
-        expect(
-          () => ColorHelper.getColorName(Colors.white),
-          throwsStateError,
-        );
+        expect(() => ColorHelper.getColorName(Colors.white), throwsStateError);
       });
     });
   });
