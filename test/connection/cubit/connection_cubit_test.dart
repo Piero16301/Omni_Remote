@@ -152,9 +152,7 @@ void main() {
           home: Scaffold(
             body: Form(
               key: customCubit.state.formKey,
-              child: TextFormField(
-                validator: (_) => 'Error',
-              ),
+              child: TextFormField(validator: (_) => 'Error'),
             ),
           ),
         ),
@@ -216,9 +214,7 @@ void main() {
               child: Scaffold(
                 body: Form(
                   key: formKey,
-                  child: TextFormField(
-                    validator: (_) => null,
-                  ),
+                  child: TextFormField(validator: (_) => null),
                 ),
               ),
             ),
@@ -260,9 +256,7 @@ void main() {
         MaterialApp(
           home: BlocProvider<AppCubit>.value(
             value: mockAppCubit,
-            child: const Scaffold(
-              body: SizedBox(),
-            ),
+            child: const Scaffold(body: SizedBox()),
           ),
         ),
       );

@@ -134,11 +134,7 @@ class ServerMqttRepository implements MqttRepository {
         const uuid = Uuid();
         final port = int.parse(brokerPort);
 
-        _mqttClient = _clientFactory(
-          brokerUrl,
-          uuid.v4(),
-          port,
-        );
+        _mqttClient = _clientFactory(brokerUrl, uuid.v4(), port);
 
         // Configurar TLS/SSL para puerto 8883 (MQTT seguro)
         if (port == 8883) {
@@ -235,9 +231,7 @@ class ServerMqttRepository implements MqttRepository {
 
   void _setupMqttListener() {
     unawaited(_mqttSubscription?.cancel());
-    _mqttSubscription = _mqttClient?.updates?.listen(
-      _messageController.add,
-    );
+    _mqttSubscription = _mqttClient?.updates?.listen(_messageController.add);
   }
 
   void _onMqttConnected() {

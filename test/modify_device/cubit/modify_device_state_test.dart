@@ -17,32 +17,26 @@ void main() {
     const formKey = GlobalObjectKey<FormState>('modify_device_form_test');
 
     test('supports value equality', () {
-      expect(
-        const ModifyDeviceState(),
-        const ModifyDeviceState(),
-      );
+      expect(const ModifyDeviceState(), const ModifyDeviceState());
     });
 
     test('props are correct', () {
       const state = ModifyDeviceState();
-      expect(
-        state.props,
-        <Object?>[
-          '',
-          '',
-          IconHelper.getDeviceFirstIcon,
-          DeviceTileType.boolean,
-          0.0,
-          0.0,
-          0,
-          0.0,
-          state.formKey,
-          null,
-          ModifyDeviceStatus.initial,
-          ModifyDeviceError.none,
-          null,
-        ],
-      );
+      expect(state.props, <Object?>[
+        '',
+        '',
+        IconHelper.getDeviceFirstIcon,
+        DeviceTileType.boolean,
+        0.0,
+        0.0,
+        0,
+        0.0,
+        state.formKey,
+        null,
+        ModifyDeviceStatus.initial,
+        ModifyDeviceError.none,
+        null,
+      ]);
     });
 
     test('copyWith returns object with updated properties', () {

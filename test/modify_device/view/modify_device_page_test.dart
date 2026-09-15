@@ -27,13 +27,13 @@ void main() {
         ..unregister<LocalStorageService>()
         ..registerSingleton<LocalStorageService>(mockLocalStorageService);
 
-      when(() => mockLocalStorageService.getGroups()).thenReturn(
-        [GroupModel(id: '1', title: 'Test', subtitle: '', icon: '')],
-      );
+      when(() => mockLocalStorageService.getGroups()).thenReturn([
+        GroupModel(id: '1', title: 'Test', subtitle: '', icon: ''),
+      ]);
       when(() => mockLocalStorageService.getGroupsListenable()).thenReturn(
-        ValueNotifier<List<GroupModel>>(
-          [GroupModel(id: '1', title: 'Test', subtitle: '', icon: '')],
-        ),
+        ValueNotifier<List<GroupModel>>([
+          GroupModel(id: '1', title: 'Test', subtitle: '', icon: ''),
+        ]),
       );
       when(
         () => mockLocalStorageService.getDevicesListenable(),
@@ -48,6 +48,31 @@ void main() {
           home: BlocProvider<AppCubit>.value(
             value: mockAppCubit,
             child: const ModifyDevicePage(),
+          ),
+        ),
+      );
+      expect(find.byType(ModifyDeviceView), findsOneWidget);
+    });
+
+    testWidgets('renders ModifyDeviceView with device provided', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: BlocProvider<AppCubit>.value(
+            value: mockAppCubit,
+            child: ModifyDevicePage(
+              device: DeviceModel(
+                id: 'd1',
+                title: 'Lamp',
+                subtitle: '',
+                groupId: '1',
+                icon: '',
+                tileType: DeviceTileType.boolean,
+              ),
+            ),
           ),
         ),
       );

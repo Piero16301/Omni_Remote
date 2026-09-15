@@ -77,9 +77,7 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
     unawaited(_subscription?.cancel());
 
     // Listen to the broadcast stream from MqttService FIRST
-    _subscription = mqttService.messageStream.listen((
-      messages,
-    ) {
+    _subscription = mqttService.messageStream.listen((messages) {
       for (final message in messages) {
         if (message.topic == status) {
           final payload = message.payload as MqttPublishMessage;
@@ -144,11 +142,7 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
     final builder = MqttClientPayloadBuilder()
       ..addString(value.toStringAsFixed(1));
 
-    mqttClient.publishMessage(
-      command,
-      MqttQos.atLeastOnce,
-      builder.payload!,
-    );
+    mqttClient.publishMessage(command, MqttQos.atLeastOnce, builder.payload!);
 
     getIt<AnalyticsService>().logEvent(
       name: 'device_action_number',
@@ -178,10 +172,7 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
         }
       },
       child: InkWell(
-        onLongPress: () => _showDeviceOptions(
-          context,
-          widget.device,
-        ),
+        onLongPress: () => _showDeviceOptions(context, widget.device),
         borderRadius: BorderRadius.circular(16),
         child: Column(
           children: [
@@ -227,9 +218,8 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                   children: [
                     IconButton(
                       onPressed: widget.groupIsOnline
-                          ? () => _publishCommand(
-                              _value - widget.device.interval,
-                            )
+                          ? () =>
+                                _publishCommand(_value - widget.device.interval)
                           : null,
                       icon: const HugeIcon(
                         icon: HugeIcons.strokeRoundedRemove01,
@@ -242,9 +232,8 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                     ),
                     IconButton(
                       onPressed: widget.groupIsOnline
-                          ? () => _publishCommand(
-                              _value + widget.device.interval,
-                            )
+                          ? () =>
+                                _publishCommand(_value + widget.device.interval)
                           : null,
                       icon: const HugeIcon(
                         icon: HugeIcons.strokeRoundedAdd01,
@@ -366,9 +355,7 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
               l10n.homeDeleteDialogTitle(device.title),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontVariations: <FontVariation>[
-                  ...(Theme.of(
-                            context,
-                          ).textTheme.titleLarge?.fontVariations ??
+                  ...(Theme.of(context).textTheme.titleLarge?.fontVariations ??
                           const <FontVariation>[])
                       .where((v) => v.axis != 'wght'),
                   const FontVariation('wght', 700),

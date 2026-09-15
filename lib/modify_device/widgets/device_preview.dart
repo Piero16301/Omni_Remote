@@ -35,9 +35,7 @@ class DevicePreview extends StatelessWidget {
           l10n.modifyDevicePreview,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontVariations: <FontVariation>[
-              ...(Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.fontVariations ??
+              ...(Theme.of(context).textTheme.titleMedium?.fontVariations ??
                       const <FontVariation>[])
                   .where((v) => v.axis != 'wght'),
               const FontVariation('wght', 700),
@@ -227,9 +225,7 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
                             style: Theme.of(context).textTheme.bodyLarge
                                 ?.copyWith(
                                   fontVariations: <FontVariation>[
-                                    ...(Theme.of(
-                                                  context,
-                                                )
+                                    ...(Theme.of(context)
                                                 .textTheme
                                                 .bodyLarge
                                                 ?.fontVariations ??

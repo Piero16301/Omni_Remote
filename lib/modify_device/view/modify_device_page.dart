@@ -4,10 +4,7 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/modify_device/modify_device.dart';
 
 class ModifyDevicePage extends StatelessWidget {
-  const ModifyDevicePage({
-    this.device,
-    super.key,
-  });
+  const ModifyDevicePage({this.device, super.key});
 
   final DeviceModel? device;
 

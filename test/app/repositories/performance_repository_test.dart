@@ -40,4 +40,16 @@ void main() {
       verify(() => trace.stop()).called(1);
     });
   });
+
+  group('MockPerformanceRepository', () {
+    test('startTrace throws UnimplementedError', () {
+      final mock = MockPerformanceRepository();
+      expect(() => mock.startTrace('trace_name'), throwsUnimplementedError);
+    });
+
+    test('stopTrace throws UnimplementedError', () {
+      final mock = MockPerformanceRepository();
+      expect(() => mock.stopTrace(MockTrace()), throwsUnimplementedError);
+    });
+  });
 }

@@ -76,9 +76,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
     unawaited(_subscription?.cancel());
 
     // Listen to the broadcast stream from MqttService FIRST
-    _subscription = mqttService.messageStream.listen((
-      messages,
-    ) {
+    _subscription = mqttService.messageStream.listen((messages) {
       for (final message in messages) {
         if (message.topic == status) {
           final payload = message.payload as MqttPublishMessage;
@@ -141,18 +139,11 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
 
     final builder = MqttClientPayloadBuilder()..addString(value ? '1' : '0');
 
-    mqttClient.publishMessage(
-      command,
-      MqttQos.atLeastOnce,
-      builder.payload!,
-    );
+    mqttClient.publishMessage(command, MqttQos.atLeastOnce, builder.payload!);
 
     getIt<AnalyticsService>().logEvent(
       name: 'device_action_boolean',
-      parameters: {
-        'device_id': widget.device.id,
-        'value': value ? '1' : '0',
-      },
+      parameters: {'device_id': widget.device.id, 'value': value ? '1' : '0'},
     );
 
     if (mounted) {
@@ -175,10 +166,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
         }
       },
       child: InkWell(
-        onLongPress: () => _showDeviceOptions(
-          context,
-          widget.device,
-        ),
+        onLongPress: () => _showDeviceOptions(context, widget.device),
         borderRadius: BorderRadius.circular(16),
         child: Row(
           spacing: 16,
@@ -319,9 +307,7 @@ class _DeviceBooleanTileState extends State<DeviceBooleanTile> {
               l10n.homeDeleteDialogTitle(device.title),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontVariations: <FontVariation>[
-                  ...(Theme.of(
-                            context,
-                          ).textTheme.titleLarge?.fontVariations ??
+                  ...(Theme.of(context).textTheme.titleLarge?.fontVariations ??
                           const <FontVariation>[])
                       .where((v) => v.axis != 'wght'),
                   const FontVariation('wght', 700),

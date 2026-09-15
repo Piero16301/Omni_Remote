@@ -47,9 +47,7 @@ class ConnectionView extends StatelessWidget {
               l10n.connectionAppBarTitle,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontVariations: <FontVariation>[
-                  ...(Theme.of(
-                            context,
-                          ).textTheme.titleLarge?.fontVariations ??
+                  ...(Theme.of(context).textTheme.titleLarge?.fontVariations ??
                           const <FontVariation>[])
                       .where((v) => v.axis != 'wght'),
                   const FontVariation('wght', 700),
@@ -165,7 +163,7 @@ class ConnectionView extends StatelessWidget {
                       (connectionStatus.isConnecting ||
                           connectionStatus.isDisconnecting)
                       ? null
-                      : () async => context
+                      : () async => await context
                             .read<ConnectionCubit>()
                             .saveAndConnect(context: context),
                   label: l10n.connectionSaveAndConnectButton,
@@ -176,12 +174,10 @@ class ConnectionView extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color:
-                            Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest.withValues(
-                              alpha: 0.5,
-                            ),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest
+                            .withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: Theme.of(
@@ -192,20 +188,14 @@ class ConnectionView extends StatelessWidget {
                       child: Column(
                         spacing: 12,
                         children: [
-                          HugeIcon(
-                            icon: icon,
-                            color: statusColor,
-                            size: 48,
-                          ),
+                          HugeIcon(icon: icon, color: statusColor, size: 48),
                           Text(
                             statusText,
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(
                                   color: statusColor,
                                   fontVariations: <FontVariation>[
-                                    ...(Theme.of(
-                                                  context,
-                                                )
+                                    ...(Theme.of(context)
                                                 .textTheme
                                                 .titleLarge
                                                 ?.fontVariations ??

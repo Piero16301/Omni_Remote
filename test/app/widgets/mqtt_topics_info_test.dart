@@ -28,11 +28,7 @@ void main() {
     testWidgets('renders empty when groupTitle is null for group type', (
       tester,
     ) async {
-      await tester.pumpWidget(
-        buildSubject(
-          topicInfoType: TopicInfoType.group,
-        ),
-      );
+      await tester.pumpWidget(buildSubject(topicInfoType: TopicInfoType.group));
 
       expect(find.byType(SizedBox), findsOneWidget);
     });

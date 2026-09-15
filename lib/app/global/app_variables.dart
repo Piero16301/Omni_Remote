@@ -76,10 +76,7 @@ class AppVariables {
   }
 }
 
-enum TopicInfoType {
-  group,
-  device,
-}
+enum TopicInfoType { group, device }
 
 enum SnackBarType {
   success,

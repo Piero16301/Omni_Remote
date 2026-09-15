@@ -23,9 +23,7 @@ class AppDropdownField<T> extends StatelessWidget {
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(
-                color: Theme.of(context).colorScheme.outline,
-              ),
+              border: Border.all(color: Theme.of(context).colorScheme.outline),
               borderRadius: BorderRadius.circular(16),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),

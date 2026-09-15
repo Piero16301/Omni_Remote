@@ -46,10 +46,7 @@ class AppRouteObserver extends NavigatorObserver {
   }
 
   @override
-  void didChangeTop(
-    Route<dynamic> topRoute,
-    Route<dynamic>? previousTopRoute,
-  ) {
+  void didChangeTop(Route<dynamic> topRoute, Route<dynamic>? previousTopRoute) {
     super.didChangeTop(topRoute, previousTopRoute);
     if (topRoute is PageRoute) {
       _sendScreenView(topRoute);

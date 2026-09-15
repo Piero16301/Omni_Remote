@@ -24,9 +24,7 @@ class TileTypeSelector extends StatelessWidget {
           l10n.modifyDeviceTileTypeLabel,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontVariations: <FontVariation>[
-              ...(Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.fontVariations ??
+              ...(Theme.of(context).textTheme.titleMedium?.fontVariations ??
                       const <FontVariation>[])
                   .where((v) => v.axis != 'wght'),
               const FontVariation('wght', 700),
@@ -41,17 +39,15 @@ class TileTypeSelector extends StatelessWidget {
               padding: WidgetStateProperty.all(
                 const EdgeInsets.symmetric(vertical: 20),
               ),
-              side: WidgetStateProperty.resolveWith<BorderSide?>(
-                (states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 2,
-                    );
-                  }
-                  return null;
-                },
-              ),
+              side: WidgetStateProperty.resolveWith<BorderSide?>((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return BorderSide(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 2,
+                  );
+                }
+                return null;
+              }),
             ),
             segments: [
               ButtonSegment<DeviceTileType>(

@@ -97,10 +97,7 @@ void main() {
       unawaited(getIt.reset());
     });
 
-    Widget buildSubject({
-      void Function()? onEdit,
-      void Function()? onDelete,
-    }) {
+    Widget buildSubject({void Function()? onEdit, void Function()? onDelete}) {
       return MultiBlocProvider(
         providers: [
           BlocProvider.value(value: appCubit),
@@ -170,17 +167,12 @@ void main() {
 
       expect(find.byType(BottomSheet), findsOneWidget);
       expect(find.text('Living Room'), findsNWidgets(2));
-      expect(
-        find.byType(ListTile),
-        findsNWidgets(3),
-      );
+      expect(find.byType(ListTile), findsNWidgets(3));
     });
 
     testWidgets('calls onEdit when Edit is tapped', (tester) async {
       var editCalled = false;
-      await tester.pumpWidget(
-        buildSubject(onEdit: () => editCalled = true),
-      );
+      await tester.pumpWidget(buildSubject(onEdit: () => editCalled = true));
 
       await tester.longPress(find.byType(InkWell).first);
       await tester.pumpAndSettle();

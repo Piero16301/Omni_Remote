@@ -21,19 +21,14 @@ void main() {
         const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(
-            body: SettingsAppSpecs(),
-          ),
+          home: Scaffold(body: SettingsAppSpecs()),
         ),
       );
 
       await tester.pumpAndSettle();
 
       expect(find.byType(Card), findsOneWidget);
-      expect(
-        find.text('Version'),
-        findsOneWidget,
-      );
+      expect(find.text('Version'), findsOneWidget);
       expect(find.text('1.2.3 (4)'), findsOneWidget);
     });
   });

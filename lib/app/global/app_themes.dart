@@ -10,16 +10,12 @@ class AppThemes {
     return ThemeData(
       textTheme: ThemeData.light().textTheme
           .apply(fontFamily: fontFamily)
-          .applyFontVariations(
-            const <FontVariation>[
-              FontVariation('ROND', 100),
-              FontVariation('wght', 500),
-            ],
-          ),
+          .applyFontVariations(const <FontVariation>[
+            FontVariation('ROND', 100),
+            FontVariation('wght', 500),
+          ]),
       brightness: Brightness.light,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: baseColor,
-      ),
+      colorScheme: ColorScheme.fromSeed(seedColor: baseColor),
       snackBarTheme: SnackBarThemeData(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         behavior: SnackBarBehavior.floating,
@@ -52,12 +48,10 @@ class AppThemes {
     return ThemeData(
       textTheme: ThemeData.dark().textTheme
           .apply(fontFamily: fontFamily)
-          .applyFontVariations(
-            const <FontVariation>[
-              FontVariation('ROND', 100),
-              FontVariation('wght', 500),
-            ],
-          ),
+          .applyFontVariations(const <FontVariation>[
+            FontVariation('ROND', 100),
+            FontVariation('wght', 500),
+          ]),
       brightness: Brightness.dark,
       colorScheme: ColorScheme.fromSeed(
         seedColor: baseColor,

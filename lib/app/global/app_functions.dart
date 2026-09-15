@@ -26,11 +26,7 @@ class AppFunctions {
         content: Row(
           spacing: 12,
           children: [
-            HugeIcon(
-              icon: icon,
-              strokeWidth: 2,
-              color: Colors.white,
-            ),
+            HugeIcon(icon: icon, strokeWidth: 2, color: Colors.white),
             Expanded(
               child: Text(
                 message ?? '',
@@ -58,9 +54,7 @@ class AppFunctions {
             ? Colors.orange
             : Theme.of(context).colorScheme.primary,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(16),
         duration: const Duration(seconds: 5),
       ),

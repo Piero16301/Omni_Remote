@@ -60,12 +60,46 @@ void main() {
 
     tearDown(getIt.reset);
 
-    Widget buildSubject() {
+    Widget buildSubject({BrokerConnectionStatus? brokerStatus}) {
+      if (brokerStatus != null) {
+        when(
+          () => appCubit.state,
+        ).thenReturn(AppState(brokerConnectionStatus: brokerStatus));
+      }
+
       final router = GoRouter(
         initialLocation: '/test',
         routes: [
           GoRoute(path: '/', builder: (context, state) => const Scaffold()),
-          GoRoute(path: '/test', builder: (context, state) => const HomeView()),
+          GoRoute(
+            path: '/test',
+            name: AppRoute.home.name,
+            builder: (context, state) => const HomeView(),
+          ),
+          GoRoute(
+            path: '/connection',
+            name: AppRoute.connection.name,
+            builder: (context, state) =>
+                const Scaffold(body: Text('ConnectionScreen')),
+          ),
+          GoRoute(
+            path: '/settings',
+            name: AppRoute.settings.name,
+            builder: (context, state) =>
+                const Scaffold(body: Text('SettingsScreen')),
+          ),
+          GoRoute(
+            path: '/modifyGroup',
+            name: AppRoute.modifyGroup.name,
+            builder: (context, state) =>
+                const Scaffold(body: Text('ModifyGroupScreen')),
+          ),
+          GoRoute(
+            path: '/modifyDevice',
+            name: AppRoute.modifyDevice.name,
+            builder: (context, state) =>
+                const Scaffold(body: Text('ModifyDeviceScreen')),
+          ),
         ],
       );
 
@@ -100,6 +134,82 @@ void main() {
       expect(find.byType(GroupCard), findsOneWidget);
       expect(find.byType(FloatingActionButton), findsOneWidget);
     });
+
+    testWidgets('navigates to connection page when antenna icon tapped', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.tap(find.byType(IconButton).first);
+      await tester.pumpAndSettle();
+
+      expect(find.text('ConnectionScreen'), findsOneWidget);
+    });
+
+    testWidgets('navigates to settings page when settings icon tapped', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.tap(find.byType(IconButton).last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('SettingsScreen'), findsOneWidget);
+    });
+
+    testWidgets('navigates to modify group page when New Group card tapped', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildSubject());
+      await tester.tap(find.byType(Card).last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('ModifyGroupScreen'), findsOneWidget);
+    });
+
+    testWidgets('navigates to modify device page when FAB tapped', (
+      tester,
+    ) async {
+      groupsNotifier.value = [
+        GroupModel(id: 'g1', title: 'Living Room', subtitle: '', icon: ''),
+      ];
+      await tester.pumpWidget(buildSubject());
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      expect(find.text('ModifyDeviceScreen'), findsOneWidget);
+    });
+
+    testWidgets('triggers onEdit and onDelete on GroupCard', (tester) async {
+      final group = GroupModel(
+        id: 'g1',
+        title: 'Living Room',
+        subtitle: '',
+        icon: '',
+      );
+      groupsNotifier.value = [group];
+      await tester.pumpWidget(buildSubject());
+
+      final groupCard = tester.widget<GroupCard>(find.byType(GroupCard));
+
+      // Test onDelete callback
+      groupCard.onDelete();
+      verify(() => homeCubit.deleteGroup(group)).called(1);
+
+      // Test onEdit callback
+      groupCard.onEdit();
+      await tester.pumpAndSettle();
+      expect(find.text('ModifyGroupScreen'), findsOneWidget);
+    });
+
+    testWidgets(
+      'displays correct label and color for all connection statuses',
+      (tester) async {
+        for (final status in BrokerConnectionStatus.values) {
+          await tester.pumpWidget(buildSubject(brokerStatus: status));
+          await tester.pump();
+          expect(find.byType(AppBar), findsOneWidget);
+        }
+      },
+    );
 
     testWidgets('shows delete group success snackbar', (tester) async {
       whenListen(
@@ -159,6 +269,77 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(SnackBar), findsOneWidget);
       verify(() => homeCubit.resetDeleteDeviceStatus()).called(1);
+    });
+
+    testWidgets('getGroupDeleteFailureMessage covers all enum values', (
+      tester,
+    ) async {
+      late AppLocalizations l10n;
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (context) {
+              l10n = AppLocalizations.of(context);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      const view = HomeView();
+      expect(
+        view.getGroupDeleteFailureMessage(GroupDeleteError.groupNotEmpty, l10n),
+        equals(l10n.homeDeleteGroupErrorNotEmpty),
+      );
+      expect(
+        view.getGroupDeleteFailureMessage(GroupDeleteError.groupNotFound, l10n),
+        equals(l10n.homeDeleteGroupErrorNotFound),
+      );
+      expect(
+        view.getGroupDeleteFailureMessage(GroupDeleteError.unknown, l10n),
+        equals(l10n.homeDeleteGroupErrorUnknown),
+      );
+      expect(
+        view.getGroupDeleteFailureMessage(GroupDeleteError.none, l10n),
+        isEmpty,
+      );
+    });
+
+    testWidgets('getDeviceDeleteFailureMessage covers all enum values', (
+      tester,
+    ) async {
+      late AppLocalizations l10n;
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (context) {
+              l10n = AppLocalizations.of(context);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      const view = HomeView();
+      expect(
+        view.getDeviceDeleteFailureMessage(
+          DeviceDeleteError.deviceNotFound,
+          l10n,
+        ),
+        equals(l10n.homeDeleteDeviceErrorNotFound),
+      );
+      expect(
+        view.getDeviceDeleteFailureMessage(DeviceDeleteError.unknown, l10n),
+        equals(l10n.homeDeleteDeviceErrorUnknown),
+      );
+      expect(
+        view.getDeviceDeleteFailureMessage(DeviceDeleteError.none, l10n),
+        isEmpty,
+      );
     });
   });
 }
