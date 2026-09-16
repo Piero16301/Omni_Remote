@@ -265,132 +265,128 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
   void _showDeviceOptions(BuildContext context, DeviceModel device) {
     final l10n = AppLocalizations.of(context);
 
-    unawaited(
-      showModalBottomSheet<void>(
-        context: context,
-        builder: (context) {
-          return SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 16,
-                    bottom: 8,
-                    left: 24,
-                    right: 24,
-                  ),
-                  child: Column(
-                    spacing: 4,
-                    children: [
-                      Text(
-                        device.title,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontVariations: <FontVariation>[
-                            ...(Theme.of(
-                                      context,
-                                    ).textTheme.titleLarge?.fontVariations ??
-                                    const <FontVariation>[])
-                                .where((v) => v.axis != 'wght'),
-                            const FontVariation('wght', 700),
-                          ],
-                        ),
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 16,
+                  bottom: 8,
+                  left: 24,
+                  right: 24,
+                ),
+                child: Column(
+                  spacing: 4,
+                  children: [
+                    Text(
+                      device.title,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontVariations: <FontVariation>[
+                          ...(Theme.of(
+                                    context,
+                                  ).textTheme.titleLarge?.fontVariations ??
+                                  const <FontVariation>[])
+                              .where((v) => v.axis != 'wght'),
+                          const FontVariation('wght', 700),
+                        ],
                       ),
-                      if (device.subtitle.isNotEmpty)
-                        Text(
-                          device.subtitle,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                    ],
-                  ),
+                    ),
+                    if (device.subtitle.isNotEmpty)
+                      Text(
+                        device.subtitle,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                  ],
                 ),
-                ListTile(
-                  leading: const HugeIcon(
-                    icon: HugeIcons.strokeRoundedEdit02,
-                    strokeWidth: 2,
-                  ),
-                  title: Text(
-                    l10n.homeEditOption,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  onTap: () {
-                    Navigator.pop(context);
-                    widget.onEdit();
-                  },
+              ),
+              ListTile(
+                leading: const HugeIcon(
+                  icon: HugeIcons.strokeRoundedEdit02,
+                  strokeWidth: 2,
                 ),
-                ListTile(
-                  leading: HugeIcon(
-                    icon: HugeIcons.strokeRoundedDelete02,
-                    strokeWidth: 2,
+                title: Text(
+                  l10n.homeEditOption,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  widget.onEdit();
+                },
+              ),
+              ListTile(
+                leading: HugeIcon(
+                  icon: HugeIcons.strokeRoundedDelete02,
+                  strokeWidth: 2,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+                title: Text(
+                  l10n.homeDeleteOption,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.error,
                   ),
-                  title: Text(
-                    l10n.homeDeleteOption,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _showDeleteConfirmation(context, device);
-                  },
                 ),
-              ],
-            ),
-          );
-        },
-      ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _showDeleteConfirmation(context, device);
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
   void _showDeleteConfirmation(BuildContext context, DeviceModel device) {
     final l10n = AppLocalizations.of(context);
 
-    unawaited(
-      showDialog<void>(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text(
-              l10n.homeDeleteDialogTitle(device.title),
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontVariations: <FontVariation>[
-                  ...(Theme.of(context).textTheme.titleLarge?.fontVariations ??
-                          const <FontVariation>[])
-                      .where((v) => v.axis != 'wght'),
-                  const FontVariation('wght', 700),
-                ],
-              ),
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            l10n.homeDeleteDialogTitle(device.title),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontVariations: <FontVariation>[
+                ...(Theme.of(context).textTheme.titleLarge?.fontVariations ??
+                        const <FontVariation>[])
+                    .where((v) => v.axis != 'wght'),
+                const FontVariation('wght', 700),
+              ],
             ),
-            content: Text(
-              l10n.homeDeleteDialogContent(device.title),
-              style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          content: Text(
+            l10n.homeDeleteDialogContent(device.title),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          actions: [
+            Row(
+              spacing: 10,
+              children: [
+                Expanded(
+                  child: AppOutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    label: l10n.homeDeleteDialogCancel,
+                  ),
+                ),
+                Expanded(
+                  child: AppFilledButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      widget.onDelete();
+                    },
+                    label: l10n.homeDeleteDialogConfirm,
+                  ),
+                ),
+              ],
             ),
-            actions: [
-              Row(
-                spacing: 10,
-                children: [
-                  Expanded(
-                    child: AppOutlinedButton(
-                      onPressed: () => Navigator.pop(context),
-                      label: l10n.homeDeleteDialogCancel,
-                    ),
-                  ),
-                  Expanded(
-                    child: AppFilledButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        widget.onDelete();
-                      },
-                      label: l10n.homeDeleteDialogConfirm,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      ),
+          ],
+        );
+      },
     );
   }
 }
