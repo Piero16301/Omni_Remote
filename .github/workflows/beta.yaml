@@ -16,7 +16,7 @@ on:
 jobs:
   semantic-pull-request:
     name: "📝 Semantic"
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v2
     permissions:
       contents: read
 
