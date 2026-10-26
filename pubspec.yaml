@@ -11,10 +11,10 @@ dependencies:
   bloc: ^9.2.1
   country_flags: ^4.1.2
   equatable: ^3.0.0
-  firebase_analytics: ^12.6.0
-  firebase_core: ^4.15.0
-  firebase_crashlytics: ^5.4.0
-  firebase_performance: ^0.11.6
+  firebase_analytics: ^13.0.1
+  firebase_core: ^5.1.0
+  firebase_crashlytics: ^6.0.1
+  firebase_performance: ^0.12.1
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
