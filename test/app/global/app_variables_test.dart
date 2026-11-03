@@ -35,13 +35,6 @@ void main() {
       );
     });
 
-    test('availableFonts contains default font', () {
-      expect(
-        AppVariables.availableFonts.containsKey('Google Sans Flex'),
-        isTrue,
-      );
-    });
-
     group('SnackBarType', () {
       test('properties return correct boolean values', () {
         expect(SnackBarType.success.isSuccess, isTrue);

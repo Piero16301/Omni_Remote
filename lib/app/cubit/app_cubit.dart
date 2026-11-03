@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/app/app.dart';
 
@@ -21,32 +22,30 @@ class AppCubit extends Cubit<AppState> {
     // Setting the language to the device language if it's not set
     final language = localStorage.getLanguage();
     if (language == null) {
-      final deviceLanguage = AppVariables.supportedLocales.first;
-      localStorage.saveLanguage(language: deviceLanguage);
+      const defaultLanguage = ExpressiveLanguages.defaultLocale;
+      localStorage.saveLanguage(language: defaultLanguage);
     }
 
     // Setting the theme to the device theme if it's not set
     final theme = localStorage.getTheme();
     if (theme == null) {
-      localStorage.saveTheme(theme: ThemeMode.system);
+      localStorage.saveTheme(theme: ExpressiveTheme.defaultTheme);
     }
 
-    // Setting the base color to GREEN if it's not set
+    // Setting the base color to default if it's not set
     final baseColor = localStorage.getBaseColor();
     if (baseColor == null) {
-      localStorage.saveBaseColor(baseColor: AppVariables.defaultBaseColor);
+      localStorage.saveBaseColor(baseColor: ExpressiveColors.defaultColor);
     }
 
-    // Setting the font family to Popping if it's not set
+    // Setting the font family to default if it's not set
     var fontFamily = localStorage.getFontFamily();
     final isFontSupported =
         fontFamily != null &&
-        AppVariables.availableFonts.containsValue(fontFamily);
+        ExpressiveFonts.availableFonts.containsValue(fontFamily);
 
     if (!isFontSupported) {
-      final defaultFont =
-          AppVariables.availableFonts[AppVariables.defaultFontFamily] ??
-          AppVariables.defaultFontFamily;
+      const defaultFont = ExpressiveFonts.defaultFont;
       localStorage.saveFontFamily(fontFamily: defaultFont);
       fontFamily = defaultFont;
     }
@@ -56,15 +55,15 @@ class AppCubit extends Cubit<AppState> {
       ..setCustomKey(
         'language',
         localStorage.getLanguage()?.languageCode ??
-            AppVariables.supportedLocales.first.languageCode,
+            ExpressiveLanguages.defaultLocale.languageCode,
       )
       ..setCustomKey(
         'theme',
-        localStorage.getTheme()?.name ?? ThemeMode.system.name,
+        localStorage.getTheme()?.name ?? ExpressiveTheme.defaultTheme.name,
       )
       ..setCustomKey(
         'fontFamily',
-        localStorage.getFontFamily() ?? AppVariables.defaultFontFamily,
+        localStorage.getFontFamily() ?? ExpressiveFonts.defaultFont,
       );
 
     // Emit state with all loaded configurations at once
@@ -111,7 +110,7 @@ class AppCubit extends Cubit<AppState> {
     localStorage.saveBaseColor(baseColor: baseColor);
     _analyticsService.logEvent(
       name: 'change_base_color',
-      parameters: {'color_value': ColorHelper.getColorName(baseColor)},
+      parameters: {'color_value': ExpressiveColors.toKey(baseColor)},
     );
     emit(state.copyWith(baseColor: baseColor));
   }

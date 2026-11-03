@@ -128,3 +128,4 @@ pubspec.lock
 
 # Generated l10n files
 lib/l10n/gen/
+graphify-out/

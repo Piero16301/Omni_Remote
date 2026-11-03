@@ -1,3 +1,4 @@
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/l10n/l10n.dart';
@@ -27,9 +28,11 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.byType(Card), findsOneWidget);
-      expect(find.text('Version'), findsOneWidget);
+      expect(find.byType(ExpressiveCardGroup), findsOneWidget);
+      expect(find.byType(ExpressiveListTile), findsNWidgets(2));
+      expect(find.text('Version'), findsNWidgets(2));
       expect(find.text('1.2.3 (4)'), findsOneWidget);
+      expect(find.text('Last update'), findsOneWidget);
     });
   });
 }

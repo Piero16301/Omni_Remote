@@ -1,9 +1,5 @@
-import 'package:material_ui/material_ui.dart';
-
 class AppVariables {
   static const String appName = 'Omni Remote';
-  static const Color defaultBaseColor = Colors.green;
-  static const String defaultFontFamily = 'GoogleSansFlex';
 
   static const String lastWillTopic = 'application/lastwill';
   static const String lastWillMessage = 'Client disconnected unexpectedly';
@@ -12,30 +8,7 @@ class AppVariables {
   static const String statusSuffix = 'status';
   static const String commandSuffix = 'command';
 
-  static Map<String, String> availableFonts = getAvailableFonts();
-
-  static Map<String, String> getAvailableFonts() {
-    return {
-      'Google Sans Flex': 'GoogleSansFlex',
-      'Merriweather': 'Merriweather',
-      'Montserrat': 'Montserrat',
-      'Nunito': 'Nunito',
-      'Open Sans': 'OpenSans',
-      'Orbitron': 'Orbitron',
-      'Playfair Display': 'PlayfairDisplay',
-      'Roboto': 'Roboto',
-      'Source Code Pro': 'SourceCodePro',
-    };
-  }
-
-  static const List<Locale> supportedLocales = [
-    Locale('en', 'US'),
-    Locale('es', 'ES'),
-    Locale('it', 'IT'),
-    Locale('fr', 'FR'),
-    Locale('de', 'DE'),
-    Locale('pt', 'PT'),
-  ];
+  static const modalBottomSheetMaxHeightPct = 0.72;
 
   static String buildGroupTopic({
     required String groupTitle,

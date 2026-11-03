@@ -1,3 +1,4 @@
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:material_ui/material_ui.dart';
 
 class AppFilledButton extends StatelessWidget {
@@ -8,6 +9,7 @@ class AppFilledButton extends StatelessWidget {
     this.innerPadding,
     this.color,
     this.isOnlyIcon = false,
+    this.isLoading = false,
     super.key,
   });
 
@@ -17,35 +19,26 @@ class AppFilledButton extends StatelessWidget {
   final EdgeInsetsGeometry? innerPadding;
   final Color? color;
   final bool isOnlyIcon;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton.icon(
-      onPressed: onPressed,
-      style: FilledButton.styleFrom(
+    if (isOnlyIcon && icon != null) {
+      return ExpressiveIconButton.circle(
+        icon: icon!,
+        variant: ExpressiveIconButtonVariant.filled,
         backgroundColor: color,
-        padding: innerPadding ?? const EdgeInsets.all(12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      icon: icon != null && !isOnlyIcon ? icon : null,
-      label: label != null
-          ? Text(
-              label ?? '',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: onPressed == null
-                    ? Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withValues(alpha: 0.38)
-                    : Theme.of(context).colorScheme.onPrimary,
-                fontVariations: <FontVariation>[
-                  ...(Theme.of(context).textTheme.titleMedium?.fontVariations ??
-                          const <FontVariation>[])
-                      .where((v) => v.axis != 'wght'),
-                  const FontVariation('wght', 700),
-                ],
-              ),
-            )
-          : icon!,
+        onPressed: onPressed,
+      );
+    }
+    return ExpressiveButton.filled(
+      onPressed: onPressed,
+      backgroundColor: color,
+      icon: icon,
+      label: label ?? '',
+      isLoading: isLoading,
+      isExpanded: true,
+      size: ExpressiveButtonSize.large,
     );
   }
 }

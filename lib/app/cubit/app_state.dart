@@ -2,10 +2,10 @@ part of 'app_cubit.dart';
 
 class AppState extends Equatable {
   const AppState({
-    this.language = const Locale('en', 'US'),
-    this.theme = ThemeMode.system,
-    this.baseColor = Colors.green,
-    this.fontFamily = 'GoogleSansFlex',
+    this.language = ExpressiveLanguages.defaultLocale,
+    this.theme = ExpressiveTheme.defaultTheme,
+    this.baseColor = ExpressiveColors.defaultColor,
+    this.fontFamily = ExpressiveFonts.defaultFont,
     this.brokerConnectionStatus = BrokerConnectionStatus.disconnected,
   });
 
