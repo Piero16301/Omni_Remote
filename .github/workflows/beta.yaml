@@ -1,11 +1,11 @@
-name: Open Test
-# CI workflow for Saver Expense Manager application.
+name: Omni Remote - Beta
+# CI workflow for Omni Remote application.
 # This workflow checks the commit author, runs semantic checks, spell checks,
 # executes tests, builds the application, and deploys it to the Play Store
 # on the 'dev' branch. The application is deployed to the open test track.
 
 concurrency:
-  group: dev-$-$
+  group: beta-${{ github.ref }}
   cancel-in-progress: true
 
 on:
@@ -16,14 +16,22 @@ on:
 jobs:
   semantic-pull-request:
     name: "📝 Semantic"
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v2
+    runs-on: ubuntu-26.04
     permissions:
+      pull-requests: read
       contents: read
+    steps:
+      - name: 🤖 Ensure Commit is Semantic
+        if: github.event_name == 'pull_request'
+        uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   spell-check:
     name: "🔍 Spell Check"
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v2
     with:
+      runs_on: ubuntu-26.04
       includes: |
         **/*.md
       modified_files_only: false
@@ -31,7 +39,7 @@ jobs:
   quality:
     name: "💯 Verify Quality Gates"
     needs: [semantic-pull-request, spell-check]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     env:
@@ -68,7 +76,7 @@ jobs:
   build:
     name: "🔨 Build Application"
     needs: quality
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       APP_PACKAGE_NAME: com.pmorales.omni.remote
       AAB_PATH: build/app/outputs/bundle/productionRelease/app-production-release.aab
@@ -93,8 +101,6 @@ jobs:
 
       - name: 📦 Install Dependencies
         run: flutter pub get
-      - name: 📄 Create dummy .env file
-        run: touch .env
       - name: 🔢 Compute build name
         id: build_name
         run: |
@@ -117,26 +123,22 @@ jobs:
 
   deploy:
     name: "🚀 Deploy to Play Store"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: build
     env:
       APP_PACKAGE_NAME: com.pmorales.omni.remote
-      AAB_PATH: build/app/outputs/bundle/productionRelease/app-production-release.aab
       SERVICE_ACCOUNT_PATH: service-account.json
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - name: 📚 Checkout repo
+      - name: 📚 Git Checkout
         uses: actions/checkout@v7
+
       - name: ⬇️ Download Artifact
         uses: actions/download-artifact@master
         with:
           name: aab-stores
           path: ./downloaded
-      - name: 📁 Crear estructura de directorios
-        run: |
-          mkdir -p build/app/outputs/bundle/productionRelease/
-          cp ./downloaded/* build/app/outputs/bundle/productionRelease/
-          ls -la build/app/outputs/bundle/productionRelease/
+
       - name: 🔑 Decode Service Account
         run: echo "${{ secrets.ANDROID_RELEASE_SERVICE_ACCOUNT }}" | base64 --decode > ${{ env.SERVICE_ACCOUNT_PATH }}
 
@@ -145,7 +147,7 @@ jobs:
         with:
           serviceAccountJson: ${{ env.SERVICE_ACCOUNT_PATH }}
           packageName: ${{ env.APP_PACKAGE_NAME }}
-          releaseFiles: ${{ env.AAB_PATH }}
+          releaseFiles: ./downloaded/app-production-release.aab
           tracks: beta
           whatsNewDirectory: whatsnew
 
