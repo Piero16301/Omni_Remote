@@ -1,3 +1,4 @@
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -42,25 +43,22 @@ class ConnectionView extends StatelessWidget {
         }
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              l10n.connectionAppBarTitle,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontVariations: <FontVariation>[
-                  ...(Theme.of(context).textTheme.titleLarge?.fontVariations ??
-                          const <FontVariation>[])
-                      .where((v) => v.axis != 'wght'),
-                  const FontVariation('wght', 700),
-                ],
+          appBar: ExpressiveTopAppBar(
+            leading: Padding(
+              padding: const EdgeInsets.all(8),
+              child: ExpressiveIconButton.circle(
+                icon: const HugeIcon(
+                  icon: HugeIcons.strokeRoundedArrowLeft01,
+                  strokeWidth: 2,
+                ),
+                onPressed: () => context.pop(),
               ),
             ),
-            centerTitle: true,
-            leading: IconButton(
-              onPressed: () => context.pop(),
-              icon: const HugeIcon(
-                icon: HugeIcons.strokeRoundedArrowLeft01,
-                strokeWidth: 2,
-              ),
+            title: Text(
+              l10n.connectionAppBarTitle,
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
           body: Form(
@@ -171,38 +169,34 @@ class ConnectionView extends StatelessWidget {
                 if (state.brokerUrl.isNotEmpty && state.brokerPort.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 24),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceContainerHighest
-                            .withValues(alpha: 0.5),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.outline.withValues(alpha: 0.3),
-                        ),
-                      ),
+                    child: ExpressiveCard(
+                      margin: EdgeInsets.zero,
+                      padding: const EdgeInsets.all(20),
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHigh,
                       child: Column(
                         spacing: 12,
                         children: [
-                          HugeIcon(icon: icon, color: statusColor, size: 48),
+                          ExpressiveBadge(
+                            size: 56,
+                            iconSize: 32,
+                            backgroundColor: statusColor.withValues(
+                              alpha: 0.15,
+                            ),
+                            foregroundColor: statusColor,
+                            icon: HugeIcon(
+                              icon: icon,
+                              color: statusColor,
+                              size: 32,
+                            ),
+                          ),
                           Text(
                             statusText,
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(
                                   color: statusColor,
-                                  fontVariations: <FontVariation>[
-                                    ...(Theme.of(context)
-                                                .textTheme
-                                                .titleLarge
-                                                ?.fontVariations ??
-                                            const <FontVariation>[])
-                                        .where((v) => v.axis != 'wght'),
-                                    const FontVariation('wght', 700),
-                                  ],
+                                  fontWeight: FontWeight.w700,
                                 ),
                           ),
                           Row(

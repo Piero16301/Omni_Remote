@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -129,8 +130,8 @@ void main() {
     testWidgets('triggers save on FAB tap', (tester) async {
       await tester.pumpWidget(buildSubject());
 
-      final fab = find.byType(FloatingActionButton);
-      tester.widget<FloatingActionButton>(fab).onPressed?.call();
+      final fab = find.byType(ExpressiveFab);
+      tester.widget<ExpressiveFab>(fab).onPressed?.call();
       verify(() => modifyDeviceCubit.saveDeviceModel()).called(1);
     });
 

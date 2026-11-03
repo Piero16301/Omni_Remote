@@ -11,24 +11,25 @@ dependencies:
   bloc: ^9.2.1
   country_flags: ^4.1.2
   equatable: ^3.0.0
-  firebase_analytics: ^12.6.0
-  firebase_core: ^4.15.0
-  firebase_crashlytics: ^5.4.0
-  firebase_performance: ^0.11.6
+  expressive_kit: ^0.0.9
+  firebase_analytics: ^13.0.1
+  firebase_core: ^5.1.0
+  firebase_crashlytics: ^6.0.1
+  firebase_performance: ^0.12.1
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
   flutter_localizations:
     sdk: flutter
-  get_it: ^9.2.1
-  go_router: ^18.0.1
+  get_it: ^9.3.0
+  go_router: ^18.1.2
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  hugeicons: ^1.1.7
+  hugeicons: ^4.4.0
   intl: ^0.20.3
-  material_ui: ^1.3.0
-  mqtt_client: ^10.11.11
-  package_info_plus: ^10.2.1
+  material_ui: ^1.9.0
+  mqtt_client: ^10.14.0
+  package_info_plus: ^10.2.2
   typed_data: ^1.4.0
   uuid: ^4.6.0
 
@@ -68,47 +69,3 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/fonts/
-
-  fonts:
-    - family: GoogleSansFlex
-      fonts:
-        - asset: assets/fonts/GoogleSansFlex-VariableFont.ttf
-    - family: Merriweather
-      fonts:
-        - asset: assets/fonts/Merriweather-VariableFont.ttf
-        - asset: assets/fonts/Merriweather-Italic-VariableFont.ttf
-          style: italic
-    - family: Montserrat
-      fonts:
-        - asset: assets/fonts/Montserrat-VariableFont.ttf
-        - asset: assets/fonts/Montserrat-Italic-VariableFont.ttf
-          style: italic
-    - family: Nunito
-      fonts:
-        - asset: assets/fonts/Nunito-VariableFont.ttf
-        - asset: assets/fonts/Nunito-Italic-VariableFont.ttf
-          style: italic
-    - family: OpenSans
-      fonts:
-        - asset: assets/fonts/OpenSans-VariableFont.ttf
-        - asset: assets/fonts/OpenSans-Italic-VariableFont.ttf
-          style: italic
-    - family: Orbitron
-      fonts:
-        - asset: assets/fonts/Orbitron-VariableFont.ttf
-    - family: PlayfairDisplay
-      fonts:
-        - asset: assets/fonts/PlayfairDisplay-VariableFont.ttf
-        - asset: assets/fonts/PlayfairDisplay-Italic-VariableFont.ttf
-          style: italic
-    - family: Roboto
-      fonts:
-        - asset: assets/fonts/Roboto-VariableFont.ttf
-        - asset: assets/fonts/Roboto-Italic-VariableFont.ttf
-          style: italic
-    - family: SourceCodePro
-      fonts:
-        - asset: assets/fonts/SourceCodePro-VariableFont.ttf
-        - asset: assets/fonts/SourceCodePro-Italic-VariableFont.ttf
-          style: italic

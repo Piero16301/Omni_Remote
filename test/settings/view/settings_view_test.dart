@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -45,10 +46,15 @@ void main() {
       final router = GoRouter(
         initialLocation: '/test',
         routes: [
-          GoRoute(path: '/', builder: (context, state) => const Scaffold()),
           GoRoute(
-            path: '/test',
-            builder: (context, state) => const SettingsView(),
+            path: '/',
+            builder: (context, state) => const Scaffold(body: Text('Home')),
+            routes: [
+              GoRoute(
+                path: 'test',
+                builder: (context, state) => const SettingsView(),
+              ),
+            ],
           ),
         ],
       );
@@ -56,74 +62,112 @@ void main() {
       return BlocProvider.value(
         value: appCubit,
         child: MaterialApp.router(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            ...ExpressiveLocalizations.localizationsDelegates,
+          ],
+          supportedLocales: ExpressiveLanguages.supportedLocales,
           routerConfig: router,
         ),
       );
     }
 
-    testWidgets('renders all settings cards', (tester) async {
+    testWidgets('renders all sections and tiles', (tester) async {
       await tester.pumpWidget(buildSubject());
 
-      expect(find.byType(LocaleSettingsCard), findsOneWidget);
-      expect(find.byType(ThemeSettingsCard), findsOneWidget);
-      expect(find.byType(ColorSettingsCard), findsOneWidget);
-      expect(find.byType(FontSettingsCard), findsOneWidget);
+      expect(find.byType(SettingsView), findsOneWidget);
+      expect(find.byType(ExpressiveTopAppBar), findsOneWidget);
+      expect(find.byType(ExpressiveCardGroup), findsNWidgets(2));
+      expect(find.byType(ExpressiveListTile), findsNWidgets(4));
       expect(find.byType(SettingsAppSpecs), findsOneWidget);
     });
 
-    testWidgets('triggers AppCubit methods on changes', (tester) async {
-      tester.view.physicalSize = const Size(1080, 2400);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(() {
-        tester.view.resetPhysicalSize();
-        tester.view.resetDevicePixelRatio();
-      });
-
+    testWidgets('pops navigation when back button is tapped', (tester) async {
       await tester.pumpWidget(buildSubject());
 
-      final localeDropdown = find.descendant(
-        of: find.byType(LocaleSettingsCard),
-        matching: find.byType(DropdownButton<Locale>),
-      );
-      tester
-          .widget<DropdownButton<Locale>>(localeDropdown)
-          .onChanged
-          ?.call(const Locale('es'));
-      verify(
-        () => appCubit.changeLanguage(language: const Locale('es')),
-      ).called(1);
+      final backButton = find.byType(ExpressiveIconButton);
+      expect(backButton, findsOneWidget);
+      await tester.tap(backButton);
+      await tester.pumpAndSettle();
 
-      final themeDropdown = find.descendant(
-        of: find.byType(ThemeSettingsCard),
-        matching: find.byType(DropdownButton<ThemeMode>),
-      );
-      tester
-          .widget<DropdownButton<ThemeMode>>(themeDropdown)
-          .onChanged
-          ?.call(ThemeMode.dark);
-      verify(() => appCubit.changeTheme(theme: ThemeMode.dark)).called(1);
-
-      final colorDropdown = find.descendant(
-        of: find.byType(ColorSettingsCard),
-        matching: find.byType(DropdownButton<Color>),
-      );
-      tester
-          .widget<DropdownButton<Color>>(colorDropdown)
-          .onChanged
-          ?.call(Colors.red);
-      verify(() => appCubit.changeBaseColor(baseColor: Colors.red)).called(1);
-
-      final fontDropdown = find.descendant(
-        of: find.byType(FontSettingsCard),
-        matching: find.byType(DropdownButton<String>),
-      );
-      tester
-          .widget<DropdownButton<String>>(fontDropdown)
-          .onChanged
-          ?.call('Roboto');
-      verify(() => appCubit.changeFontFamily(fontFamily: 'Roboto')).called(1);
+      expect(find.byType(SettingsView), findsNothing);
+      expect(find.text('Home'), findsOneWidget);
     });
+
+    testWidgets('triggers changeTheme when theme option selected from modal', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildSubject());
+
+      final themeTile = find.widgetWithText(ExpressiveListTile, 'Theme');
+      await tester.tap(themeTile);
+      await tester.pumpAndSettle();
+
+      final darkOption = find.widgetWithText(ListTile, 'Dark');
+      await tester.tap(darkOption);
+      await tester.pumpAndSettle();
+
+      verify(() => appCubit.changeTheme(theme: ThemeMode.dark)).called(1);
+    });
+
+    testWidgets(
+      'triggers changeBaseColor when color option selected from modal',
+      (tester) async {
+        await tester.pumpWidget(buildSubject());
+
+        final colorTile = find.widgetWithText(ExpressiveListTile, 'Base color');
+        await tester.tap(colorTile);
+        await tester.pumpAndSettle();
+
+        final redOption = find.widgetWithText(ListTile, 'Red');
+        await tester.tap(redOption);
+        await tester.pumpAndSettle();
+
+        verify(() => appCubit.changeBaseColor(baseColor: Colors.red)).called(1);
+      },
+    );
+
+    testWidgets(
+      'triggers changeFontFamily when font option selected from modal',
+      (tester) async {
+        await tester.pumpWidget(buildSubject());
+
+        final fontTile = find.widgetWithText(ExpressiveListTile, 'Font');
+        await tester.tap(fontTile);
+        await tester.pumpAndSettle();
+
+        final fontOption = find.widgetWithText(ListTile, 'Merriweather');
+        await tester.tap(fontOption);
+        await tester.pumpAndSettle();
+
+        verify(
+          () => appCubit.changeFontFamily(
+            fontFamily: ExpressiveFonts.merriweather,
+          ),
+        ).called(1);
+      },
+    );
+
+    testWidgets(
+      'triggers changeLanguage when language option selected from modal',
+      (tester) async {
+        await tester.pumpWidget(buildSubject());
+
+        final languageTile = find.widgetWithText(
+          ExpressiveListTile,
+          'Language',
+        );
+        await tester.tap(languageTile);
+        await tester.pumpAndSettle();
+
+        final spanishOption = find.widgetWithText(ListTile, 'Spanish');
+        await tester.tap(spanishOption);
+        await tester.pumpAndSettle();
+
+        verify(
+          () => appCubit.changeLanguage(language: ExpressiveLanguages.spanish),
+        ).called(1);
+      },
+    );
   });
 }

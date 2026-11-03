@@ -1,3 +1,4 @@
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -37,27 +38,24 @@ class ModifyGroupView extends StatelessWidget {
         }
       },
       builder: (context, state) => Scaffold(
-        appBar: AppBar(
+        appBar: ExpressiveTopAppBar(
+          leading: Padding(
+            padding: const EdgeInsets.all(8),
+            child: ExpressiveIconButton.circle(
+              icon: const HugeIcon(
+                icon: HugeIcons.strokeRoundedArrowLeft01,
+                strokeWidth: 2,
+              ),
+              onPressed: () => context.pop(),
+            ),
+          ),
           title: Text(
             state.groupModel == null
                 ? l10n.modifyGroupPageTitleCreate
                 : l10n.modifyGroupPageTitleEdit,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontVariations: <FontVariation>[
-                ...(Theme.of(context).textTheme.titleLarge?.fontVariations ??
-                        const <FontVariation>[])
-                    .where((v) => v.axis != 'wght'),
-                const FontVariation('wght', 700),
-              ],
-            ),
-          ),
-          centerTitle: true,
-          leading: IconButton(
-            onPressed: () => context.pop(),
-            icon: const HugeIcon(
-              icon: HugeIcons.strokeRoundedArrowLeft01,
-              strokeWidth: 2,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
         ),
         body: Form(
@@ -129,9 +127,9 @@ class ModifyGroupView extends StatelessWidget {
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: ExpressiveFab(
           onPressed: context.read<ModifyGroupCubit>().saveGroupModel,
-          child: const HugeIcon(
+          icon: const HugeIcon(
             icon: HugeIcons.strokeRoundedFloppyDisk,
             size: 28,
             strokeWidth: 2,

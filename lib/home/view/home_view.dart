@@ -1,3 +1,4 @@
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -76,22 +77,29 @@ class HomeView extends StatelessWidget {
           valueListenable: context.read<HomeCubit>().getGroupsListenable(),
           builder: (context, groups, widget) {
             return Scaffold(
-              appBar: AppBar(
+              appBar: ExpressiveTopAppBar(
+                leading: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: ExpressiveIconButton.circle(
+                    icon: const HugeIcon(
+                      icon: HugeIcons.strokeRoundedInternetAntenna04,
+                      strokeWidth: 2,
+                    ),
+                    variant: ExpressiveIconButtonVariant.tonal,
+                    onPressed: () =>
+                        context.pushNamed(AppRoute.connection.name),
+                  ),
+                ),
                 title: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       AppVariables.appName,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontVariations: <FontVariation>[
-                          ...(Theme.of(
-                                    context,
-                                  ).textTheme.bodyLarge?.fontVariations ??
-                                  const <FontVariation>[])
-                              .where((v) => v.axis != 'wght'),
-                          const FontVariation('wght', 700),
-                        ],
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
+                    const SizedBox(height: 2),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -106,28 +114,27 @@ class HomeView extends StatelessWidget {
                         const SizedBox(width: 6),
                         Text(
                           statusText,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(color: statusColor),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: statusColor,
+                                fontWeight: FontWeight.w600,
+                              ),
                         ),
                       ],
                     ),
                   ],
                 ),
-                centerTitle: true,
-                leading: IconButton(
-                  onPressed: () => context.pushNamed(AppRoute.connection.name),
-                  icon: const HugeIcon(
-                    icon: HugeIcons.strokeRoundedInternetAntenna04,
-                    strokeWidth: 2,
-                  ),
-                ),
                 actions: [
-                  IconButton(
-                    onPressed: () => context.pushNamed(AppRoute.settings.name),
-                    icon: const HugeIcon(
-                      icon: HugeIcons.strokeRoundedSettings01,
-                      strokeWidth: 2,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ExpressiveIconButton.circle(
+                      icon: const HugeIcon(
+                        icon: HugeIcons.strokeRoundedSettings01,
+                        strokeWidth: 2,
+                      ),
+                      variant: ExpressiveIconButtonVariant.tonal,
+                      onPressed: () =>
+                          context.pushNamed(AppRoute.settings.name),
                     ),
                   ),
                 ],
@@ -168,12 +175,18 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                   Card(
+                    elevation: 0,
+                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
                     margin: const EdgeInsets.symmetric(vertical: 8),
+                    clipBehavior: Clip.antiAlias,
                     child: InkWell(
                       onTap: () => context.pushNamed(AppRoute.modifyGroup.name),
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(24),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 18),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -184,7 +197,8 @@ class HomeView extends StatelessWidget {
                             const SizedBox(width: 8),
                             Text(
                               l10n.homeNewGroupButton,
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(context).textTheme.titleSmall
+                                  ?.copyWith(fontWeight: FontWeight.w600),
                             ),
                           ],
                         ),
@@ -194,10 +208,10 @@ class HomeView extends StatelessWidget {
                 ],
               ),
               floatingActionButton: groups.isNotEmpty
-                  ? FloatingActionButton(
+                  ? ExpressiveFab(
                       onPressed: () =>
                           context.pushNamed(AppRoute.modifyDevice.name),
-                      child: const HugeIcon(
+                      icon: const HugeIcon(
                         icon: HugeIcons.strokeRoundedComputerAdd,
                         size: 28,
                         strokeWidth: 2,

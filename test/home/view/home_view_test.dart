@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -120,7 +121,7 @@ void main() {
       await tester.pumpWidget(buildSubject());
 
       expect(find.byType(Visibility), findsWidgets);
-      expect(find.byType(FloatingActionButton), findsNothing);
+      expect(find.byType(ExpressiveFab), findsNothing);
     });
 
     testWidgets('renders group cards and FAB when groups exist', (
@@ -132,7 +133,7 @@ void main() {
       await tester.pumpWidget(buildSubject());
 
       expect(find.byType(GroupCard), findsOneWidget);
-      expect(find.byType(FloatingActionButton), findsOneWidget);
+      expect(find.byType(ExpressiveFab), findsOneWidget);
     });
 
     testWidgets('navigates to connection page when antenna icon tapped', (
@@ -172,7 +173,7 @@ void main() {
         GroupModel(id: 'g1', title: 'Living Room', subtitle: '', icon: ''),
       ];
       await tester.pumpWidget(buildSubject());
-      await tester.tap(find.byType(FloatingActionButton));
+      await tester.tap(find.byType(ExpressiveFab));
       await tester.pumpAndSettle();
 
       expect(find.text('ModifyDeviceScreen'), findsOneWidget);

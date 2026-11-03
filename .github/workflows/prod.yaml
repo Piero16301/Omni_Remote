@@ -39,13 +39,13 @@ jobs:
 
   semantic-pull-request:
     name: "📝 Semantic"
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v2
     permissions:
       contents: read
 
   spell-check:
     name: "🔍 Spell Check"
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v2
     with:
       includes: |
         **/*.md

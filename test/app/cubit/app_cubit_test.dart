@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
@@ -83,7 +84,7 @@ void main() {
         ).called(1);
         verify(
           () => mockLocalStorageService.saveBaseColor(
-            baseColor: AppVariables.defaultBaseColor,
+            baseColor: ExpressiveColors.defaultColor,
           ),
         ).called(1);
       },
@@ -245,7 +246,7 @@ void main() {
         ).thenReturn(Colors.green);
         when(
           () => mockLocalStorageService.getFontFamily(),
-        ).thenReturn('GoogleSansFlex');
+        ).thenReturn(ExpressiveFonts.defaultFont);
         return appCubit;
       },
       act: (cubit) => cubit.initialize(),
@@ -254,7 +255,11 @@ void main() {
             .having((s) => s.language, 'language', const Locale('en', 'US'))
             .having((s) => s.theme, 'theme', ThemeMode.dark)
             .having((s) => s.baseColor, 'baseColor', Colors.green)
-            .having((s) => s.fontFamily, 'fontFamily', 'GoogleSansFlex'),
+            .having(
+              (s) => s.fontFamily,
+              'fontFamily',
+              ExpressiveFonts.defaultFont,
+            ),
       ],
       verify: (_) {
         verifyNever(
@@ -301,9 +306,7 @@ void main() {
       verify: (_) {
         verify(
           () => mockLocalStorageService.saveFontFamily(
-            fontFamily:
-                AppVariables.availableFonts[AppVariables.defaultFontFamily] ??
-                AppVariables.defaultFontFamily,
+            fontFamily: ExpressiveFonts.defaultFont,
           ),
         ).called(1);
       },

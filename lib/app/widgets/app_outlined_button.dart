@@ -1,3 +1,4 @@
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -17,24 +18,12 @@ class AppOutlinedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton.icon(
+    return ExpressiveButton.outlined(
       onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        padding: innerPadding ?? const EdgeInsets.all(12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
       icon: icon != null ? HugeIcon(icon: icon!, strokeWidth: 2) : null,
-      label: Text(
-        label ?? '',
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontVariations: [
-            ...(Theme.of(context).textTheme.titleMedium?.fontVariations ??
-                    const <FontVariation>[])
-                .where((v) => v.axis != 'wght'),
-            const FontVariation('wght', 700),
-          ],
-        ),
-      ),
+      label: label ?? '',
+      isExpanded: true,
+      size: ExpressiveButtonSize.large,
     );
   }
 }
