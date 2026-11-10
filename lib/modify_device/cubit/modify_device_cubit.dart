@@ -72,7 +72,7 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
   List<GroupModel> get groups => localStorage.getGroups();
 
   void saveDeviceModel() {
-    if (!state.formKey.currentState!.validate()) {
+    if (!AppFunctions.validateForm(state.formKey)) {
       return;
     }
     emit(state.copyWith(saveStatus: ModifyDeviceStatus.loading));

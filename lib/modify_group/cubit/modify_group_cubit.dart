@@ -40,7 +40,7 @@ class ModifyGroupCubit extends Cubit<ModifyGroupState> {
   }
 
   void saveGroupModel() {
-    if (!state.formKey.currentState!.validate()) {
+    if (!AppFunctions.validateForm(state.formKey)) {
       return;
     }
     emit(state.copyWith(saveStatus: ModifyGroupStatus.loading));

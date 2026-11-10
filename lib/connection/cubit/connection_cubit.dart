@@ -43,7 +43,7 @@ class ConnectionCubit extends Cubit<ConnectionState> {
   }
 
   Future<void> saveAndConnect({required BuildContext context}) async {
-    if (!(state.formKey.currentState?.validate() ?? false)) {
+    if (!AppFunctions.validateForm(state.formKey)) {
       return;
     }
 

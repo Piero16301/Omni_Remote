@@ -60,71 +60,74 @@ class ModifyGroupView extends StatelessWidget {
         ),
         body: Form(
           key: state.formKey,
-          child: ListView(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.only(
               left: 16,
               right: 16,
               top: 8,
               bottom: 120,
             ),
-            children: [
-              AppTextField(
-                initialValue: state.title,
-                onChanged: context.read<ModifyGroupCubit>().changeTitle,
-                label: l10n.modifyGroupTitleLabel,
-                hintText: l10n.modifyGroupTitleHint,
-                prefix: const HugeIcon(
-                  icon: HugeIcons.strokeRoundedBookmark01,
-                  strokeWidth: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                AppTextField(
+                  initialValue: state.title,
+                  onChanged: context.read<ModifyGroupCubit>().changeTitle,
+                  label: l10n.modifyGroupTitleLabel,
+                  hintText: l10n.modifyGroupTitleHint,
+                  prefix: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedBookmark01,
+                    strokeWidth: 2,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return l10n.modifyGroupTitleErrorEmpty;
+                    }
+                    final alphanumericRegex = RegExp(
+                      r'^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+$',
+                    );
+                    if (!alphanumericRegex.hasMatch(value)) {
+                      return l10n.modifyGroupTitleErrorInvalidFormat;
+                    }
+                    if (value.contains(RegExp(r'\s{2,}'))) {
+                      return l10n.modifyGroupTitleErrorMultipleSpaces;
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return l10n.modifyGroupTitleErrorEmpty;
-                  }
-                  final alphanumericRegex = RegExp(
-                    r'^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+$',
-                  );
-                  if (!alphanumericRegex.hasMatch(value)) {
-                    return l10n.modifyGroupTitleErrorInvalidFormat;
-                  }
-                  if (value.contains(RegExp(r'\s{2,}'))) {
-                    return l10n.modifyGroupTitleErrorMultipleSpaces;
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              AppTextField(
-                initialValue: state.subtitle,
-                isRequired: false,
-                onChanged: context.read<ModifyGroupCubit>().changeSubtitle,
-                label: l10n.modifyGroupSubtitleLabel,
-                hintText: l10n.modifyGroupSubtitleHint,
-                prefix: const HugeIcon(
-                  icon: HugeIcons.strokeRoundedNote,
-                  strokeWidth: 2,
+                const SizedBox(height: 16),
+                AppTextField(
+                  initialValue: state.subtitle,
+                  isRequired: false,
+                  onChanged: context.read<ModifyGroupCubit>().changeSubtitle,
+                  label: l10n.modifyGroupSubtitleLabel,
+                  hintText: l10n.modifyGroupSubtitleHint,
+                  prefix: const HugeIcon(
+                    icon: HugeIcons.strokeRoundedNote,
+                    strokeWidth: 2,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              AppIconSelector(
-                label: l10n.modifyGroupSelectIcon,
-                iconOptions: IconHelper.groupIcons,
-                selectedIcon: state.icon,
-                onIconSelected: context.read<ModifyGroupCubit>().changeIcon,
-              ),
-              const SizedBox(height: 48),
-              GroupPreview(
-                title: state.title,
-                subtitle: state.subtitle,
-                iconName: state.icon,
-              ),
-              if (state.title.isNotEmpty) const SizedBox(height: 48),
-              if (state.title.isNotEmpty)
-                MqttTopicsInfo(
-                  topicInfoType: TopicInfoType.group,
-                  groupTitle: state.title,
+                const SizedBox(height: 16),
+                AppIconSelector(
+                  label: l10n.modifyGroupSelectIcon,
+                  iconOptions: IconHelper.groupIcons,
+                  selectedIcon: state.icon,
+                  onIconSelected: context.read<ModifyGroupCubit>().changeIcon,
                 ),
-            ],
+                const SizedBox(height: 48),
+                GroupPreview(
+                  title: state.title,
+                  subtitle: state.subtitle,
+                  iconName: state.icon,
+                ),
+                if (state.title.isNotEmpty) const SizedBox(height: 48),
+                if (state.title.isNotEmpty)
+                  MqttTopicsInfo(
+                    topicInfoType: TopicInfoType.group,
+                    groupTitle: state.title,
+                  ),
+              ],
+            ),
           ),
         ),
         floatingActionButton: ExpressiveFab(

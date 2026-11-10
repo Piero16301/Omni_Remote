@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -6,12 +7,19 @@ import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 import 'package:omni_remote/modify_device/modify_device.dart';
+import 'package:omni_remote/modify_device/widgets/widgets.dart';
 
 class MockLocalStorageService extends Mock implements LocalStorageService {}
 
 class MockAppCubit extends MockCubit<AppState> implements AppCubit {}
 
+class FakeDeviceModel extends Fake implements DeviceModel {}
+
 void main() {
+  setUpAll(() {
+    registerFallbackValue(FakeDeviceModel());
+  });
+
   group('ModifyDevicePage', () {
     late LocalStorageService mockLocalStorageService;
     late MockAppCubit mockAppCubit;
@@ -78,5 +86,100 @@ void main() {
       );
       expect(find.byType(ModifyDeviceView), findsOneWidget);
     });
+
+    testWidgets(
+      'validates empty title after scrolling to preview and toggling boolean',
+      (tester) async {
+        tester.view.physicalSize = const Size(400, 750);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(() {
+          tester.view.resetPhysicalSize();
+          tester.view.resetDevicePixelRatio();
+        });
+
+        await tester.pumpWidget(
+          MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: BlocProvider<AppCubit>.value(
+              value: mockAppCubit,
+              child: const ModifyDevicePage(),
+            ),
+          ),
+        );
+
+        await tester.scrollUntilVisible(
+          find.byType(DevicePreview),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byType(Switch));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byType(ExpressiveFab));
+        await tester.pumpAndSettle();
+
+        verifyNever(
+          () => mockLocalStorageService.createDevice(
+            device: any(named: 'device'),
+          ),
+        );
+        expect(find.text('Title cannot be empty'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'validates empty title after switching to number and changing preview',
+      (tester) async {
+        tester.view.physicalSize = const Size(400, 750);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(() {
+          tester.view.resetPhysicalSize();
+          tester.view.resetDevicePixelRatio();
+        });
+
+        await tester.pumpWidget(
+          MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: BlocProvider<AppCubit>.value(
+              value: mockAppCubit,
+              child: const ModifyDevicePage(),
+            ),
+          ),
+        );
+
+        await tester.scrollUntilVisible(
+          find.byType(TileTypeSelector),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.tap(find.text('Number'));
+        await tester.pumpAndSettle();
+
+        await tester.scrollUntilVisible(
+          find.byType(Slider),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+
+        final slider = tester.widget<Slider>(find.byType(Slider));
+        slider.onChanged?.call(8);
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byType(ExpressiveFab));
+        await tester.pumpAndSettle();
+
+        verifyNever(
+          () => mockLocalStorageService.createDevice(
+            device: any(named: 'device'),
+          ),
+        );
+        expect(find.text('Title cannot be empty'), findsOneWidget);
+      },
+    );
   });
 }
