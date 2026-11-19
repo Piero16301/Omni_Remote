@@ -15,33 +15,39 @@ void main() {
     test(
       'createMqttClient returns MqttServerClient with host, id, and port',
       () {
-      final client = createMqttClient('broker.example.com', 'client-1', 1883);
+        final client = createMqttClient('broker.example.com', 'client-1', 1883);
 
-      expect(client, isA<MqttServerClient>());
-      expect(client.server, equals('broker.example.com'));
-      expect(client.clientIdentifier, equals('client-1'));
-      expect(client.port, equals(1883));
-    });
+        expect(client, isA<MqttServerClient>());
+        expect(client.server, equals('broker.example.com'));
+        expect(client.clientIdentifier, equals('client-1'));
+        expect(client.port, equals(1883));
+      },
+    );
 
     test(
       'configureMqttClientTls configures TLS and onBadCertificate for 8883',
       () {
-      final client =
-          createMqttClient('broker.example.com', 'client-1', 8883)
-              as MqttServerClient;
+        final client = createMqttClient(
+          'broker.example.com',
+          'client-1',
+          8883,
+        ) as MqttServerClient;
 
-      configureMqttClientTls(client, 8883);
+        configureMqttClientTls(client, 8883);
 
-      expect(client.secure, isTrue);
-      expect(client.securityContext, equals(SecurityContext.defaultContext));
-      expect(client.onBadCertificate, isNotNull);
-      expect(client.onBadCertificate!(MockX509Certificate()), isTrue);
-    });
+        expect(client.secure, isTrue);
+        expect(client.securityContext, equals(SecurityContext.defaultContext));
+        expect(client.onBadCertificate, isNotNull);
+        expect(client.onBadCertificate!(MockX509Certificate()), isTrue);
+      },
+    );
 
     test('configureMqttClientTls does not enable TLS for non-8883 port', () {
-      final client =
-          createMqttClient('broker.example.com', 'client-1', 1883)
-              as MqttServerClient;
+      final client = createMqttClient(
+        'broker.example.com',
+        'client-1',
+        1883,
+      ) as MqttServerClient;
 
       configureMqttClientTls(client, 1883);
 
