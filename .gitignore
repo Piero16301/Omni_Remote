@@ -103,7 +103,6 @@ ios/fastlane/README.md
 packages/**/pubspec.lock
 
 # Web related
-lib/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
@@ -129,3 +128,4 @@ pubspec.lock
 # Generated l10n files
 lib/l10n/gen/
 graphify-out/
+.firebaserc

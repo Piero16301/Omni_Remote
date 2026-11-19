@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/home/home.dart';
 
-class MockLocalStorageService extends Mock implements LocalStorageService {}
+class MockLocalStorageService extends Mock implements LocalStorageService;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -19,9 +19,8 @@ void main() {
       await getIt.reset();
       setupServiceLocator(Environment.mock);
 
-      getIt
-        ..unregister<LocalStorageService>()
-        ..registerSingleton<LocalStorageService>(mockLocalStorageService);
+      await getIt.unregister<LocalStorageService>();
+      getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
 
       cubit = HomeCubit();
     });
@@ -66,9 +65,8 @@ void main() {
     blocTest<HomeCubit, HomeState>(
       'deleteGroup success emits loading then success',
       build: () {
-        when(
-          () => mockLocalStorageService.deleteGroup(groupId: 'grp_01'),
-        ).thenReturn(null);
+        when(() => mockLocalStorageService.deleteGroup(groupId: 'grp_01'))
+            .thenReturn(null);
         return cubit;
       },
       act: (cubit) => cubit.deleteGroup(
@@ -91,9 +89,8 @@ void main() {
     blocTest<HomeCubit, HomeState>(
       'deleteGroup fails when group not empty',
       build: () {
-        when(
-          () => mockLocalStorageService.deleteGroup(groupId: 'grp_01'),
-        ).thenThrow(Exception('GROUP_NOT_EMPTY'));
+        when(() => mockLocalStorageService.deleteGroup(groupId: 'grp_01'))
+            .thenThrow(Exception('GROUP_NOT_EMPTY'));
         return cubit;
       },
       act: (cubit) => cubit.deleteGroup(
@@ -118,9 +115,8 @@ void main() {
     blocTest<HomeCubit, HomeState>(
       'deleteDevice success emits loading then success',
       build: () {
-        when(
-          () => mockLocalStorageService.deleteDevice(deviceId: 'dev_01'),
-        ).thenReturn(null);
+        when(() => mockLocalStorageService.deleteDevice(deviceId: 'dev_01'))
+            .thenReturn(null);
         return cubit;
       },
       act: (cubit) => cubit.deleteDevice(
@@ -150,9 +146,8 @@ void main() {
     blocTest<HomeCubit, HomeState>(
       'deleteDevice fails when not found emissions',
       build: () {
-        when(
-          () => mockLocalStorageService.deleteDevice(deviceId: 'dev_01'),
-        ).thenThrow(Exception('DEVICE_NOT_FOUND'));
+        when(() => mockLocalStorageService.deleteDevice(deviceId: 'dev_01'))
+            .thenThrow(Exception('DEVICE_NOT_FOUND'));
         return cubit;
       },
       act: (cubit) => cubit.deleteDevice(

@@ -52,9 +52,10 @@ class AppFunctions {
                 message ?? '',
                 style: TextStyle(
                   fontVariations: <FontVariation>[
-                    ...(Theme.of(
-                              context,
-                            ).textTheme.labelMedium?.fontVariations ??
+                    ...(Theme.of(context)
+                                .textTheme
+                                .labelMedium
+                                ?.fontVariations ??
                             const <FontVariation>[])
                         .where((v) => v.axis != 'wght'),
                     const FontVariation('wght', 700),

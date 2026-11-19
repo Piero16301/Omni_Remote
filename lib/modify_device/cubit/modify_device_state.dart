@@ -15,7 +15,7 @@ enum ModifyDeviceStatus {
 enum ModifyDeviceError { none, noGroupSelected, duplicateDeviceName, unknown }
 
 class ModifyDeviceState extends Equatable {
-  const ModifyDeviceState({
+  const new({
     this.title = '',
     this.subtitle = '',
     this.icon = IconHelper.getDeviceFirstIcon,

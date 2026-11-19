@@ -7,9 +7,9 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 
-class MockLocalStorageService extends Mock implements LocalStorageService {}
+class MockLocalStorageService extends Mock implements LocalStorageService;
 
-class MockAppCubit extends MockCubit<AppState> implements AppCubit {}
+class MockAppCubit extends MockCubit<AppState> implements AppCubit;
 
 void main() {
   group('HomePage', () {
@@ -22,18 +22,15 @@ void main() {
 
       await getIt.reset();
       setupServiceLocator(Environment.mock);
-      getIt
-        ..unregister<LocalStorageService>()
-        ..registerSingleton<LocalStorageService>(mockLocalStorageService);
+      await getIt.unregister<LocalStorageService>();
+      getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
 
       when(mockLocalStorageService.getGroups).thenReturn([]);
       when(mockLocalStorageService.getDevices).thenReturn([]);
-      when(
-        mockLocalStorageService.getGroupsListenable,
-      ).thenReturn(ValueNotifier<List<GroupModel>>([]));
-      when(
-        mockLocalStorageService.getDevicesListenable,
-      ).thenReturn(ValueNotifier<List<DeviceModel>>([]));
+      when(mockLocalStorageService.getGroupsListenable)
+          .thenReturn(ValueNotifier<List<GroupModel>>([]));
+      when(mockLocalStorageService.getDevicesListenable)
+          .thenReturn(ValueNotifier<List<DeviceModel>>([]));
     });
 
     testWidgets('renders HomeView', (tester) async {

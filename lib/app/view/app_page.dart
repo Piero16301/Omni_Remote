@@ -3,7 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/app/app.dart';
 
 class AppPage extends StatelessWidget {
-  const AppPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,7 @@ class AppPage extends StatelessWidget {
       providers: [
         BlocProvider<AppCubit>(
           create: (_) => AppCubit()
-            ..initialize()
+            ..initialLoad()
             // Initialize app and mqtt client
             // ignore: discarded_futures
             ..initializeMqttClient(),

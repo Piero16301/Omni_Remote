@@ -6,7 +6,7 @@ import 'package:omni_remote/app/app.dart';
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit() : super(const HomeState());
+  new() : super(const HomeState());
 
   final LocalStorageService localStorage = getIt<LocalStorageService>();
   final CrashService _crashService = getIt<CrashService>();
@@ -52,6 +52,10 @@ class HomeCubit extends Cubit<HomeState> {
           );
           groupDeleteError = GroupDeleteError.unknown;
       }
+      _analyticsService.logEvent(
+        name: 'delete_group_failed',
+        parameters: {'reason': groupDeleteError.name},
+      );
       emit(
         state.copyWith(
           deleteGroupStatus: HomeStatus.failure,
@@ -83,6 +87,10 @@ class HomeCubit extends Cubit<HomeState> {
           );
           deviceDeleteError = DeviceDeleteError.unknown;
       }
+      _analyticsService.logEvent(
+        name: 'delete_device_failed',
+        parameters: {'reason': deviceDeleteError.name},
+      );
       emit(
         state.copyWith(
           deleteDeviceStatus: HomeStatus.failure,

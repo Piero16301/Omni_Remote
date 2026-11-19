@@ -15,7 +15,7 @@ enum ModifyGroupStatus {
 enum ModifyGroupError { none, duplicateGroupName, unknown }
 
 class ModifyGroupState extends Equatable {
-  const ModifyGroupState({
+  const new({
     this.title = '',
     this.subtitle = '',
     this.icon = IconHelper.getGroupFirstIcon,

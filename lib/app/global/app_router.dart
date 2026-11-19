@@ -59,7 +59,7 @@ enum AppRoute {
   modifyGroup('/modify-group', 'modify-group'),
   modifyDevice('/modify-device', 'modify-device');
 
-  const AppRoute(this.path, this.name);
+  new(this.path, this.name);
   final String path;
   final String name;
 }

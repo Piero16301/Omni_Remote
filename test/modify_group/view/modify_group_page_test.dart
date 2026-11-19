@@ -7,9 +7,9 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 import 'package:omni_remote/modify_group/modify_group.dart';
 
-class MockLocalStorageService extends Mock implements LocalStorageService {}
+class MockLocalStorageService extends Mock implements LocalStorageService;
 
-class MockAppCubit extends MockCubit<AppState> implements AppCubit {}
+class MockAppCubit extends MockCubit<AppState> implements AppCubit;
 
 void main() {
   group('ModifyGroupPage', () {
@@ -23,15 +23,12 @@ void main() {
 
       await getIt.reset();
       setupServiceLocator(Environment.mock);
-      getIt
-        ..unregister<LocalStorageService>()
-        ..registerSingleton<LocalStorageService>(mockLocalStorageService);
-      when(
-        () => mockLocalStorageService.getGroupsListenable(),
-      ).thenReturn(ValueNotifier<List<GroupModel>>([]));
-      when(
-        () => mockLocalStorageService.getDevicesListenable(),
-      ).thenReturn(ValueNotifier<List<DeviceModel>>([]));
+      await getIt.unregister<LocalStorageService>();
+      getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
+      when(() => mockLocalStorageService.getGroupsListenable())
+          .thenReturn(ValueNotifier<List<GroupModel>>([]));
+      when(() => mockLocalStorageService.getDevicesListenable())
+          .thenReturn(ValueNotifier<List<DeviceModel>>([]));
     });
 
     testWidgets('renders ModifyGroupView', (tester) async {

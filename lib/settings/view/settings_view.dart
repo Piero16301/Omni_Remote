@@ -9,7 +9,7 @@ import 'package:omni_remote/l10n/l10n.dart';
 import 'package:omni_remote/settings/settings.dart';
 
 class SettingsView extends StatelessWidget {
-  const SettingsView({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,166 +48,168 @@ class SettingsView extends StatelessWidget {
               ),
             ),
           ),
-          body: ListView(
-            padding: const EdgeInsets.only(top: 2, bottom: 24),
-            children: [
-              // Sección: Aspecto (Tema, Color base y Fuente agrupados)
-              ExpressiveCardGroup(
-                title: l10n.settingsAppearanceTitle,
-                children: [
-                  ExpressiveListTile(
-                    leading: const ExpressiveBadge(
-                      backgroundColor: Color(0xFF6750A4),
-                      foregroundColor: Colors.white,
-                      icon: HugeIcon(
-                        icon: HugeIcons.strokeRoundedMoon02,
-                        strokeWidth: 2,
-                      ),
-                    ),
-                    title: Text(l10n.settingsThemeTitle),
-                    subtitle: Text(currentThemeName),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        HugeIcon(
-                          icon: _getThemeIcon(state.theme),
-                          color: colorScheme.primary,
+          body: AppMaxWidthContainer(
+            child: ListView(
+              padding: const EdgeInsets.only(top: 2, bottom: 24),
+              children: [
+                // Sección: Aspecto (Tema, Color base y Fuente agrupados)
+                ExpressiveCardGroup(
+                  title: l10n.settingsAppearanceTitle,
+                  children: [
+                    ExpressiveListTile(
+                      leading: const ExpressiveBadge(
+                        backgroundColor: Color(0xFF6750A4),
+                        foregroundColor: Colors.white,
+                        icon: HugeIcon(
+                          icon: HugeIcons.strokeRoundedMoon02,
+                          strokeWidth: 2,
                         ),
-                        const SizedBox(width: 8),
-                        HugeIcon(
-                          icon: HugeIcons.strokeRoundedArrowRight01,
-                          size: 20,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ],
-                    ),
-                    onTap: () => _showThemePickerModal(context, state),
-                  ),
-                  ExpressiveListTile(
-                    leading: const ExpressiveBadge(
-                      backgroundColor: Color(0xFFE06D53),
-                      foregroundColor: Colors.white,
-                      icon: HugeIcon(
-                        icon: HugeIcons.strokeRoundedPaintBoard,
-                        strokeWidth: 2,
                       ),
-                    ),
-                    title: Text(l10n.settingsBaseColorTitle),
-                    subtitle: Text(currentColorName),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            color: state.baseColor,
-                            shape: BoxShape.circle,
+                      title: Text(l10n.settingsThemeTitle),
+                      subtitle: Text(currentThemeName),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          HugeIcon(
+                            icon: _getThemeIcon(state.theme),
+                            color: colorScheme.primary,
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        HugeIcon(
-                          icon: HugeIcons.strokeRoundedArrowRight01,
-                          size: 20,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ],
-                    ),
-                    onTap: () => _showColorPickerModal(context, state),
-                  ),
-                  ExpressiveListTile(
-                    leading: const ExpressiveBadge(
-                      backgroundColor: Color(0xFF1E88E5),
-                      foregroundColor: Colors.white,
-                      icon: HugeIcon(
-                        icon: HugeIcons.strokeRoundedTextFont,
-                        strokeWidth: 2,
+                          const SizedBox(width: 8),
+                          HugeIcon(
+                            icon: HugeIcons.strokeRoundedArrowRight01,
+                            size: 20,
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ],
                       ),
+                      onTap: () => _showThemePickerModal(context, state),
                     ),
-                    title: Text(l10n.settingsFontTitle),
-                    subtitle: Text(
-                      ExpressiveFonts.availableFonts.entries
-                          .firstWhere(
-                            (entry) => entry.value == state.fontFamily,
-                            orElse: () =>
-                                MapEntry(state.fontFamily, state.fontFamily),
-                          )
-                          .key,
-                      style: TextStyle(fontFamily: state.fontFamily),
+                    ExpressiveListTile(
+                      leading: const ExpressiveBadge(
+                        backgroundColor: Color(0xFFE06D53),
+                        foregroundColor: Colors.white,
+                        icon: HugeIcon(
+                          icon: HugeIcons.strokeRoundedPaintBoard,
+                          strokeWidth: 2,
+                        ),
+                      ),
+                      title: Text(l10n.settingsBaseColorTitle),
+                      subtitle: Text(currentColorName),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: state.baseColor,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          HugeIcon(
+                            icon: HugeIcons.strokeRoundedArrowRight01,
+                            size: 20,
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ],
+                      ),
+                      onTap: () => _showColorPickerModal(context, state),
                     ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          height: 24,
-                          child: Center(
-                            child: Text(
-                              'Aa',
-                              style: TextStyle(
-                                fontFamily: state.fontFamily,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: colorScheme.primary,
+                    ExpressiveListTile(
+                      leading: const ExpressiveBadge(
+                        backgroundColor: Color(0xFF1E88E5),
+                        foregroundColor: Colors.white,
+                        icon: HugeIcon(
+                          icon: HugeIcons.strokeRoundedTextFont,
+                          strokeWidth: 2,
+                        ),
+                      ),
+                      title: Text(l10n.settingsFontTitle),
+                      subtitle: Text(
+                        ExpressiveFonts.availableFonts.entries
+                            .firstWhere(
+                              (entry) => entry.value == state.fontFamily,
+                              orElse: () =>
+                                  MapEntry(state.fontFamily, state.fontFamily),
+                            )
+                            .key,
+                        style: TextStyle(fontFamily: state.fontFamily),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: 24,
+                            child: Center(
+                              child: Text(
+                                'Aa',
+                                style: TextStyle(
+                                  fontFamily: state.fontFamily,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: colorScheme.primary,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        HugeIcon(
-                          icon: HugeIcons.strokeRoundedArrowRight01,
-                          size: 20,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ],
-                    ),
-                    onTap: () => _showFontPickerModal(context, state),
-                  ),
-                ],
-              ),
-
-              // Sección: Idioma
-              ExpressiveCardGroup(
-                title: l10n.settingsLanguageTitle,
-                children: [
-                  ExpressiveListTile(
-                    leading: const ExpressiveBadge(
-                      backgroundColor: Color(0xFF00ACC1),
-                      foregroundColor: Colors.white,
-                      icon: HugeIcon(
-                        icon: HugeIcons.strokeRoundedGlobe02,
-                        strokeWidth: 2,
-                      ),
-                    ),
-                    title: Text(l10n.settingsLanguageTitle),
-                    subtitle: Text(currentLanguageName),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CountryFlag.fromLanguageCode(
-                          state.language.languageCode,
-                          theme: const ImageTheme(
-                            width: 24,
-                            height: 24,
-                            shape: RoundedRectangle(6),
+                          const SizedBox(width: 8),
+                          HugeIcon(
+                            icon: HugeIcons.strokeRoundedArrowRight01,
+                            size: 20,
+                            color: colorScheme.onSurfaceVariant,
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        HugeIcon(
-                          icon: HugeIcons.strokeRoundedArrowRight01,
-                          size: 20,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ],
+                        ],
+                      ),
+                      onTap: () => _showFontPickerModal(context, state),
                     ),
-                    onTap: () => _showLanguagePickerModal(context, state),
-                  ),
-                ],
-              ),
+                  ],
+                ),
 
-              // Sección: Información de la aplicación
-              const SettingsAppSpecs(),
-              const SizedBox(height: 24),
-            ],
+                // Sección: Idioma
+                ExpressiveCardGroup(
+                  title: l10n.settingsLanguageTitle,
+                  children: [
+                    ExpressiveListTile(
+                      leading: const ExpressiveBadge(
+                        backgroundColor: Color(0xFF00ACC1),
+                        foregroundColor: Colors.white,
+                        icon: HugeIcon(
+                          icon: HugeIcons.strokeRoundedGlobe02,
+                          strokeWidth: 2,
+                        ),
+                      ),
+                      title: Text(l10n.settingsLanguageTitle),
+                      subtitle: Text(currentLanguageName),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CountryFlag.fromLanguageCode(
+                            state.language.languageCode,
+                            theme: const ImageTheme(
+                              width: 24,
+                              height: 24,
+                              shape: RoundedRectangle(6),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          HugeIcon(
+                            icon: HugeIcons.strokeRoundedArrowRight01,
+                            size: 20,
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ],
+                      ),
+                      onTap: () => _showLanguagePickerModal(context, state),
+                    ),
+                  ],
+                ),
+
+                // Sección: Información de la aplicación
+                const SettingsAppSpecs(),
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         );
       },

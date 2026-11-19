@@ -10,9 +10,9 @@ import 'package:omni_remote/l10n/l10n.dart';
 import 'package:omni_remote/modify_device/modify_device.dart';
 
 class MockModifyDeviceCubit extends MockCubit<ModifyDeviceState>
-    implements ModifyDeviceCubit {}
+    implements ModifyDeviceCubit;
 
-class FakeBuildContext extends Fake implements BuildContext {}
+class FakeBuildContext extends Fake implements BuildContext;
 
 void main() {
   setUpAll(() {
@@ -224,15 +224,54 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('triggers changeSelectedGroup on dropdown selection', (
+    testWidgets(
+      'triggers changeSelectedGroup on group picker modal selection',
+      (tester) async {
+        when(() => modifyDeviceCubit.groups).thenReturn([
+          GroupModel(id: 'g1', title: 'Group 1', subtitle: '', icon: ''),
+          GroupModel(id: 'g2', title: 'Group 2', subtitle: '', icon: ''),
+        ]);
+
+        await tester.pumpWidget(buildSubject());
+
+        await tester.tap(find.byType(ExpressiveListTile));
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.widgetWithText(ListTile, 'Group 2'));
+        await tester.pumpAndSettle();
+
+        verify(() => modifyDeviceCubit.changeSelectedGroup('g2')).called(1);
+      },
+    );
+
+    testWidgets('triggers changeTileType on ExpressiveButtonGroup selection', (
       tester,
     ) async {
+      tester.view.physicalSize = const Size(1080, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
       await tester.pumpWidget(buildSubject());
-      final dropdown = tester.widget<AppDropdownField<String>>(
-        find.byType(AppDropdownField<String>),
+
+      expect(
+        find.byType(ExpressiveButtonGroup<DeviceTileType>),
+        findsOneWidget,
       );
-      dropdown.onChanged?.call('g1');
-      verify(() => modifyDeviceCubit.changeSelectedGroup('g1')).called(1);
+
+      await tester.tap(find.text('Boolean'));
+      await tester.pumpAndSettle();
+
+      verify(() => modifyDeviceCubit.changeTileType(DeviceTileType.boolean))
+          .called(1);
+
+      await tester.tap(find.text('Number'));
+      await tester.pumpAndSettle();
+
+      verify(() => modifyDeviceCubit.changeTileType(DeviceTileType.number))
+          .called(1);
     });
 
     testWidgets('title validator validates input correctly', (tester) async {

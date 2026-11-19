@@ -18,7 +18,7 @@ enum DeviceTileType {
 @HiveType(typeId: 1)
 class DeviceModel {
   /// Constructor for DeviceModel
-  DeviceModel({
+  new({
     required this.title,
     required this.subtitle,
     required this.icon,

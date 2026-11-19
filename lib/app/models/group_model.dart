@@ -6,7 +6,7 @@ part 'group_model.g.dart';
 @HiveType(typeId: 2)
 class GroupModel {
   /// Constructor for GroupModel
-  GroupModel({
+  new({
     required this.title,
     required this.subtitle,
     required this.icon,

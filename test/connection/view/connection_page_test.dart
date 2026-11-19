@@ -7,9 +7,9 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/connection/connection.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 
-class MockLocalStorageService extends Mock implements LocalStorageService {}
+class MockLocalStorageService extends Mock implements LocalStorageService;
 
-class MockAppCubit extends MockCubit<AppState> implements AppCubit {}
+class MockAppCubit extends MockCubit<AppState> implements AppCubit;
 
 void main() {
   group('ConnectionPage', () {
@@ -23,9 +23,8 @@ void main() {
 
       await getIt.reset();
       setupServiceLocator(Environment.mock);
-      getIt
-        ..unregister<LocalStorageService>()
-        ..registerSingleton<LocalStorageService>(mockLocalStorageService);
+      await getIt.unregister<LocalStorageService>();
+      getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
 
       when(() => mockLocalStorageService.getBrokerUrl()).thenReturn(null);
       when(() => mockLocalStorageService.getBrokerPort()).thenReturn(null);

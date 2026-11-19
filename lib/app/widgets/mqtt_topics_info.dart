@@ -7,7 +7,7 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 
 class MqttTopicsInfo extends StatelessWidget {
-  const MqttTopicsInfo({
+  const new({
     required this.topicInfoType,
     this.groupTitle,
     this.deviceTitle,
@@ -366,11 +366,7 @@ class MqttTopicsInfo extends StatelessWidget {
 }
 
 class _TopicItem extends StatelessWidget {
-  const _TopicItem({
-    required this.label,
-    required this.topic,
-    required this.onCopy,
-  });
+  const new({required this.label, required this.topic, required this.onCopy});
 
   final String label;
   final String topic;
@@ -406,9 +402,8 @@ class _TopicItem extends StatelessWidget {
             ),
             child: Text(
               topic,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontFamily: 'monospace'),
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(fontFamily: 'monospace'),
             ),
           ),
         ),

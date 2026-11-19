@@ -32,7 +32,7 @@ class MockCrashRepository implements CrashRepository {
 }
 
 class CrashlyticsCrashRepository implements CrashRepository {
-  CrashlyticsCrashRepository({FirebaseCrashlytics? crashlytics})
+  new({FirebaseCrashlytics? crashlytics})
     : _crashlytics = crashlytics ?? FirebaseCrashlytics.instance;
 
   final FirebaseCrashlytics _crashlytics;

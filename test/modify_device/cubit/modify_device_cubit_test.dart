@@ -7,9 +7,9 @@ import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/modify_device/modify_device.dart';
 
-class MockLocalStorageService extends Mock implements LocalStorageService {}
+class MockLocalStorageService extends Mock implements LocalStorageService;
 
-class FakeDeviceModel extends Fake implements DeviceModel {}
+class FakeDeviceModel extends Fake implements DeviceModel;
 
 void main() {
   setUpAll(() {
@@ -27,9 +27,8 @@ void main() {
       mockLocalStorageService = MockLocalStorageService();
       await getIt.reset();
       setupServiceLocator(Environment.mock);
-      getIt
-        ..unregister<LocalStorageService>()
-        ..registerSingleton<LocalStorageService>(mockLocalStorageService);
+      await getIt.unregister<LocalStorageService>();
+      getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
 
       when(() => mockLocalStorageService.getGroups()).thenReturn(testGroups);
     });

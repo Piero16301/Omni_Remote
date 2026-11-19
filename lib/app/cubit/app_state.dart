@@ -1,7 +1,7 @@
 part of 'app_cubit.dart';
 
 class AppState extends Equatable {
-  const AppState({
+  const new({
     this.language = ExpressiveLanguages.defaultLocale,
     this.theme = ExpressiveTheme.defaultTheme,
     this.baseColor = ExpressiveColors.defaultColor,

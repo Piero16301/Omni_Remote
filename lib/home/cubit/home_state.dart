@@ -17,7 +17,7 @@ enum GroupDeleteError { none, groupNotEmpty, groupNotFound, unknown }
 enum DeviceDeleteError { none, deviceNotFound, unknown }
 
 class HomeState extends Equatable {
-  const HomeState({
+  const new({
     this.deleteGroupStatus = HomeStatus.initial,
     this.deleteDeviceStatus = HomeStatus.initial,
     this.groupDeleteError = GroupDeleteError.none,

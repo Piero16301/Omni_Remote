@@ -2,18 +2,23 @@ import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:expressive_kit/expressive_kit.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 
-class MockLocalStorageService extends Mock implements LocalStorageService {}
+class MockLocalStorageService extends Mock implements LocalStorageService;
 
-class MockMqttService extends Mock implements MqttService {}
+class MockMqttService extends Mock implements MqttService;
 
-class MockCrashService extends Mock implements CrashService {}
+class MockCrashService extends Mock implements CrashService;
 
-class MockAnalyticsService extends Mock implements AnalyticsService {}
+class MockAnalyticsService extends Mock implements AnalyticsService;
+
+class MockPerformanceService extends Mock implements PerformanceService;
+
+class MockTrace extends Mock implements Trace;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +27,8 @@ void main() {
     late MqttService mockMqttService;
     late CrashService mockCrashService;
     late AnalyticsService mockAnalyticsService;
+    late PerformanceService mockPerformanceService;
+    late Trace mockTrace;
     late AppCubit appCubit;
 
     setUpAll(() {
@@ -36,19 +43,26 @@ void main() {
       mockMqttService = MockMqttService();
       mockCrashService = MockCrashService();
       mockAnalyticsService = MockAnalyticsService();
+      mockPerformanceService = MockPerformanceService();
+      mockTrace = MockTrace();
 
       await getIt.reset();
       setupServiceLocator(Environment.mock);
 
-      getIt
-        ..unregister<LocalStorageService>()
-        ..registerSingleton<LocalStorageService>(mockLocalStorageService)
-        ..unregister<MqttService>()
-        ..registerSingleton<MqttService>(mockMqttService)
-        ..unregister<CrashService>()
-        ..registerSingleton<CrashService>(mockCrashService)
-        ..unregister<AnalyticsService>()
-        ..registerSingleton<AnalyticsService>(mockAnalyticsService);
+      await getIt.unregister<LocalStorageService>();
+      getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
+      await getIt.unregister<MqttService>();
+      getIt.registerSingleton<MqttService>(mockMqttService);
+      await getIt.unregister<CrashService>();
+      getIt.registerSingleton<CrashService>(mockCrashService);
+      await getIt.unregister<AnalyticsService>();
+      getIt.registerSingleton<AnalyticsService>(mockAnalyticsService);
+      await getIt.unregister<PerformanceService>();
+      getIt.registerSingleton<PerformanceService>(mockPerformanceService);
+
+      when(() => mockPerformanceService.startTrace(any()))
+          .thenReturn(mockTrace);
+      when(() => mockPerformanceService.stopTrace(mockTrace)).thenReturn(null);
 
       when(() => mockLocalStorageService.getLanguage()).thenReturn(null);
       when(() => mockLocalStorageService.getTheme()).thenReturn(null);
@@ -72,16 +86,15 @@ void main() {
     blocTest<AppCubit, AppState>(
       'initialize emits state with updated configuration',
       build: () => appCubit,
-      act: (cubit) => cubit.initialize(),
+      act: (cubit) => cubit.initialLoad(),
       verify: (_) {
         verify(
           () => mockLocalStorageService.saveLanguage(
             language: any<Locale>(named: 'language'),
           ),
         ).called(1);
-        verify(
-          () => mockLocalStorageService.saveTheme(theme: ThemeMode.system),
-        ).called(1);
+        verify(() => mockLocalStorageService.saveTheme(theme: ThemeMode.system))
+            .called(1);
         verify(
           () => mockLocalStorageService.saveBaseColor(
             baseColor: ExpressiveColors.defaultColor,
@@ -124,9 +137,8 @@ void main() {
         isA<AppState>().having((s) => s.theme, 'theme', ThemeMode.dark),
       ],
       verify: (_) {
-        verify(
-          () => mockLocalStorageService.saveTheme(theme: ThemeMode.dark),
-        ).called(1);
+        verify(() => mockLocalStorageService.saveTheme(theme: ThemeMode.dark))
+            .called(1);
         verify(
           () => mockAnalyticsService.logEvent(
             name: 'change_theme',
@@ -182,9 +194,8 @@ void main() {
         when(() => mockMqttService.connectionStatusStream).thenAnswer(
           (_) => Stream.fromIterable([BrokerConnectionStatus.connected]),
         );
-        when(
-          () => mockMqttService.initializeMqttClient(),
-        ).thenAnswer((_) async {});
+        when(() => mockMqttService.initializeMqttClient())
+            .thenAnswer((_) async {});
         return appCubit;
       },
       act: (cubit) => cubit.initializeMqttClient(),
@@ -221,9 +232,8 @@ void main() {
     test(
       'reconnectWithNewSettings calls mqttService.reconnectWithNewSettings',
       () async {
-        when(
-          () => mockMqttService.reconnectWithNewSettings(),
-        ).thenAnswer((_) async {});
+        when(() => mockMqttService.reconnectWithNewSettings())
+            .thenAnswer((_) async {});
         when(
           () => mockAnalyticsService.logEvent(name: any<String>(named: 'name')),
         ).thenReturn(null);
@@ -235,21 +245,17 @@ void main() {
     blocTest<AppCubit, AppState>(
       'initialize does not save again if values are already set',
       build: () {
-        when(
-          () => mockLocalStorageService.getLanguage(),
-        ).thenReturn(const Locale('en', 'US'));
-        when(
-          () => mockLocalStorageService.getTheme(),
-        ).thenReturn(ThemeMode.dark);
-        when(
-          () => mockLocalStorageService.getBaseColor(),
-        ).thenReturn(Colors.green);
-        when(
-          () => mockLocalStorageService.getFontFamily(),
-        ).thenReturn(ExpressiveFonts.defaultFont);
+        when(() => mockLocalStorageService.getLanguage())
+            .thenReturn(const Locale('en', 'US'));
+        when(() => mockLocalStorageService.getTheme())
+            .thenReturn(ThemeMode.dark);
+        when(() => mockLocalStorageService.getBaseColor())
+            .thenReturn(Colors.green);
+        when(() => mockLocalStorageService.getFontFamily())
+            .thenReturn(ExpressiveFonts.defaultFont);
         return appCubit;
       },
-      act: (cubit) => cubit.initialize(),
+      act: (cubit) => cubit.initialLoad(),
       expect: () => [
         isA<AppState>()
             .having((s) => s.language, 'language', const Locale('en', 'US'))
@@ -288,21 +294,17 @@ void main() {
     blocTest<AppCubit, AppState>(
       'initialize saves default font if current font is not supported',
       build: () {
-        when(
-          () => mockLocalStorageService.getLanguage(),
-        ).thenReturn(const Locale('en', 'US'));
-        when(
-          () => mockLocalStorageService.getTheme(),
-        ).thenReturn(ThemeMode.dark);
-        when(
-          () => mockLocalStorageService.getBaseColor(),
-        ).thenReturn(Colors.green);
-        when(
-          () => mockLocalStorageService.getFontFamily(),
-        ).thenReturn('UnsupportedFont');
+        when(() => mockLocalStorageService.getLanguage())
+            .thenReturn(const Locale('en', 'US'));
+        when(() => mockLocalStorageService.getTheme())
+            .thenReturn(ThemeMode.dark);
+        when(() => mockLocalStorageService.getBaseColor())
+            .thenReturn(Colors.green);
+        when(() => mockLocalStorageService.getFontFamily())
+            .thenReturn('UnsupportedFont');
         return appCubit;
       },
-      act: (cubit) => cubit.initialize(),
+      act: (cubit) => cubit.initialLoad(),
       verify: (_) {
         verify(
           () => mockLocalStorageService.saveFontFamily(

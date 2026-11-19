@@ -10,9 +10,9 @@ import 'package:omni_remote/l10n/l10n.dart';
 import 'package:omni_remote/modify_group/modify_group.dart';
 
 class MockModifyGroupCubit extends MockCubit<ModifyGroupState>
-    implements ModifyGroupCubit {}
+    implements ModifyGroupCubit;
 
-class FakeBuildContext extends Fake implements BuildContext {}
+class FakeBuildContext extends Fake implements BuildContext;
 
 void main() {
   setUpAll(() {

@@ -9,7 +9,7 @@ import 'package:omni_remote/modify_device/cubit/modify_device_cubit.dart';
 import 'package:omni_remote/modify_device/widgets/widgets.dart';
 
 class ModifyDeviceView extends StatelessWidget {
-  const ModifyDeviceView({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,312 +39,460 @@ class ModifyDeviceView extends StatelessWidget {
           context.read<ModifyDeviceCubit>().resetSaveStatus();
         }
       },
-      builder: (context, state) => Scaffold(
-        appBar: ExpressiveTopAppBar(
-          leading: Padding(
-            padding: const EdgeInsets.all(8),
-            child: ExpressiveIconButton.circle(
-              icon: const HugeIcon(
-                icon: HugeIcons.strokeRoundedArrowLeft01,
-                strokeWidth: 2,
+      builder: (context, state) {
+        final groups = context.read<ModifyDeviceCubit>().groups;
+        final selectedGroup = groups.firstWhere(
+          (g) => g.id == state.selectedGroupId,
+          orElse: () => GroupModel(title: '', subtitle: '', icon: ''),
+        );
+
+        return Scaffold(
+          appBar: ExpressiveTopAppBar(
+            leading: Padding(
+              padding: const EdgeInsets.all(8),
+              child: ExpressiveIconButton.circle(
+                icon: const HugeIcon(
+                  icon: HugeIcons.strokeRoundedArrowLeft01,
+                  strokeWidth: 2,
+                ),
+                onPressed: () => context.pop(),
               ),
-              onPressed: () => context.pop(),
+            ),
+            title: Text(
+              state.deviceModel == null
+                  ? l10n.modifyDevicePageTitleCreate
+                  : l10n.modifyDevicePageTitleEdit,
+              style: Theme.of(context).textTheme.titleLarge
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
-          title: Text(
-            state.deviceModel == null
-                ? l10n.modifyDevicePageTitleCreate
-                : l10n.modifyDevicePageTitleEdit,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-          ),
-        ),
-        body: Form(
-          key: state.formKey,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 8,
-              bottom: 120,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                AppTextField(
-                  initialValue: state.title,
-                  onChanged: context.read<ModifyDeviceCubit>().changeTitle,
-                  label: l10n.modifyDeviceTitleLabel,
-                  hintText: l10n.modifyDeviceTitleHint,
-                  prefix: const HugeIcon(
-                    icon: HugeIcons.strokeRoundedBookmark01,
-                    strokeWidth: 2,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return l10n.modifyDeviceTitleErrorEmpty;
-                    }
-                    final alphanumericRegex = RegExp(
-                      r'^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+$',
-                    );
-                    if (!alphanumericRegex.hasMatch(value)) {
-                      return l10n.modifyDeviceTitleErrorInvalidFormat;
-                    }
-                    if (value.contains(RegExp(r'\s{2,}'))) {
-                      return l10n.modifyDeviceTitleErrorMultipleSpaces;
-                    }
-                    return null;
-                  },
+          body: AppMaxWidthContainer(
+            child: Form(
+              key: state.formKey,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 8,
+                  bottom: 120,
                 ),
-                const SizedBox(height: 16),
-                AppTextField(
-                  initialValue: state.subtitle,
-                  isRequired: false,
-                  onChanged: context.read<ModifyDeviceCubit>().changeSubtitle,
-                  label: l10n.modifyDeviceSubtitleLabel,
-                  hintText: l10n.modifyDeviceSubtitleHint,
-                  prefix: const HugeIcon(
-                    icon: HugeIcons.strokeRoundedNote,
-                    strokeWidth: 2,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                AppDropdownField(
-                  label: l10n.modifyDeviceGroupLabel,
-                  options: context.read<ModifyDeviceCubit>().groups.map((
-                    group,
-                  ) {
-                    return DropdownMenuItem<String>(
-                      value: group.id,
-                      child: Row(
-                        spacing: 8,
-                        children: [
-                          HugeIcon(
-                            icon: IconHelper.getIconByName(group.icon),
-                            strokeWidth: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    AppTextField(
+                      initialValue: state.title,
+                      onChanged: context.read<ModifyDeviceCubit>().changeTitle,
+                      label: l10n.modifyDeviceTitleLabel,
+                      hintText: l10n.modifyDeviceTitleHint,
+                      prefix: const HugeIcon(
+                        icon: HugeIcons.strokeRoundedBookmark01,
+                        strokeWidth: 2,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return l10n.modifyDeviceTitleErrorEmpty;
+                        }
+                        final alphanumericRegex = RegExp(
+                          r'^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+$',
+                        );
+                        if (!alphanumericRegex.hasMatch(value)) {
+                          return l10n.modifyDeviceTitleErrorInvalidFormat;
+                        }
+                        if (value.contains(RegExp(r'\s{2,}'))) {
+                          return l10n.modifyDeviceTitleErrorMultipleSpaces;
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    AppTextField(
+                      initialValue: state.subtitle,
+                      isRequired: false,
+                      onChanged: context
+                          .read<ModifyDeviceCubit>()
+                          .changeSubtitle,
+                      label: l10n.modifyDeviceSubtitleLabel,
+                      hintText: l10n.modifyDeviceSubtitleHint,
+                      prefix: const HugeIcon(
+                        icon: HugeIcons.strokeRoundedNote,
+                        strokeWidth: 2,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ExpressiveCardGroup(
+                      margin: EdgeInsets.zero,
+                      children: [
+                        ExpressiveListTile(
+                          leading: ExpressiveBadge(
+                            icon: HugeIcon(
+                              icon: IconHelper.getIconByName(
+                                selectedGroup.icon,
+                              ),
+                              strokeWidth: 2,
+                            ),
                           ),
-                          Text(group.title),
+                          title: Text(l10n.modifyDeviceGroupLabel),
+                          subtitle: Text(
+                            selectedGroup.title.isNotEmpty
+                                ? selectedGroup.title
+                                : l10n.modifyDeviceNoGroup,
+                          ),
+                          trailing: HugeIcon(
+                            icon: HugeIcons.strokeRoundedArrowRight01,
+                            size: 20,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurfaceVariant,
+                          ),
+                          onTap: () => _showGroupPickerModal(context, state),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    AppIconSelector(
+                      iconOptions: IconHelper.deviceIcons,
+                      selectedIcon: state.icon,
+                      onIconSelected: context
+                          .read<ModifyDeviceCubit>()
+                          .changeIcon,
+                      label: l10n.modifyDeviceSelectIcon,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.modifyDeviceTileTypeLabel,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontVariations: <FontVariation>[
+                          ...(Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.fontVariations ??
+                                  const <FontVariation>[])
+                              .where((v) => v.axis != 'wght'),
+                          const FontVariation('wght', 700),
                         ],
                       ),
-                    );
-                  }).toList(),
-                  selected: state.selectedGroupId,
-                  onChanged: (selected) => context
-                      .read<ModifyDeviceCubit>()
-                      .changeSelectedGroup(selected),
-                ),
-                const SizedBox(height: 16),
-                AppIconSelector(
-                  iconOptions: IconHelper.deviceIcons,
-                  selectedIcon: state.icon,
-                  onIconSelected: context.read<ModifyDeviceCubit>().changeIcon,
-                  label: l10n.modifyDeviceSelectIcon,
-                ),
-                const SizedBox(height: 16),
-                TileTypeSelector(
-                  selectedType: state.tileType,
-                  onTypeSelected: context
-                      .read<ModifyDeviceCubit>()
-                      .changeTileType,
-                ),
-                if (state.tileType == DeviceTileType.number) ...[
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.modifyDeviceRangeConfigurationLabel,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontVariations: <FontVariation>[
-                        ...(Theme.of(
-                                  context,
-                                ).textTheme.titleMedium?.fontVariations ??
-                                const <FontVariation>[])
-                            .where((v) => v.axis != 'wght'),
-                        const FontVariation('wght', 700),
+                    ),
+                    const SizedBox(height: 8),
+                    ExpressiveButtonGroup<DeviceTileType>(
+                      selectedValue: state.tileType,
+                      onSelected: context
+                          .read<ModifyDeviceCubit>()
+                          .changeTileType,
+                      items: [
+                        ExpressiveButtonGroupItem(
+                          value: DeviceTileType.boolean,
+                          label: l10n.modifyDeviceTileTypeBoolean,
+                          icon: const HugeIcon(
+                            icon: HugeIcons.strokeRoundedToggleOn,
+                            size: 18,
+                            strokeWidth: 2,
+                          ),
+                        ),
+                        ExpressiveButtonGroupItem(
+                          value: DeviceTileType.number,
+                          label: l10n.modifyDeviceTileTypeNumber,
+                          icon: const HugeIcon(
+                            icon: HugeIcons.strokeRoundedLeftToRightListNumber,
+                            size: 18,
+                            strokeWidth: 2,
+                          ),
+                        ),
                       ],
+                    ),
+                    if (state.tileType == DeviceTileType.number) ...[
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.modifyDeviceRangeConfigurationLabel,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontVariations: <FontVariation>[
+                                ...(Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.fontVariations ??
+                                        const <FontVariation>[])
+                                    .where((v) => v.axis != 'wght'),
+                                const FontVariation('wght', 700),
+                              ],
+                            ),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 16,
+                        children: [
+                          Expanded(
+                            child: AppTextField(
+                              initialValue: state.deviceModel != null
+                                  ? state.rangeMin.toString()
+                                  : (state.rangeMin != 0
+                                        ? state.rangeMin.toString()
+                                        : ''),
+                              onChanged: (value) {
+                                final doubleValue = double.tryParse(value);
+                                if (doubleValue != null) {
+                                  context
+                                      .read<ModifyDeviceCubit>()
+                                      .changeRangeMin(doubleValue);
+                                }
+                              },
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                              label: l10n.modifyDeviceRangeMinLabel,
+                              hintText: l10n.modifyDeviceRangeMinHint,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return l10n.modifyDeviceRangeErrorEmpty;
+                                }
+                                final doubleValue = double.tryParse(value);
+                                if (doubleValue == null) {
+                                  return l10n.modifyDeviceRangeErrorInvalid;
+                                }
+                                if (doubleValue >= state.rangeMax) {
+                                  return l10n.modifyDeviceRangeMinMaxError;
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            child: AppTextField(
+                              initialValue: state.rangeMax != 0
+                                  ? state.rangeMax.toString()
+                                  : '',
+                              onChanged: (value) {
+                                final doubleValue = double.tryParse(value);
+                                if (doubleValue != null) {
+                                  context
+                                      .read<ModifyDeviceCubit>()
+                                      .changeRangeMax(doubleValue);
+                                }
+                              },
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                              label: l10n.modifyDeviceRangeMaxLabel,
+                              hintText: l10n.modifyDeviceRangeMaxHint,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return l10n.modifyDeviceRangeErrorEmpty;
+                                }
+                                final doubleValue = double.tryParse(value);
+                                if (doubleValue == null) {
+                                  return l10n.modifyDeviceRangeErrorInvalid;
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 16,
+                        children: [
+                          Expanded(
+                            child: AppTextField(
+                              initialValue: state.divisions != 0
+                                  ? state.divisions.toString()
+                                  : '',
+                              onChanged: (value) {
+                                final intValue = int.tryParse(value);
+                                if (intValue != null) {
+                                  context
+                                      .read<ModifyDeviceCubit>()
+                                      .changeDivisions(intValue);
+                                }
+                              },
+                              keyboardType: TextInputType.number,
+                              label: l10n.modifyDeviceDivisionsLabel,
+                              hintText: l10n.modifyDeviceDivisionsHint,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return l10n.modifyDeviceRangeErrorEmpty;
+                                }
+                                final intValue = int.tryParse(value);
+                                if (intValue == null) {
+                                  return l10n.modifyDeviceRangeErrorInvalid;
+                                }
+                                if (intValue <= 0) {
+                                  return l10n.modifyDeviceRangeErrorInvalid;
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            child: AppTextField(
+                              initialValue: state.interval != 0
+                                  ? state.interval.toString()
+                                  : '',
+                              onChanged: (value) {
+                                final doubleValue = double.tryParse(value);
+                                if (doubleValue != null) {
+                                  context
+                                      .read<ModifyDeviceCubit>()
+                                      .changeInterval(doubleValue);
+                                }
+                              },
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                              label: l10n.modifyDeviceIntervalLabel,
+                              hintText: l10n.modifyDeviceIntervalHint,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return l10n.modifyDeviceRangeErrorEmpty;
+                                }
+                                final doubleValue = double.tryParse(value);
+                                if (doubleValue == null) {
+                                  return l10n.modifyDeviceRangeErrorInvalid;
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                    const SizedBox(height: 48),
+                    DevicePreview(
+                      title: state.title,
+                      subtitle: state.subtitle,
+                      iconName: state.icon,
+                      tileType: state.tileType,
+                      rangeMin: state.rangeMin,
+                      rangeMax: state.rangeMax,
+                      divisions: state.divisions,
+                      interval: state.interval,
+                    ),
+                    if (state.selectedGroupId != null && state.title.isNotEmpty)
+                      const SizedBox(height: 48),
+                    if (state.selectedGroupId != null && state.title.isNotEmpty)
+                      MqttTopicsInfo(
+                        topicInfoType: TopicInfoType.device,
+                        groupTitle: selectedGroup.title,
+                        deviceTitle: state.title,
+                        deviceTileType: state.tileType,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          floatingActionButton: ExpressiveFab(
+            onPressed: context.read<ModifyDeviceCubit>().saveDeviceModel,
+            icon: const HugeIcon(
+              icon: HugeIcons.strokeRoundedFloppyDisk,
+              size: 28,
+              strokeWidth: 2,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showGroupPickerModal(BuildContext context, ModifyDeviceState state) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final groups = context.read<ModifyDeviceCubit>().groups;
+    final maxHeight =
+        MediaQuery.of(context).size.height *
+        AppVariables.modalBottomSheetMaxHeightPct;
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: colorScheme.surfaceContainer,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (modalContext) {
+        return ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxHeight),
+          child: SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: colorScheme.onSurfaceVariant.withValues(
+                        alpha: 0.4,
+                      ),
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 16,
-                    children: [
-                      Expanded(
-                        child: AppTextField(
-                          initialValue: state.deviceModel != null
-                              ? state.rangeMin.toString()
-                              : (state.rangeMin != 0
-                                    ? state.rangeMin.toString()
-                                    : ''),
-                          onChanged: (value) {
-                            final doubleValue = double.tryParse(value);
-                            if (doubleValue != null) {
-                              context.read<ModifyDeviceCubit>().changeRangeMin(
-                                doubleValue,
-                              );
-                            }
-                          },
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
-                          label: l10n.modifyDeviceRangeMinLabel,
-                          hintText: l10n.modifyDeviceRangeMinHint,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return l10n.modifyDeviceRangeErrorEmpty;
-                            }
-                            final doubleValue = double.tryParse(value);
-                            if (doubleValue == null) {
-                              return l10n.modifyDeviceRangeErrorInvalid;
-                            }
-                            if (doubleValue >= state.rangeMax) {
-                              return l10n.modifyDeviceRangeMinMaxError;
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: AppTextField(
-                          initialValue: state.rangeMax != 0
-                              ? state.rangeMax.toString()
-                              : '',
-                          onChanged: (value) {
-                            final doubleValue = double.tryParse(value);
-                            if (doubleValue != null) {
-                              context.read<ModifyDeviceCubit>().changeRangeMax(
-                                doubleValue,
-                              );
-                            }
-                          },
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
-                          label: l10n.modifyDeviceRangeMaxLabel,
-                          hintText: l10n.modifyDeviceRangeMaxHint,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return l10n.modifyDeviceRangeErrorEmpty;
-                            }
-                            final doubleValue = double.tryParse(value);
-                            if (doubleValue == null) {
-                              return l10n.modifyDeviceRangeErrorInvalid;
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
+                  Text(
+                    l10n.modifyDeviceSelectGroup,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 16,
-                    children: [
-                      Expanded(
-                        child: AppTextField(
-                          initialValue: state.divisions != 0
-                              ? state.divisions.toString()
-                              : '',
-                          onChanged: (value) {
-                            final intValue = int.tryParse(value);
-                            if (intValue != null) {
-                              context.read<ModifyDeviceCubit>().changeDivisions(
-                                intValue,
-                              );
-                            }
-                          },
-                          keyboardType: TextInputType.number,
-                          label: l10n.modifyDeviceDivisionsLabel,
-                          hintText: l10n.modifyDeviceDivisionsHint,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return l10n.modifyDeviceRangeErrorEmpty;
-                            }
-                            final intValue = int.tryParse(value);
-                            if (intValue == null) {
-                              return l10n.modifyDeviceRangeErrorInvalid;
-                            }
-                            if (intValue <= 0) {
-                              return l10n.modifyDeviceRangeErrorInvalid;
-                            }
-                            return null;
-                          },
-                        ),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.zero,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: groups.map((group) {
+                          final isSelected = state.selectedGroupId == group.id;
+                          return ListTile(
+                            leading: HugeIcon(
+                              icon: IconHelper.getIconByName(group.icon),
+                              color: isSelected
+                                  ? colorScheme.primary
+                                  : colorScheme.onSurfaceVariant,
+                              strokeWidth: 2,
+                            ),
+                            title: Text(
+                              group.title,
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                fontWeight: isSelected
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                                color: isSelected
+                                    ? colorScheme.primary
+                                    : colorScheme.onSurface,
+                              ),
+                            ),
+                            trailing: isSelected
+                                ? HugeIcon(
+                                    icon: HugeIcons
+                                        .strokeRoundedCheckmarkCircle02,
+                                    color: colorScheme.primary,
+                                    strokeWidth: 2,
+                                  )
+                                : null,
+                            onTap: () {
+                              context
+                                  .read<ModifyDeviceCubit>()
+                                  .changeSelectedGroup(group.id);
+                              Navigator.pop(modalContext);
+                            },
+                          );
+                        }).toList(),
                       ),
-                      Expanded(
-                        child: AppTextField(
-                          initialValue: state.interval != 0
-                              ? state.interval.toString()
-                              : '',
-                          onChanged: (value) {
-                            final doubleValue = double.tryParse(value);
-                            if (doubleValue != null) {
-                              context.read<ModifyDeviceCubit>().changeInterval(
-                                doubleValue,
-                              );
-                            }
-                          },
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
-                          label: l10n.modifyDeviceIntervalLabel,
-                          hintText: l10n.modifyDeviceIntervalHint,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return l10n.modifyDeviceRangeErrorEmpty;
-                            }
-                            final doubleValue = double.tryParse(value);
-                            if (doubleValue == null) {
-                              return l10n.modifyDeviceRangeErrorInvalid;
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
-                const SizedBox(height: 48),
-                DevicePreview(
-                  title: state.title,
-                  subtitle: state.subtitle,
-                  iconName: state.icon,
-                  tileType: state.tileType,
-                  rangeMin: state.rangeMin,
-                  rangeMax: state.rangeMax,
-                  divisions: state.divisions,
-                  interval: state.interval,
-                ),
-                if (state.selectedGroupId != null && state.title.isNotEmpty)
-                  const SizedBox(height: 48),
-                if (state.selectedGroupId != null && state.title.isNotEmpty)
-                  MqttTopicsInfo(
-                    topicInfoType: TopicInfoType.device,
-                    groupTitle: context
-                        .read<ModifyDeviceCubit>()
-                        .groups
-                        .firstWhere(
-                          (g) => g.id == state.selectedGroupId,
-                          orElse: () =>
-                              GroupModel(title: '', subtitle: '', icon: ''),
-                        )
-                        .title,
-                    deviceTitle: state.title,
-                    deviceTileType: state.tileType,
-                  ),
-              ],
+              ),
             ),
           ),
-        ),
-        floatingActionButton: ExpressiveFab(
-          onPressed: context.read<ModifyDeviceCubit>().saveDeviceModel,
-          icon: const HugeIcon(
-            icon: HugeIcons.strokeRoundedFloppyDisk,
-            size: 28,
-            strokeWidth: 2,
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 

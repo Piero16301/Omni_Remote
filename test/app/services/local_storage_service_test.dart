@@ -3,8 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 
-class MockLocalStorageRepository extends Mock
-    implements LocalStorageRepository {}
+class MockLocalStorageRepository extends Mock implements LocalStorageRepository;
 
 void main() {
   late LocalStorageRepository repository;
@@ -109,9 +108,8 @@ void main() {
     test('saveBrokerUsername calls repository.saveBrokerUsername', () {
       const username = 'user';
       service.saveBrokerUsername(brokerUsername: username);
-      verify(
-        () => repository.saveBrokerUsername(brokerUsername: username),
-      ).called(1);
+      verify(() => repository.saveBrokerUsername(brokerUsername: username))
+          .called(1);
     });
 
     test('getBrokerUsername calls repository.getBrokerUsername', () {
@@ -125,9 +123,8 @@ void main() {
     test('saveBrokerPassword calls repository.saveBrokerPassword', () {
       const password = 'pass';
       service.saveBrokerPassword(brokerPassword: password);
-      verify(
-        () => repository.saveBrokerPassword(brokerPassword: password),
-      ).called(1);
+      verify(() => repository.saveBrokerPassword(brokerPassword: password))
+          .called(1);
     });
 
     test('getBrokerPassword calls repository.getBrokerPassword', () {

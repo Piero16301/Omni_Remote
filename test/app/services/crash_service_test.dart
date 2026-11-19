@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 
-class MockCrashRepository extends Mock implements CrashRepository {}
+class MockCrashRepository extends Mock implements CrashRepository;
 
 void main() {
   late CrashRepository repository;

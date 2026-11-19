@@ -9,11 +9,11 @@ import 'package:omni_remote/l10n/l10n.dart';
 import 'package:omni_remote/modify_device/modify_device.dart';
 import 'package:omni_remote/modify_device/widgets/widgets.dart';
 
-class MockLocalStorageService extends Mock implements LocalStorageService {}
+class MockLocalStorageService extends Mock implements LocalStorageService;
 
-class MockAppCubit extends MockCubit<AppState> implements AppCubit {}
+class MockAppCubit extends MockCubit<AppState> implements AppCubit;
 
-class FakeDeviceModel extends Fake implements DeviceModel {}
+class FakeDeviceModel extends Fake implements DeviceModel;
 
 void main() {
   setUpAll(() {
@@ -31,9 +31,8 @@ void main() {
 
       await getIt.reset();
       setupServiceLocator(Environment.mock);
-      getIt
-        ..unregister<LocalStorageService>()
-        ..registerSingleton<LocalStorageService>(mockLocalStorageService);
+      await getIt.unregister<LocalStorageService>();
+      getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
 
       when(() => mockLocalStorageService.getGroups()).thenReturn([
         GroupModel(id: '1', title: 'Test', subtitle: '', icon: ''),
@@ -43,9 +42,8 @@ void main() {
           GroupModel(id: '1', title: 'Test', subtitle: '', icon: ''),
         ]),
       );
-      when(
-        () => mockLocalStorageService.getDevicesListenable(),
-      ).thenReturn(ValueNotifier<List<DeviceModel>>([]));
+      when(() => mockLocalStorageService.getDevicesListenable())
+          .thenReturn(ValueNotifier<List<DeviceModel>>([]));
     });
 
     testWidgets('renders ModifyDeviceView', (tester) async {
@@ -152,7 +150,7 @@ void main() {
         );
 
         await tester.scrollUntilVisible(
-          find.byType(TileTypeSelector),
+          find.byType(ExpressiveButtonGroup<DeviceTileType>),
           200,
           scrollable: find.byType(Scrollable).first,
         );

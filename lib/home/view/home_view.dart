@@ -8,7 +8,7 @@ import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 
 class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -95,9 +95,8 @@ class HomeView extends StatelessWidget {
                   children: [
                     Text(
                       AppVariables.appName,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: Theme.of(context).textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: 2),
                     Row(
@@ -139,73 +138,76 @@ class HomeView extends StatelessWidget {
                   ),
                 ],
               ),
-              body: ListView(
-                padding: const EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 8,
-                  bottom: 120,
-                ),
-                children: [
-                  Visibility(
-                    visible: groups.isEmpty,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 16,
-                      ),
-                      child: Center(
-                        child: Text(
-                          l10n.homeEmptyGroupsMessage,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      ),
-                    ),
+              body: AppMaxWidthContainer(
+                child: ListView(
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 8,
+                    bottom: 120,
                   ),
-                  ...groups.map(
-                    (group) => GroupCard(
-                      group: group,
-                      onEdit: () => context.pushNamed(
-                        AppRoute.modifyGroup.name,
-                        extra: group,
-                      ),
-                      onDelete: () =>
-                          context.read<HomeCubit>().deleteGroup(group),
-                    ),
-                  ),
-                  Card(
-                    elevation: 0,
-                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    clipBehavior: Clip.antiAlias,
-                    child: InkWell(
-                      onTap: () => context.pushNamed(AppRoute.modifyGroup.name),
-                      borderRadius: BorderRadius.circular(24),
+                  children: [
+                    Visibility(
+                      visible: groups.isEmpty,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 18),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const HugeIcon(
-                              icon: HugeIcons.strokeRoundedDashboardSquareAdd,
-                              strokeWidth: 2,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              l10n.homeNewGroupButton,
-                              style: Theme.of(context).textTheme.titleSmall
-                                  ?.copyWith(fontWeight: FontWeight.w600),
-                            ),
-                          ],
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 16,
+                        ),
+                        child: Center(
+                          child: Text(
+                            l10n.homeEmptyGroupsMessage,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    ...groups.map(
+                      (group) => GroupCard(
+                        group: group,
+                        onEdit: () => context.pushNamed(
+                          AppRoute.modifyGroup.name,
+                          extra: group,
+                        ),
+                        onDelete: () =>
+                            context.read<HomeCubit>().deleteGroup(group),
+                      ),
+                    ),
+                    Card(
+                      elevation: 0,
+                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      clipBehavior: Clip.antiAlias,
+                      child: InkWell(
+                        onTap: () =>
+                            context.pushNamed(AppRoute.modifyGroup.name),
+                        borderRadius: BorderRadius.circular(24),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 18),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const HugeIcon(
+                                icon: HugeIcons.strokeRoundedDashboardSquareAdd,
+                                strokeWidth: 2,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                l10n.homeNewGroupButton,
+                                style: Theme.of(context).textTheme.titleSmall
+                                    ?.copyWith(fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               floatingActionButton: groups.isNotEmpty
                   ? ExpressiveFab(

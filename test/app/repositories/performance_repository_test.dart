@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 
-class MockFirebasePerformance extends Mock implements FirebasePerformance {}
+class MockFirebasePerformance extends Mock implements FirebasePerformance;
 
-class MockTrace extends Mock implements Trace {}
+class MockTrace extends Mock implements Trace;
 
 void main() {
   late FirebasePerformance performance;
@@ -38,6 +38,15 @@ void main() {
       repository.stopTrace(trace);
 
       verify(() => trace.stop()).called(1);
+    });
+  });
+
+  group('NoopPerformanceRepository', () {
+    test('startTrace returns null and stopTrace is a no-op', () {
+      final noop = NoopPerformanceRepository();
+      final result = noop.startTrace('trace_name');
+      expect(result, isNull);
+      expect(() => noop.stopTrace(result), returnsNormally);
     });
   });
 

@@ -285,6 +285,6 @@ void main() {
   });
 }
 
-class MockBinaryReader extends Mock implements BinaryReader {}
+class MockBinaryReader extends Mock implements BinaryReader;
 
-class MockBinaryWriter extends Mock implements BinaryWriter {}
+class MockBinaryWriter extends Mock implements BinaryWriter;

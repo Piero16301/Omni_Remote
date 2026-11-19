@@ -4,7 +4,7 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 
 class DevicePreview extends StatelessWidget {
-  const DevicePreview({
+  const new({
     required this.title,
     required this.subtitle,
     required this.iconName,
@@ -60,7 +60,7 @@ class DevicePreview extends StatelessWidget {
 }
 
 class DevicePreviewTile extends StatefulWidget {
-  const DevicePreviewTile({
+  const new({
     required this.title,
     required this.subtitle,
     required this.iconName,
@@ -172,9 +172,10 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
                             : widget.title,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontVariations: <FontVariation>[
-                            ...(Theme.of(
-                                      context,
-                                    ).textTheme.bodyLarge?.fontVariations ??
+                            ...(Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.fontVariations ??
                                     const <FontVariation>[])
                                 .where((v) => v.axis != 'wght'),
                             const FontVariation('wght', 700),

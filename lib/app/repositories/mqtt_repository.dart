@@ -1,9 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:omni_remote/app/app.dart';
+import 'package:omni_remote/app/helpers/mqtt_client_factory.dart';
 import 'package:uuid/uuid.dart';
 
 enum BrokerConnectionStatus {
@@ -19,7 +18,7 @@ enum BrokerConnectionStatus {
 }
 
 abstract class MqttRepository {
-  MqttServerClient? get mqttClient;
+  MqttClient? get mqttClient;
   Stream<List<MqttReceivedMessage<MqttMessage>>> get messageStream;
   Stream<BrokerConnectionStatus> get connectionStatusStream;
 
@@ -37,7 +36,7 @@ class MockMqttRepository implements MqttRepository {
       StreamController<BrokerConnectionStatus>.broadcast();
 
   @override
-  MqttServerClient? get mqttClient => null;
+  MqttClient? get mqttClient => null;
 
   @override
   Stream<List<MqttReceivedMessage<MqttMessage>>> get messageStream =>
@@ -78,22 +77,21 @@ class MockMqttRepository implements MqttRepository {
 }
 
 class ServerMqttRepository implements MqttRepository {
-  ServerMqttRepository({
+  new({
     LocalStorageService? localStorage,
     CrashService? crashService,
     this._mqttClient,
-    MqttServerClient Function(String host, String clientId, int port)?
-    clientFactory,
+    MqttClient Function(String host, String clientId, int port)? clientFactory,
   }) : _localStorage = localStorage ?? getIt<LocalStorageService>(),
        _crashService = crashService ?? getIt<CrashService>(),
-       _clientFactory = clientFactory ?? MqttServerClient.withPort;
+       _clientFactory = clientFactory ?? createMqttClient;
 
   final LocalStorageService _localStorage;
   final CrashService _crashService;
-  final MqttServerClient Function(String host, String clientId, int port)
+  final MqttClient Function(String host, String clientId, int port)
   _clientFactory;
 
-  MqttServerClient? _mqttClient;
+  MqttClient? _mqttClient;
   StreamSubscription<List<MqttReceivedMessage<MqttMessage>>>? _mqttSubscription;
 
   final _messageController =
@@ -101,8 +99,14 @@ class ServerMqttRepository implements MqttRepository {
   final _connectionStatusController =
       StreamController<BrokerConnectionStatus>.broadcast();
 
+  void _logAnalytics(String name, {Map<String, Object>? parameters}) {
+    if (getIt.isRegistered<AnalyticsService>()) {
+      getIt<AnalyticsService>().logEvent(name: name, parameters: parameters);
+    }
+  }
+
   @override
-  MqttServerClient? get mqttClient => _mqttClient;
+  MqttClient? get mqttClient => _mqttClient;
 
   @override
   Stream<List<MqttReceivedMessage<MqttMessage>>> get messageStream =>
@@ -135,15 +139,7 @@ class ServerMqttRepository implements MqttRepository {
         final port = int.parse(brokerPort);
 
         _mqttClient = _clientFactory(brokerUrl, uuid.v4(), port);
-
-        // Configurar TLS/SSL para puerto 8883 (MQTT seguro)
-        if (port == 8883) {
-          _mqttClient!.secure = true;
-          _mqttClient!.securityContext = SecurityContext.defaultContext;
-          // Para HiveMQ Cloud y otros servicios, validar certificados
-          // correctamente
-          _mqttClient!.onBadCertificate = (dynamic cert) => true;
-        }
+        configureMqttClientTls(_mqttClient!, port);
       }
 
       _mqttClient!
@@ -166,6 +162,13 @@ class ServerMqttRepository implements MqttRepository {
       _mqttClient!.connectionMessage = connMessage;
 
       await connectMqtt();
+    } on Exception catch (e, stackTrace) {
+      _crashService.recordError(
+        e,
+        stackTrace,
+        reason: 'MQTT Initialization failed',
+      );
+      rethrow;
     } finally {
       performance.stopTrace(trace);
     }
@@ -190,8 +193,15 @@ class ServerMqttRepository implements MqttRepository {
           MqttConnectionState.connected) {
         // Setup the global MQTT listener
         _setupMqttListener();
+        _logAnalytics('mqtt_connected');
         _connectionStatusController.add(BrokerConnectionStatus.connected);
       } else {
+        _logAnalytics(
+          'mqtt_connection_failed',
+          parameters: {
+            'state': _mqttClient!.connectionStatus?.state.name ?? 'unknown',
+          },
+        );
         _connectionStatusController.add(BrokerConnectionStatus.disconnected);
         _mqttClient?.disconnect();
       }
@@ -200,6 +210,10 @@ class ServerMqttRepository implements MqttRepository {
         e,
         stackTrace,
         reason: 'MQTT Connection failed',
+      );
+      _logAnalytics(
+        'mqtt_connection_failed',
+        parameters: {'state': 'exception'},
       );
       _connectionStatusController.add(BrokerConnectionStatus.disconnected);
       _mqttClient?.disconnect();
@@ -218,15 +232,21 @@ class ServerMqttRepository implements MqttRepository {
 
   @override
   Future<void> reconnectWithNewSettings() async {
-    // Desconectar el cliente actual si existe
-    if (_mqttClient != null) {
-      unawaited(_mqttSubscription?.cancel());
-      _mqttClient?.disconnect();
-      _mqttClient = null;
-    }
+    final performance = getIt<PerformanceService>();
+    final trace = performance.startTrace('mqtt_reconnect_with_new_settings');
+    try {
+      // Desconectar el cliente actual si existe
+      if (_mqttClient != null) {
+        unawaited(_mqttSubscription?.cancel());
+        _mqttClient?.disconnect();
+        _mqttClient = null;
+      }
 
-    // Reinicializar con los nuevos datos
-    await initializeMqttClient();
+      // Reinicializar con los nuevos datos
+      await initializeMqttClient();
+    } finally {
+      performance.stopTrace(trace);
+    }
   }
 
   void _setupMqttListener() {
@@ -252,6 +272,7 @@ class ServerMqttRepository implements MqttRepository {
 
   void _onMqttAutoReconnected() {
     _setupMqttListener();
+    _logAnalytics('mqtt_auto_reconnected');
     _connectionStatusController.add(BrokerConnectionStatus.connected);
   }
 

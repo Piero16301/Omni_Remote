@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:hive/hive.dart';
+import 'package:omni_remote/app/app.dart';
 
 /// {@template encryption_helper}
 /// Helper class to manage encryption for broker credentials
@@ -10,13 +11,13 @@ import 'package:hive/hive.dart';
 /// {@endtemplate}
 class EncryptionHelper {
   /// Get the singleton instance of EncryptionHelper
-  factory EncryptionHelper() {
+  factory() {
     _instance ??= EncryptionHelper._();
     return _instance!;
   }
 
   /// {@macro encryption_helper}
-  EncryptionHelper._();
+  new _();
 
   static EncryptionHelper? _instance;
   static const String _keyStorageKey = '__encryption_key__';
@@ -26,18 +27,38 @@ class EncryptionHelper {
   Future<void> init() async {
     if (_cipher != null) return;
 
-    final keyBox = await Hive.openBox<String>('__encryption_keys__');
-    var keyString = keyBox.get(_keyStorageKey);
+    final performance = getIt.isRegistered<PerformanceService>()
+        ? getIt<PerformanceService>()
+        : null;
+    final trace = performance?.startTrace('encryption_initialization');
 
-    if (keyString == null) {
-      // Generate a new 256-bit encryption key
-      final key = _generateSecureKey();
-      keyString = base64Url.encode(key);
-      await keyBox.put(_keyStorageKey, keyString);
+    try {
+      final keyBox = await Hive.openBox<String>('__encryption_keys__');
+      var keyString = keyBox.get(_keyStorageKey);
+
+      if (keyString == null) {
+        // Generate a new 256-bit encryption key
+        final key = _generateSecureKey();
+        keyString = base64Url.encode(key);
+        await keyBox.put(_keyStorageKey, keyString);
+      }
+
+      final key = base64Url.decode(keyString);
+      _cipher = HiveAesCipher(key);
+    } catch (e, stackTrace) {
+      if (getIt.isRegistered<CrashService>()) {
+        getIt<CrashService>().recordError(
+          e,
+          stackTrace,
+          reason: 'EncryptionHelper.init failed',
+        );
+      }
+      rethrow;
+    } finally {
+      if (trace != null) {
+        performance?.stopTrace(trace);
+      }
     }
-
-    final key = base64Url.decode(keyString);
-    _cipher = HiveAesCipher(key);
   }
 
   /// Generate a secure 256-bit key

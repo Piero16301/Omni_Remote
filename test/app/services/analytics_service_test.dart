@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 
-class MockAnalyticsRepository extends Mock implements AnalyticsRepository {}
+class MockAnalyticsRepository extends Mock implements AnalyticsRepository;
 
 void main() {
   late AnalyticsRepository repository;
@@ -20,9 +20,8 @@ void main() {
 
       service.logEvent(name: name, parameters: parameters);
 
-      verify(
-        () => repository.logEvent(name: name, parameters: parameters),
-      ).called(1);
+      verify(() => repository.logEvent(name: name, parameters: parameters))
+          .called(1);
     });
 
     test('setCurrentScreen calls repository.setCurrentScreen', () {
@@ -30,9 +29,8 @@ void main() {
 
       service.setCurrentScreen(screenName: screenName);
 
-      verify(
-        () => repository.setCurrentScreen(screenName: screenName),
-      ).called(1);
+      verify(() => repository.setCurrentScreen(screenName: screenName))
+          .called(1);
     });
   });
 }

@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 
-class MockFirebaseCrashlytics extends Mock implements FirebaseCrashlytics {}
+class MockFirebaseCrashlytics extends Mock implements FirebaseCrashlytics;
 
 void main() {
   late FirebaseCrashlytics crashlytics;
@@ -94,9 +94,8 @@ void main() {
       const key = 'test_key';
       const value = 'test_value';
 
-      when(
-        () => crashlytics.setCustomKey(any<String>(), any<Object>()),
-      ).thenAnswer((_) async {});
+      when(() => crashlytics.setCustomKey(any<String>(), any<Object>()))
+          .thenAnswer((_) async {});
 
       repository.setCustomKey(key, value);
 
