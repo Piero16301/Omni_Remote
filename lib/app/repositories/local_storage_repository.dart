@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter/foundation.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/app/app.dart';
