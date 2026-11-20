@@ -6,7 +6,7 @@ import 'package:omni_remote/app/app.dart';
 part 'modify_device_state.dart';
 
 class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
-  ModifyDeviceCubit() : super(const ModifyDeviceState());
+  new() : super(const ModifyDeviceState());
 
   final LocalStorageService localStorage = getIt<LocalStorageService>();
   final CrashService _crashService = getIt<CrashService>();
@@ -72,7 +72,7 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
   List<GroupModel> get groups => localStorage.getGroups();
 
   void saveDeviceModel() {
-    if (!state.formKey.currentState!.validate()) {
+    if (!AppFunctions.validateForm(state.formKey)) {
       return;
     }
     emit(state.copyWith(saveStatus: ModifyDeviceStatus.loading));
@@ -141,6 +141,10 @@ class ModifyDeviceCubit extends Cubit<ModifyDeviceState> {
           );
           modifyDeviceError = ModifyDeviceError.unknown;
       }
+      _analyticsService.logEvent(
+        name: 'save_device_failed',
+        parameters: {'reason': modifyDeviceError.name},
+      );
       emit(
         state.copyWith(
           saveStatus: ModifyDeviceStatus.failure,

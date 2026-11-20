@@ -6,7 +6,7 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 
 class AppView extends StatefulWidget {
-  const AppView({super.key});
+  const new({super.key});
 
   @override
   State<AppView> createState() => _AppViewState();

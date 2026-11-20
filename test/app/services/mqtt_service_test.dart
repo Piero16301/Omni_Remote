@@ -4,9 +4,9 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:omni_remote/app/app.dart';
 
-class MockMqttRepository extends Mock implements MqttRepository {}
+class MockMqttRepository extends Mock implements MqttRepository;
 
-class MockMqttServerClient extends Mock implements MqttServerClient {}
+class MockMqttServerClient extends Mock implements MqttServerClient;
 
 void main() {
   late MqttRepository repository;
@@ -68,9 +68,8 @@ void main() {
     test(
       'reconnectWithNewSettings calls repository.reconnectWithNewSettings',
       () async {
-        when(
-          () => repository.reconnectWithNewSettings(),
-        ).thenAnswer((_) async {});
+        when(() => repository.reconnectWithNewSettings())
+            .thenAnswer((_) async {});
         await service.reconnectWithNewSettings();
         verify(() => repository.reconnectWithNewSettings()).called(1);
       },

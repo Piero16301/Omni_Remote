@@ -3,92 +3,105 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:expressive_kit/expressive_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/app/app.dart';
 
 part 'app_state.dart';
 
 class AppCubit extends Cubit<AppState> {
-  AppCubit() : super(const AppState());
+  new() : super(const AppState());
 
-  final LocalStorageService localStorage = getIt<LocalStorageService>();
-  final MqttService mqttService = getIt<MqttService>();
-  final CrashService crashService = getIt<CrashService>();
+  final LocalStorageService _localStorage = getIt<LocalStorageService>();
+  final MqttService _mqttService = getIt<MqttService>();
+  final CrashService _crashService = getIt<CrashService>();
   final AnalyticsService _analyticsService = getIt<AnalyticsService>();
+  final PerformanceService _performanceService = getIt<PerformanceService>();
 
   StreamSubscription<BrokerConnectionStatus>? _connectionStatusSubscription;
 
-  void initialize() {
-    // Setting the language to the device language if it's not set
-    final language = localStorage.getLanguage();
-    if (language == null) {
-      const defaultLanguage = ExpressiveLanguages.defaultLocale;
-      localStorage.saveLanguage(language: defaultLanguage);
-    }
+  void initialLoad() {
+    final trace = _performanceService.startTrace('app_cubit_initialize');
+    try {
+      // Setting the language to the device language if it's not set
+      final language = _localStorage.getLanguage();
+      if (language == null) {
+        final deviceLocale = PlatformDispatcher.instance.locale.languageCode;
+        final deviceLanguage = ExpressiveLanguages.fromLanguageCode(
+          deviceLocale,
+        );
+        _localStorage.saveLanguage(language: deviceLanguage);
+      }
 
-    // Setting the theme to the device theme if it's not set
-    final theme = localStorage.getTheme();
-    if (theme == null) {
-      localStorage.saveTheme(theme: ExpressiveTheme.defaultTheme);
-    }
+      // Setting the theme to the device theme if it's not set
+      final theme = _localStorage.getTheme();
+      if (theme == null) {
+        _localStorage.saveTheme(theme: ExpressiveTheme.defaultTheme);
+      }
 
-    // Setting the base color to default if it's not set
-    final baseColor = localStorage.getBaseColor();
-    if (baseColor == null) {
-      localStorage.saveBaseColor(baseColor: ExpressiveColors.defaultColor);
-    }
+      // Setting the base color to default color if it's not set
+      final baseColor = _localStorage.getBaseColor();
+      if (baseColor == null) {
+        _localStorage.saveBaseColor(baseColor: ExpressiveColors.defaultColor);
+      }
 
-    // Setting the font family to default if it's not set
-    var fontFamily = localStorage.getFontFamily();
-    final isFontSupported =
-        fontFamily != null &&
-        ExpressiveFonts.availableFonts.containsValue(fontFamily);
+      // Setting the font family to default font if it's not set
+      var fontFamily = _localStorage.getFontFamily();
+      final isFontSupported =
+          fontFamily != null &&
+          ExpressiveFonts.availableFonts.containsValue(fontFamily);
 
-    if (!isFontSupported) {
-      const defaultFont = ExpressiveFonts.defaultFont;
-      localStorage.saveFontFamily(fontFamily: defaultFont);
-      fontFamily = defaultFont;
-    }
+      if (!isFontSupported) {
+        const defaultFont = ExpressiveFonts.defaultFont;
+        _localStorage.saveFontFamily(fontFamily: defaultFont);
+        fontFamily = defaultFont;
+      }
 
-    // Add custom keys for CrashService
-    crashService
-      ..setCustomKey(
-        'language',
-        localStorage.getLanguage()?.languageCode ??
-            ExpressiveLanguages.defaultLocale.languageCode,
-      )
-      ..setCustomKey(
-        'theme',
-        localStorage.getTheme()?.name ?? ExpressiveTheme.defaultTheme.name,
-      )
-      ..setCustomKey(
-        'fontFamily',
-        localStorage.getFontFamily() ?? ExpressiveFonts.defaultFont,
+      // Setting custom keys and emitting consolidated state
+      final resolvedLanguage = _localStorage.getLanguage();
+      final resolvedTheme = _localStorage.getTheme();
+      final resolvedBaseColor = _localStorage.getBaseColor();
+
+      if (resolvedLanguage != null) {
+        _crashService.setCustomKey('language', resolvedLanguage.languageCode);
+      }
+      if (resolvedTheme != null) {
+        _crashService.setCustomKey('theme', resolvedTheme.name);
+      }
+      if (resolvedBaseColor != null) {
+        _crashService.setCustomKey(
+          'baseColor',
+          ExpressiveColors.toKey(resolvedBaseColor),
+        );
+      }
+      _crashService.setCustomKey('fontFamily', fontFamily);
+
+      emit(
+        state.copyWith(
+          language: resolvedLanguage,
+          theme: resolvedTheme,
+          baseColor: resolvedBaseColor,
+          fontFamily: fontFamily,
+        ),
       );
-
-    // Emit state with all loaded configurations at once
-    emit(
-      state.copyWith(
-        language: localStorage.getLanguage(),
-        theme: localStorage.getTheme(),
-        baseColor: localStorage.getBaseColor(),
-        fontFamily: localStorage.getFontFamily(),
-      ),
-    );
+    } finally {
+      _performanceService.stopTrace(trace);
+    }
   }
 
   Future<void> initializeMqttClient() async {
-    _connectionStatusSubscription = mqttService.connectionStatusStream.listen((
+    _connectionStatusSubscription = _mqttService.connectionStatusStream.listen((
       status,
     ) {
+      _crashService.setCustomKey('mqtt_status', status.name);
       emit(state.copyWith(brokerConnectionStatus: status));
     });
-    await mqttService.initializeMqttClient();
+    await _mqttService.initializeMqttClient();
   }
 
   void changeLanguage({required Locale language}) {
-    localStorage.saveLanguage(language: language);
-    crashService.setCustomKey('language', language.languageCode);
+    _localStorage.saveLanguage(language: language);
+    _crashService.setCustomKey('language', language.languageCode);
     _analyticsService.logEvent(
       name: 'change_language',
       parameters: {'language': language.languageCode},
@@ -97,8 +110,8 @@ class AppCubit extends Cubit<AppState> {
   }
 
   void changeTheme({required ThemeMode theme}) {
-    localStorage.saveTheme(theme: theme);
-    crashService.setCustomKey('theme', theme.name);
+    _localStorage.saveTheme(theme: theme);
+    _crashService.setCustomKey('theme', theme.name);
     _analyticsService.logEvent(
       name: 'change_theme',
       parameters: {'theme': theme.name},
@@ -107,7 +120,8 @@ class AppCubit extends Cubit<AppState> {
   }
 
   void changeBaseColor({required Color baseColor}) {
-    localStorage.saveBaseColor(baseColor: baseColor);
+    _localStorage.saveBaseColor(baseColor: baseColor);
+    _crashService.setCustomKey('baseColor', ExpressiveColors.toKey(baseColor));
     _analyticsService.logEvent(
       name: 'change_base_color',
       parameters: {'color_value': ExpressiveColors.toKey(baseColor)},
@@ -116,8 +130,8 @@ class AppCubit extends Cubit<AppState> {
   }
 
   void changeFontFamily({required String fontFamily}) {
-    localStorage.saveFontFamily(fontFamily: fontFamily);
-    crashService.setCustomKey('fontFamily', fontFamily);
+    _localStorage.saveFontFamily(fontFamily: fontFamily);
+    _crashService.setCustomKey('fontFamily', fontFamily);
     _analyticsService.logEvent(
       name: 'change_font_family',
       parameters: {'font_family': fontFamily},
@@ -127,17 +141,17 @@ class AppCubit extends Cubit<AppState> {
 
   Future<void> connectMqtt() async {
     _analyticsService.logEvent(name: 'connect_mqtt');
-    await mqttService.connectMqtt();
+    await _mqttService.connectMqtt();
   }
 
   void disconnectMqtt() {
     _analyticsService.logEvent(name: 'disconnect_mqtt');
-    mqttService.disconnectMqtt();
+    _mqttService.disconnectMqtt();
   }
 
   Future<void> reconnectWithNewSettings() async {
     _analyticsService.logEvent(name: 'reconnect_mqtt_new_settings');
-    await mqttService.reconnectWithNewSettings();
+    await _mqttService.reconnectWithNewSettings();
   }
 
   @override

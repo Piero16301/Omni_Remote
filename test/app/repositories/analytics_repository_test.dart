@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 
-class MockFirebaseAnalytics extends Mock implements FirebaseAnalytics {}
+class MockFirebaseAnalytics extends Mock implements FirebaseAnalytics;
 
 void main() {
   late FirebaseAnalytics analytics;
@@ -28,9 +28,8 @@ void main() {
 
       repository.logEvent(name: name, parameters: parameters);
 
-      verify(
-        () => analytics.logEvent(name: name, parameters: parameters),
-      ).called(1);
+      verify(() => analytics.logEvent(name: name, parameters: parameters))
+          .called(1);
     });
 
     test(

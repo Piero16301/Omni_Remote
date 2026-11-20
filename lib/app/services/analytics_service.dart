@@ -1,7 +1,7 @@
 import 'package:omni_remote/app/app.dart';
 
 class AnalyticsService {
-  AnalyticsService({required this._analyticsRepository});
+  new({required this._analyticsRepository});
 
   final AnalyticsRepository _analyticsRepository;
 

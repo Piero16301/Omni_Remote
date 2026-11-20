@@ -12,6 +12,21 @@ on:
   push:
     branches:
       - dev
+    paths:
+      - 'lib/**'
+      - 'test/**'
+      - 'assets/**'
+      - 'android/**'
+      - 'ios/**'
+      - 'macos/**'
+      - 'web/**'
+      - 'windows/**'
+      - 'whatsnew/**'
+      - 'pubspec.yaml'
+      - 'l10n.yaml'
+      - 'analysis_options.yaml'
+      - 'firebase.json'
+      - '.github/workflows/beta.yaml'
 
 jobs:
   semantic-pull-request:
@@ -73,7 +88,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  build:
+  build-android:
     name: "🔨 Build Application"
     needs: quality
     runs-on: ubuntu-26.04
@@ -121,10 +136,10 @@ jobs:
           name: aab-stores
           path: ${{ env.AAB_PATH }}
 
-  deploy:
+  deploy-android:
     name: "🚀 Deploy to Play Store"
     runs-on: ubuntu-26.04
-    needs: build
+    needs: build-android
     env:
       APP_PACKAGE_NAME: com.pmorales.omni.remote
       SERVICE_ACCOUNT_PATH: service-account.json
@@ -157,3 +172,62 @@ jobs:
         uses: geekyeggo/delete-artifact@v6
         with:
           name: aab-stores
+
+  build-web:
+    name: "🔨 Build Web Application"
+    needs: quality
+    runs-on: ubuntu-26.04
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v7
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+      - name: 📦 Install Dependencies
+        run: flutter pub get
+      - name: 🔢 Compute build name
+        id: build_name
+        run: |
+          RUN=${{ github.run_number }}
+          PADDED=$(printf "%03d" $RUN)
+          MAJOR=${PADDED:0:${#PADDED}-2}
+          MINOR=${PADDED: -2:1}
+          PATCH=${PADDED: -1:1}
+          echo "value=${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
+
+      - name: 🛠️ Build the Application
+        run: |
+          BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          flutter build web --wasm -t lib/main.dart \
+            --build-name="${{ steps.build_name.outputs.value }}" \
+            --build-number="${{ github.run_number }}" \
+            --dart-define=BUILD_DATE=$BUILD_DATE
+      - name: ⬇️ Archive Production Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: build
+          path: build/web
+      
+  deploy-web:
+    name: "🚀 Deploy to Firebase Hosting"
+    needs: build-web
+    runs-on: ubuntu-26.04
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v7
+      - name: ⬇️ Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: build
+          path: build/web
+      - name: 🚀 Deploy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          firebaseServiceAccount: "${{ secrets.WEB_FIREBASE_SA_KEY }}"
+          projectId: "omni-remote-a8a9f"
+          channelId: live

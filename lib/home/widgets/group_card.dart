@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -10,7 +11,7 @@ import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 
 class GroupCard extends StatefulWidget {
-  const GroupCard({
+  const new({
     required this.group,
     required this.onEdit,
     required this.onDelete,
@@ -75,15 +76,25 @@ class _GroupCardState extends State<GroupCard> {
     _subscription = mqttService.messageStream.listen((messages) {
       for (final message in messages) {
         if (message.topic == online) {
-          final payload = message.payload as MqttPublishMessage;
-          final messageText = MqttPublishPayload.bytesToStringAsString(
-            payload.payload.message,
-          );
+          try {
+            final payload = message.payload as MqttPublishMessage;
+            final messageText = MqttPublishPayload.bytesToStringAsString(
+              payload.payload.message,
+            );
 
-          if (mounted) {
-            setState(() {
-              _isOnline = messageText == '1';
-            });
+            if (mounted) {
+              setState(() {
+                _isOnline = messageText == '1';
+              });
+            }
+          } on Object catch (e, stackTrace) {
+            if (getIt.isRegistered<CrashService>()) {
+              getIt<CrashService>().recordError(
+                e,
+                stackTrace,
+                reason: 'Failed to parse MQTT group online payload',
+              );
+            }
           }
         }
       }
@@ -115,6 +126,13 @@ class _GroupCardState extends State<GroupCard> {
     unawaited(_subscription?.cancel());
     _isSubscribed = false;
 
+    if (getIt.isRegistered<AnalyticsService>()) {
+      getIt<AnalyticsService>().logEvent(
+        name: 'verify_group_status',
+        parameters: {'group_id': widget.group.id},
+      );
+    }
+
     _trySubscribeMqttTopics();
   }
 
@@ -138,9 +156,8 @@ class _GroupCardState extends State<GroupCard> {
                   topLeft: Radius.circular(16),
                   topRight: Radius.circular(16),
                 ),
-                color: Theme.of(
-                  context,
-                ).colorScheme.primary.withValues(alpha: 0.1),
+                color: Theme.of(context).colorScheme.primary
+                    .withValues(alpha: 0.1),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -215,9 +232,9 @@ class _GroupCardState extends State<GroupCard> {
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
                                   fontStyle: FontStyle.italic,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
                                 ),
                           ),
                         ]
@@ -259,9 +276,10 @@ class _GroupCardState extends State<GroupCard> {
                       group.title,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontVariations: <FontVariation>[
-                          ...(Theme.of(
-                                    context,
-                                  ).textTheme.titleLarge?.fontVariations ??
+                          ...(Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.fontVariations ??
                                   const <FontVariation>[])
                               .where((v) => v.axis != 'wght'),
                           const FontVariation('wght', 700),
@@ -312,9 +330,8 @@ class _GroupCardState extends State<GroupCard> {
                 ),
                 title: Text(
                   l10n.homeDeleteOption,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+                  style: Theme.of(context).textTheme.bodyLarge
+                      ?.copyWith(color: Theme.of(context).colorScheme.error),
                 ),
                 onTap: () {
                   Navigator.pop(context);
@@ -355,18 +372,22 @@ class _GroupCardState extends State<GroupCard> {
               spacing: 10,
               children: [
                 Expanded(
-                  child: AppOutlinedButton(
+                  child: ExpressiveButton.outlined(
                     onPressed: () => Navigator.pop(context),
                     label: l10n.homeDeleteDialogCancel,
+                    isExpanded: true,
+                    size: ExpressiveButtonSize.large,
                   ),
                 ),
                 Expanded(
-                  child: AppFilledButton(
+                  child: ExpressiveButton.filled(
                     onPressed: () {
                       Navigator.pop(context);
                       widget.onDelete();
                     },
                     label: l10n.homeDeleteDialogConfirm,
+                    isExpanded: true,
+                    size: ExpressiveButtonSize.large,
                   ),
                 ),
               ],

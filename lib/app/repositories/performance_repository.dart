@@ -3,24 +3,32 @@ import 'dart:async';
 import 'package:firebase_performance/firebase_performance.dart';
 
 abstract class PerformanceRepository {
-  Trace startTrace(String name);
-  void stopTrace(Trace trace);
+  Trace? startTrace(String name);
+  void stopTrace(Trace? trace);
 }
 
 class MockPerformanceRepository implements PerformanceRepository {
   @override
-  Trace startTrace(String name) {
+  Trace? startTrace(String name) {
     throw UnimplementedError();
   }
 
   @override
-  void stopTrace(Trace trace) {
+  void stopTrace(Trace? trace) {
     throw UnimplementedError();
   }
 }
 
+class NoopPerformanceRepository implements PerformanceRepository {
+  @override
+  Trace? startTrace(String name) => null;
+
+  @override
+  void stopTrace(Trace? trace) {}
+}
+
 class FirebasePerformanceRepository implements PerformanceRepository {
-  FirebasePerformanceRepository({FirebasePerformance? performance})
+  new({FirebasePerformance? performance})
     : _performance = performance ?? FirebasePerformance.instance;
 
   final FirebasePerformance _performance;
@@ -28,12 +36,13 @@ class FirebasePerformanceRepository implements PerformanceRepository {
   @override
   Trace startTrace(String name) {
     final trace = _performance.newTrace(name);
-    unawaited(trace.start());
+    unawaited(trace.start().catchError((Object _) {}));
     return trace;
   }
 
   @override
-  void stopTrace(Trace trace) {
-    unawaited(trace.stop());
+  void stopTrace(Trace? trace) {
+    if (trace == null) return;
+    unawaited(trace.stop().catchError((Object _) {}));
   }
 }

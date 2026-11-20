@@ -9,17 +9,17 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:omni_remote/app/app.dart';
 
-class MockLocalStorageService extends Mock implements LocalStorageService {}
+class MockLocalStorageService extends Mock implements LocalStorageService;
 
-class MockCrashService extends Mock implements CrashService {}
+class MockCrashService extends Mock implements CrashService;
 
-class MockPerformanceService extends Mock implements PerformanceService {}
+class MockPerformanceService extends Mock implements PerformanceService;
 
-class MockTrace extends Mock implements Trace {}
+class MockTrace extends Mock implements Trace;
 
-class MockMqttServerClient extends Mock implements MqttServerClient {}
+class MockMqttServerClient extends Mock implements MqttServerClient;
 
-class MockX509Certificate extends Mock implements X509Certificate {}
+class MockX509Certificate extends Mock implements X509Certificate;
 
 class FakeMqttServerClient extends Mock implements MqttServerClient {
   @override
@@ -51,7 +51,7 @@ class FakeMqttServerClient extends Mock implements MqttServerClient {
 }
 
 class MockMqttClientConnectionStatus extends Mock
-    implements MqttClientConnectionStatus {}
+    implements MqttClientConnectionStatus;
 
 void main() {
   late LocalStorageService localStorageService;
@@ -79,10 +79,10 @@ void main() {
       await getIt.unregister<LocalStorageService>();
     }
     if (getIt.isRegistered<CrashService>()) {
-      getIt.unregister<CrashService>();
+      await getIt.unregister<CrashService>();
     }
     if (getIt.isRegistered<PerformanceService>()) {
-      getIt.unregister<PerformanceService>();
+      await getIt.unregister<PerformanceService>();
     }
 
     getIt
@@ -94,9 +94,8 @@ void main() {
     when(() => trace.stop()).thenAnswer((_) async {});
 
     when(() => mqttClient.connectionStatus).thenReturn(connectionStatus);
-    when(
-      () => mqttClient.connect(any<String?>(), any<String?>()),
-    ).thenAnswer((_) async => connectionStatus);
+    when(() => mqttClient.connect(any<String?>(), any<String?>()))
+        .thenAnswer((_) async => connectionStatus);
     when(() => mqttClient.disconnect()).thenAnswer((_) {});
 
     repository = ServerMqttRepository(
@@ -104,9 +103,8 @@ void main() {
       clientFactory: (host, clientId, port) {
         final newMock = MockMqttServerClient();
         when(() => newMock.connectionStatus).thenReturn(connectionStatus);
-        when(
-          () => newMock.connect(any<String?>(), any<String?>()),
-        ).thenAnswer((_) async => connectionStatus);
+        when(() => newMock.connect(any<String?>(), any<String?>()))
+            .thenAnswer((_) async => connectionStatus);
         when(newMock.disconnect).thenAnswer((_) {});
         return newMock;
       },
@@ -128,9 +126,8 @@ void main() {
       when(() => localStorageService.getBrokerPort()).thenReturn('1883');
       when(() => localStorageService.getBrokerUsername()).thenReturn('user');
       when(() => localStorageService.getBrokerPassword()).thenReturn('pass');
-      when(
-        () => connectionStatus.state,
-      ).thenReturn(MqttConnectionState.connected);
+      when(() => connectionStatus.state)
+          .thenReturn(MqttConnectionState.connected);
 
       await repository.initializeMqttClient();
 
@@ -141,9 +138,8 @@ void main() {
     test('connectMqtt handles failure', () async {
       when(() => localStorageService.getBrokerUsername()).thenReturn('user');
       when(() => localStorageService.getBrokerPassword()).thenReturn('pass');
-      when(
-        () => connectionStatus.state,
-      ).thenReturn(MqttConnectionState.faulted);
+      when(() => connectionStatus.state)
+          .thenReturn(MqttConnectionState.faulted);
 
       final expectation = expectLater(
         repository.connectionStatusStream,
@@ -159,9 +155,8 @@ void main() {
     test('connectMqtt handles exception', () async {
       when(() => localStorageService.getBrokerUsername()).thenReturn('user');
       when(() => localStorageService.getBrokerPassword()).thenReturn('pass');
-      when(
-        () => mqttClient.connect(any<String?>(), any<String?>()),
-      ).thenThrow(Exception('Failed'));
+      when(() => mqttClient.connect(any<String?>(), any<String?>()))
+          .thenThrow(Exception('Failed'));
       when(
         () => crashService.recordError(
           any<Object>(),
@@ -208,17 +203,14 @@ void main() {
       () async {
         final fakeClient = FakeMqttServerClient();
         when(() => fakeClient.connectionStatus).thenReturn(connectionStatus);
-        when(
-          () => fakeClient.connect(any<String?>(), any<String?>()),
-        ).thenAnswer((_) async => connectionStatus);
+        when(() => fakeClient.connect(any<String?>(), any<String?>()))
+            .thenAnswer((_) async => connectionStatus);
         when(fakeClient.disconnect).thenAnswer((_) {});
-        when(
-          () => connectionStatus.state,
-        ).thenReturn(MqttConnectionState.connected);
+        when(() => connectionStatus.state)
+            .thenReturn(MqttConnectionState.connected);
 
-        when(
-          () => localStorageService.getBrokerUrl(),
-        ).thenReturn('secure-broker.com');
+        when(() => localStorageService.getBrokerUrl())
+            .thenReturn('secure-broker.com');
         when(() => localStorageService.getBrokerPort()).thenReturn('8883');
         when(() => localStorageService.getBrokerUsername()).thenReturn('user');
         when(() => localStorageService.getBrokerPassword()).thenReturn('pass');
@@ -246,13 +238,11 @@ void main() {
       fakeClient.updates = updatesController.stream;
 
       when(() => fakeClient.connectionStatus).thenReturn(connectionStatus);
-      when(
-        () => fakeClient.connect(any<String?>(), any<String?>()),
-      ).thenAnswer((_) async => connectionStatus);
+      when(() => fakeClient.connect(any<String?>(), any<String?>()))
+          .thenAnswer((_) async => connectionStatus);
       when(fakeClient.disconnect).thenAnswer((_) {});
-      when(
-        () => connectionStatus.state,
-      ).thenReturn(MqttConnectionState.connected);
+      when(() => connectionStatus.state)
+          .thenReturn(MqttConnectionState.connected);
 
       when(() => localStorageService.getBrokerUrl()).thenReturn('localhost');
       when(() => localStorageService.getBrokerPort()).thenReturn('1883');
@@ -312,9 +302,8 @@ void main() {
       when(() => localStorageService.getBrokerPort()).thenReturn('8883');
       when(() => localStorageService.getBrokerUsername()).thenReturn('u');
       when(() => localStorageService.getBrokerPassword()).thenReturn('p');
-      when(
-        () => connectionStatus.state,
-      ).thenReturn(MqttConnectionState.connected);
+      when(() => connectionStatus.state)
+          .thenReturn(MqttConnectionState.connected);
 
       await repository.reconnectWithNewSettings();
 

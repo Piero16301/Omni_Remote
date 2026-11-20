@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:omni_remote/connection/connection.dart';
 
 class ConnectionPage extends StatelessWidget {
-  const ConnectionPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -4,7 +4,7 @@ import 'package:omni_remote/app/helpers/icon_helper.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 
 class GroupPreview extends StatelessWidget {
-  const GroupPreview({
+  const new({
     required this.title,
     required this.subtitle,
     required this.iconName,
@@ -41,9 +41,8 @@ class GroupPreview extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(16)),
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primary.withValues(alpha: 0.1),
+                  color: Theme.of(context).colorScheme.primary
+                      .withValues(alpha: 0.1),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16),

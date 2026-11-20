@@ -16,7 +16,7 @@ class MockAnalyticsRepository implements AnalyticsRepository {
 }
 
 class FirebaseAnalyticsRepository implements AnalyticsRepository {
-  FirebaseAnalyticsRepository({FirebaseAnalytics? analytics})
+  new({FirebaseAnalytics? analytics})
     : _analytics = analytics ?? FirebaseAnalytics.instance;
 
   final FirebaseAnalytics _analytics;

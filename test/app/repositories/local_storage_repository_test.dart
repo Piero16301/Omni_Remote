@@ -4,14 +4,14 @@ import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 
-class MockPerformanceService extends Mock implements PerformanceService {}
+class MockPerformanceService extends Mock implements PerformanceService;
 
-class MockTrace extends Mock implements Trace {}
+class MockTrace extends Mock implements Trace;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -54,7 +54,7 @@ void main() {
 
     final getIt = GetIt.instance;
     if (getIt.isRegistered<PerformanceService>()) {
-      getIt.unregister<PerformanceService>();
+      await getIt.unregister<PerformanceService>();
     }
     getIt.registerSingleton<PerformanceService>(performanceService);
 

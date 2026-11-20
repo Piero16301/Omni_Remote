@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 
-class MockPerformanceRepository extends Mock implements PerformanceRepository {}
+class MockPerformanceRepository extends Mock implements PerformanceRepository;
 
-class MockTrace extends Mock implements Trace {}
+class MockTrace extends Mock implements Trace;
 
 void main() {
   late PerformanceRepository repository;

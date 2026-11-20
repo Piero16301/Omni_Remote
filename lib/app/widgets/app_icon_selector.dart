@@ -2,7 +2,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:material_ui/material_ui.dart';
 
 class AppIconSelector extends StatelessWidget {
-  const AppIconSelector({
+  const new({
     required this.label,
     required this.iconOptions,
     required this.selectedIcon,
@@ -58,9 +58,8 @@ class AppIconSelector extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? Theme.of(
-                              context,
-                            ).colorScheme.primary.withValues(alpha: 0.2)
+                          ? Theme.of(context).colorScheme.primary
+                                .withValues(alpha: 0.2)
                           : Theme.of(context)
                                 .colorScheme
                                 .surfaceContainerHighest

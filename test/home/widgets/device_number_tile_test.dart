@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart' hide ConnectionState;
@@ -12,21 +13,28 @@ import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 import 'package:typed_data/typed_data.dart';
 
-class MockAppCubit extends MockCubit<AppState> implements AppCubit {}
+class MockAppCubit extends MockCubit<AppState> implements AppCubit;
 
-class MockMqttService extends Mock implements MqttService {}
+class MockMqttService extends Mock implements MqttService;
 
-class MockMqttServerClient extends Mock implements MqttServerClient {}
+class MockMqttServerClient extends Mock implements MqttServerClient;
 
 class MockMqttClientConnectionStatus extends Mock
-    implements MqttClientConnectionStatus {}
+    implements MqttClientConnectionStatus;
 
-class FakeUint8Buffer extends Fake implements Uint8Buffer {}
+class MockAnalyticsService extends Mock implements AnalyticsService;
+
+class MockCrashService extends Mock implements CrashService;
+
+class FakeMqttMessage extends Fake implements MqttMessage;
+
+class FakeUint8Buffer extends Fake implements Uint8Buffer;
 
 void main() {
   setUpAll(() {
     registerFallbackValue(FakeUint8Buffer());
     registerFallbackValue(MqttQos.atLeastOnce);
+    registerFallbackValue(StackTrace.current);
   });
 
   group('DeviceNumberTile', () {
@@ -34,6 +42,8 @@ void main() {
     late MqttService mockMqttService;
     late MqttServerClient mockMqttClient;
     late MqttClientConnectionStatus mockConnectionStatus;
+    late AnalyticsService mockAnalyticsService;
+    late CrashService mockCrashService;
     late StreamController<List<MqttReceivedMessage<MqttMessage>>>
     messageController;
 
@@ -61,31 +71,46 @@ void main() {
       mockMqttService = MockMqttService();
       mockMqttClient = MockMqttServerClient();
       mockConnectionStatus = MockMqttClientConnectionStatus();
+      mockAnalyticsService = MockAnalyticsService();
+      mockCrashService = MockCrashService();
       messageController =
           StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast();
 
-      when(
-        () => mockConnectionStatus.state,
-      ).thenReturn(MqttConnectionState.connected);
-      when(
-        () => mockMqttClient.connectionStatus,
-      ).thenReturn(mockConnectionStatus);
+      when(() => mockConnectionStatus.state)
+          .thenReturn(MqttConnectionState.connected);
+      when(() => mockMqttClient.connectionStatus)
+          .thenReturn(mockConnectionStatus);
       when(() => mockMqttClient.subscribe(any(), any())).thenReturn(null);
       when(() => mockMqttClient.unsubscribe(any())).thenAnswer((_) {});
-      when(
-        () => mockMqttClient.publishMessage(any(), any(), any()),
-      ).thenReturn(1);
+      when(() => mockMqttClient.publishMessage(any(), any(), any()))
+          .thenReturn(1);
 
       when(() => mockMqttService.mqttClient).thenReturn(mockMqttClient);
-      when(
-        () => mockMqttService.messageStream,
-      ).thenAnswer((_) => messageController.stream);
+      when(() => mockMqttService.messageStream)
+          .thenAnswer((_) => messageController.stream);
 
       await getIt.reset();
       setupServiceLocator(Environment.mock);
-      getIt
-        ..unregister<MqttService>()
-        ..registerSingleton<MqttService>(mockMqttService);
+      await getIt.unregister<MqttService>();
+      getIt.registerSingleton<MqttService>(mockMqttService);
+      await getIt.unregister<AnalyticsService>();
+      getIt.registerSingleton<AnalyticsService>(mockAnalyticsService);
+      await getIt.unregister<CrashService>();
+      getIt.registerSingleton<CrashService>(mockCrashService);
+
+      when(
+        () => mockAnalyticsService.logEvent(
+          name: any(named: 'name'),
+          parameters: any(named: 'parameters'),
+        ),
+      ).thenReturn(null);
+      when(
+        () => mockCrashService.recordError(
+          any<dynamic>(),
+          any<StackTrace?>(),
+          reason: any<String>(named: 'reason'),
+        ),
+      ).thenReturn(null);
 
       when(() => appCubit.state).thenReturn(
         const AppState(
@@ -141,9 +166,8 @@ void main() {
         suffix: AppVariables.statusSuffix,
       );
 
-      verify(
-        () => mockMqttClient.subscribe(expectedTopic, MqttQos.atMostOnce),
-      ).called(1);
+      verify(() => mockMqttClient.subscribe(expectedTopic, MqttQos.atMostOnce))
+          .called(1);
     });
 
     testWidgets('publishes MQTT message when increased', (tester) async {
@@ -207,7 +231,13 @@ void main() {
       await tester.tap(find.byType(ListTile).last);
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(AppFilledButton));
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) =>
+              w is ExpressiveButton &&
+              w.variant == ExpressiveButtonVariant.filled,
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(deleteCalled, isTrue);
@@ -224,7 +254,13 @@ void main() {
 
       expect(find.byType(AlertDialog), findsOneWidget);
 
-      await tester.tap(find.byType(AppOutlinedButton));
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) =>
+              w is ExpressiveButton &&
+              w.variant == ExpressiveButtonVariant.outlined,
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsNothing);
@@ -390,6 +426,213 @@ void main() {
           any(),
         ),
       ).called(greaterThanOrEqualTo(1));
+    });
+
+    testWidgets('does not publish when mqttClient is null on increment', (
+      tester,
+    ) async {
+      when(() => mockMqttService.mqttClient).thenReturn(null);
+
+      await tester.pumpWidget(buildSubject());
+
+      await tester.tap(find.byType(IconButton).last);
+      await tester.pump();
+
+      verifyNever(() => mockMqttClient.publishMessage(any(), any(), any()));
+      verifyNever(
+        () => mockAnalyticsService.logEvent(
+          name: 'device_action_number',
+          parameters: any(named: 'parameters'),
+        ),
+      );
+    });
+
+    testWidgets('logs analytics event when command is published', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildSubject());
+
+      await tester.tap(find.byType(IconButton).last);
+      await tester.pumpAndSettle();
+
+      verify(
+        () => mockAnalyticsService.logEvent(
+          name: 'device_action_number',
+          parameters: {'device_id': testDevice.id, 'value': '17.0'},
+        ),
+      ).called(1);
+    });
+
+    testWidgets('Slider onChanged updates value and onChangeEnd publishes', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildSubject());
+
+      final sliderFinder = find.byType(Slider);
+      final slider = tester.widget<Slider>(sliderFinder);
+
+      slider.onChanged!(20);
+      await tester.pump();
+      expect(find.text('20.0'), findsOneWidget);
+
+      slider.onChangeEnd!(20);
+      await tester.pump();
+
+      final expectedTopic = AppVariables.buildDeviceTopic(
+        groupTitle: testGroup.title,
+        deviceTitle: testDevice.title,
+        suffix: AppVariables.commandSuffix,
+      );
+
+      verify(
+        () => mockMqttClient.publishMessage(
+          expectedTopic,
+          MqttQos.atLeastOnce,
+          any(),
+        ),
+      ).called(1);
+    });
+
+    testWidgets('ignores non-numeric MQTT payload', (tester) async {
+      await tester.pumpWidget(buildSubject());
+
+      final statusTopic = AppVariables.buildDeviceTopic(
+        groupTitle: testGroup.title,
+        deviceTitle: testDevice.title,
+        suffix: AppVariables.statusSuffix,
+      );
+
+      final builder = MqttClientPayloadBuilder()..addString('not_a_number');
+      final publishMessage = MqttPublishMessage()
+        ..payload.message = builder.payload!;
+
+      messageController.add([
+        MqttReceivedMessage<MqttMessage>(statusTopic, publishMessage),
+      ]);
+      await tester.pump();
+
+      expect(find.text('16.0'), findsOneWidget);
+    });
+
+    testWidgets('ignores MQTT messages for different topics', (tester) async {
+      await tester.pumpWidget(buildSubject());
+
+      final builder = MqttClientPayloadBuilder()..addString('25.0');
+      final publishMessage = MqttPublishMessage()
+        ..payload.message = builder.payload!;
+
+      messageController.add([
+        MqttReceivedMessage<MqttMessage>('other/topic', publishMessage),
+      ]);
+      await tester.pump();
+
+      expect(find.text('16.0'), findsOneWidget);
+    });
+
+    testWidgets('records crash error when MQTT payload is invalid', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildSubject());
+
+      final statusTopic = AppVariables.buildDeviceTopic(
+        groupTitle: testGroup.title,
+        deviceTitle: testDevice.title,
+        suffix: AppVariables.statusSuffix,
+      );
+
+      messageController.add([
+        MqttReceivedMessage<MqttMessage>(statusTopic, FakeMqttMessage()),
+      ]);
+      await tester.pump();
+
+      verify(
+        () => mockCrashService.recordError(
+          any<dynamic>(),
+          any<StackTrace?>(),
+          reason: 'Failed to parse MQTT number device status payload',
+        ),
+      ).called(1);
+    });
+
+    testWidgets('didUpdateWidget verifies status when device changes', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildSubject());
+
+      final updatedDevice = testDevice.copyWith(title: 'Updated Thermostat');
+      await tester.pumpWidget(
+        MultiBlocProvider(
+          providers: [BlocProvider.value(value: appCubit)],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: DeviceNumberTile(
+                device: updatedDevice,
+                group: testGroup,
+                groupIsOnline: true,
+                onEdit: () {},
+                onDelete: () {},
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      final newTopic = AppVariables.buildDeviceTopic(
+        groupTitle: testGroup.title,
+        deviceTitle: updatedDevice.title,
+        suffix: AppVariables.statusSuffix,
+      );
+
+      verify(() => mockMqttClient.unsubscribe(newTopic)).called(1);
+      verify(
+        () => mockAnalyticsService.logEvent(
+          name: 'verify_device_status',
+          parameters: {'device_id': updatedDevice.id, 'tile_type': 'number'},
+        ),
+      ).called(1);
+      verify(() => mockMqttClient.subscribe(newTopic, MqttQos.atMostOnce))
+          .called(1);
+    });
+
+    testWidgets('didUpdateWidget skips verifyStatus when disconnected', (
+      tester,
+    ) async {
+      await tester.pumpWidget(buildSubject());
+
+      when(() => mockConnectionStatus.state)
+          .thenReturn(MqttConnectionState.disconnected);
+
+      final updatedDevice = testDevice.copyWith(title: 'Updated Thermostat');
+      await tester.pumpWidget(
+        MultiBlocProvider(
+          providers: [BlocProvider.value(value: appCubit)],
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: DeviceNumberTile(
+                device: updatedDevice,
+                group: testGroup,
+                groupIsOnline: true,
+                onEdit: () {},
+                onDelete: () {},
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      verifyNever(() => mockMqttClient.unsubscribe(any()));
+      verifyNever(
+        () => mockAnalyticsService.logEvent(
+          name: 'verify_device_status',
+          parameters: any(named: 'parameters'),
+        ),
+      );
     });
   });
 }

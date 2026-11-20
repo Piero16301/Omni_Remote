@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -8,12 +9,12 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/connection/connection.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 
-class MockAppCubit extends MockCubit<AppState> implements AppCubit {}
+class MockAppCubit extends MockCubit<AppState> implements AppCubit;
 
 class MockConnectionCubit extends MockCubit<ConnectionState>
-    implements ConnectionCubit {}
+    implements ConnectionCubit;
 
-class FakeBuildContext extends Fake implements BuildContext {}
+class FakeBuildContext extends Fake implements BuildContext;
 
 void main() {
   setUpAll(() {
@@ -42,9 +43,8 @@ void main() {
       );
 
       when(() => connectionCubit.togglePasswordVisibility()).thenReturn(null);
-      when(
-        () => connectionCubit.saveAndConnect(context: any(named: 'context')),
-      ).thenAnswer((_) async {});
+      when(() => connectionCubit.saveAndConnect(context: any(named: 'context')))
+          .thenAnswer((_) async {});
       when(
         () => connectionCubit.disconnectBroker(context: any(named: 'context')),
       ).thenAnswer((_) async {});
@@ -98,8 +98,12 @@ void main() {
       tester.widget<IconButton>(visibilityToggle).onPressed?.call();
       verify(() => connectionCubit.togglePasswordVisibility()).called(1);
 
-      final saveButton = find.byType(AppFilledButton);
-      tester.widget<AppFilledButton>(saveButton).onPressed?.call();
+      final saveButton = find.byWidgetPredicate(
+        (w) =>
+            w is ExpressiveButton &&
+            w.variant == ExpressiveButtonVariant.filled,
+      );
+      tester.widget<ExpressiveButton>(saveButton).onPressed?.call();
       verify(
         () => connectionCubit.saveAndConnect(context: any(named: 'context')),
       ).called(1);
@@ -109,8 +113,12 @@ void main() {
       await tester.pumpWidget(buildSubject());
       await tester.pumpAndSettle();
 
-      final disconnectBtn = find.byType(AppOutlinedButton);
-      tester.widget<AppOutlinedButton>(disconnectBtn).onPressed?.call();
+      final disconnectBtn = find.byWidgetPredicate(
+        (w) =>
+            w is ExpressiveButton &&
+            w.variant == ExpressiveButtonVariant.outlined,
+      );
+      tester.widget<ExpressiveButton>(disconnectBtn).onPressed?.call();
       verify(
         () => connectionCubit.disconnectBroker(context: any(named: 'context')),
       ).called(1);

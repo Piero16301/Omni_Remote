@@ -8,7 +8,7 @@ import 'package:omni_remote/connection/connection.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 
 class ConnectionView extends StatelessWidget {
-  const ConnectionView({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -56,190 +56,210 @@ class ConnectionView extends StatelessWidget {
             ),
             title: Text(
               l10n.connectionAppBarTitle,
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              style: Theme.of(context).textTheme.titleLarge
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
-          body: Form(
-            key: state.formKey,
-            child: ListView(
-              padding: const EdgeInsets.only(
-                left: 16,
-                right: 16,
-                top: 8,
-                bottom: 120,
-              ),
-              children: [
-                AppTextField(
-                  initialValue: state.brokerUrl,
-                  onChanged: context.read<ConnectionCubit>().changeBrokerUrl,
-                  label: l10n.connectionUrlLabel,
-                  hintText: l10n.connectionUrlHint,
-                  prefix: const HugeIcon(
-                    icon: HugeIcons.strokeRoundedLink01,
-                    strokeWidth: 2,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return l10n.connectionFieldErrorEmpty;
-                    }
-                    return null;
-                  },
+          body: AppMaxWidthContainer(
+            child: Form(
+              key: state.formKey,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 8,
+                  bottom: 120,
                 ),
-                const SizedBox(height: 16),
-                AppTextField(
-                  initialValue: state.brokerPort,
-                  onChanged: context.read<ConnectionCubit>().changeBrokerPort,
-                  label: l10n.connectionPortLabel,
-                  hintText: l10n.connectionPortHint,
-                  prefix: const HugeIcon(
-                    icon: HugeIcons.strokeRoundedGps01,
-                    strokeWidth: 2,
-                  ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return l10n.connectionFieldErrorEmpty;
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                AppTextField(
-                  initialValue: state.brokerUsername,
-                  onChanged: context
-                      .read<ConnectionCubit>()
-                      .changeBrokerUsername,
-                  label: l10n.connectionUsernameLabel,
-                  hintText: l10n.connectionUsernameHint,
-                  prefix: const HugeIcon(
-                    icon: HugeIcons.strokeRoundedUser,
-                    strokeWidth: 2,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return l10n.connectionFieldErrorEmpty;
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                AppTextField(
-                  initialValue: state.brokerPassword,
-                  onChanged: context
-                      .read<ConnectionCubit>()
-                      .changeBrokerPassword,
-                  label: l10n.connectionPasswordLabel,
-                  hintText: l10n.connectionPasswordHint,
-                  prefix: const HugeIcon(
-                    icon: HugeIcons.strokeRoundedLockPassword,
-                    strokeWidth: 2,
-                  ),
-                  obscureText: state.hidePassword,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return l10n.connectionFieldErrorEmpty;
-                    }
-                    return null;
-                  },
-                  suffix: IconButton(
-                    onPressed: () => context
-                        .read<ConnectionCubit>()
-                        .togglePasswordVisibility(),
-                    icon: HugeIcon(
-                      icon: state.hidePassword
-                          ? HugeIcons.strokeRoundedEye
-                          : HugeIcons.strokeRoundedViewOff,
-                      strokeWidth: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    AppTextField(
+                      initialValue: state.brokerUrl,
+                      onChanged: context
+                          .read<ConnectionCubit>()
+                          .changeBrokerUrl,
+                      label: l10n.connectionUrlLabel,
+                      hintText: l10n.connectionUrlHint,
+                      prefix: const HugeIcon(
+                        icon: HugeIcons.strokeRoundedLink01,
+                        strokeWidth: 2,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return l10n.connectionFieldErrorEmpty;
+                        }
+                        return null;
+                      },
                     ),
-                  ),
-                ),
-                const SizedBox(height: 32),
-                AppFilledButton(
-                  onPressed:
-                      (connectionStatus.isConnecting ||
-                          connectionStatus.isDisconnecting)
-                      ? null
-                      : () async => await context
+                    const SizedBox(height: 16),
+                    AppTextField(
+                      initialValue: state.brokerPort,
+                      onChanged: context
+                          .read<ConnectionCubit>()
+                          .changeBrokerPort,
+                      label: l10n.connectionPortLabel,
+                      hintText: l10n.connectionPortHint,
+                      prefix: const HugeIcon(
+                        icon: HugeIcons.strokeRoundedGps01,
+                        strokeWidth: 2,
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return l10n.connectionFieldErrorEmpty;
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    AppTextField(
+                      initialValue: state.brokerUsername,
+                      onChanged: context
+                          .read<ConnectionCubit>()
+                          .changeBrokerUsername,
+                      label: l10n.connectionUsernameLabel,
+                      hintText: l10n.connectionUsernameHint,
+                      prefix: const HugeIcon(
+                        icon: HugeIcons.strokeRoundedUser,
+                        strokeWidth: 2,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return l10n.connectionFieldErrorEmpty;
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    AppTextField(
+                      initialValue: state.brokerPassword,
+                      onChanged: context
+                          .read<ConnectionCubit>()
+                          .changeBrokerPassword,
+                      label: l10n.connectionPasswordLabel,
+                      hintText: l10n.connectionPasswordHint,
+                      prefix: const HugeIcon(
+                        icon: HugeIcons.strokeRoundedLockPassword,
+                        strokeWidth: 2,
+                      ),
+                      obscureText: state.hidePassword,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return l10n.connectionFieldErrorEmpty;
+                        }
+                        return null;
+                      },
+                      suffix: IconButton(
+                        onPressed: () => context
                             .read<ConnectionCubit>()
-                            .saveAndConnect(context: context),
-                  label: l10n.connectionSaveAndConnectButton,
-                ),
-                if (state.brokerUrl.isNotEmpty && state.brokerPort.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 24),
-                    child: ExpressiveCard(
-                      margin: EdgeInsets.zero,
-                      padding: const EdgeInsets.all(20),
-                      backgroundColor: Theme.of(
-                        context,
-                      ).colorScheme.surfaceContainerHigh,
-                      child: Column(
-                        spacing: 12,
-                        children: [
-                          ExpressiveBadge(
-                            size: 56,
-                            iconSize: 32,
-                            backgroundColor: statusColor.withValues(
-                              alpha: 0.15,
-                            ),
-                            foregroundColor: statusColor,
-                            icon: HugeIcon(
-                              icon: icon,
-                              color: statusColor,
-                              size: 32,
-                            ),
-                          ),
-                          Text(
-                            statusText,
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(
-                                  color: statusColor,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                          ),
-                          Row(
-                            spacing: 8,
-                            children: [
-                              const HugeIcon(
-                                icon: HugeIcons.strokeRoundedLink01,
-                              ),
-                              Expanded(
-                                child: Text(
-                                  state.brokerUrl,
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            spacing: 8,
-                            children: [
-                              const HugeIcon(
-                                icon: HugeIcons.strokeRoundedGps01,
-                              ),
-                              Text(
-                                state.brokerPort,
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                            ],
-                          ),
-                          if (connectionStatus.isConnected)
-                            AppOutlinedButton(
-                              onPressed: connectionStatus.isConnected
-                                  ? () => context
-                                        .read<ConnectionCubit>()
-                                        .disconnectBroker(context: context)
-                                  : null,
-                              icon: HugeIcons.strokeRoundedCancelCircle,
-                              label: l10n.connectionDisconnectButton,
-                            ),
-                        ],
+                            .togglePasswordVisibility(),
+                        icon: HugeIcon(
+                          icon: state.hidePassword
+                              ? HugeIcons.strokeRoundedEye
+                              : HugeIcons.strokeRoundedViewOff,
+                          strokeWidth: 2,
+                        ),
                       ),
                     ),
-                  ),
-              ],
+                    const SizedBox(height: 32),
+                    ExpressiveButton.filled(
+                      onPressed:
+                          (connectionStatus.isConnecting ||
+                              connectionStatus.isDisconnecting)
+                          ? null
+                          : () async => await context
+                                .read<ConnectionCubit>()
+                                .saveAndConnect(context: context),
+                      label: l10n.connectionSaveAndConnectButton,
+                      isExpanded: true,
+                      size: ExpressiveButtonSize.large,
+                    ),
+                    if (state.brokerUrl.isNotEmpty &&
+                        state.brokerPort.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 24),
+                        child: ExpressiveCard(
+                          margin: EdgeInsets.zero,
+                          padding: const EdgeInsets.all(20),
+                          backgroundColor: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHigh,
+                          child: Column(
+                            spacing: 12,
+                            children: [
+                              ExpressiveBadge(
+                                size: 56,
+                                iconSize: 32,
+                                backgroundColor: statusColor.withValues(
+                                  alpha: 0.15,
+                                ),
+                                foregroundColor: statusColor,
+                                icon: HugeIcon(
+                                  icon: icon,
+                                  color: statusColor,
+                                  size: 32,
+                                ),
+                              ),
+                              Text(
+                                statusText,
+                                style: Theme.of(context).textTheme.titleLarge
+                                    ?.copyWith(
+                                      color: statusColor,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                              ),
+                              Row(
+                                spacing: 8,
+                                children: [
+                                  const HugeIcon(
+                                    icon: HugeIcons.strokeRoundedLink01,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      state.brokerUrl,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                spacing: 8,
+                                children: [
+                                  const HugeIcon(
+                                    icon: HugeIcons.strokeRoundedGps01,
+                                  ),
+                                  Text(
+                                    state.brokerPort,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge,
+                                  ),
+                                ],
+                              ),
+                              if (connectionStatus.isConnected)
+                                ExpressiveButton.outlined(
+                                  onPressed: connectionStatus.isConnected
+                                      ? () => context
+                                            .read<ConnectionCubit>()
+                                            .disconnectBroker(context: context)
+                                      : null,
+                                  icon: const HugeIcon(
+                                    icon: HugeIcons.strokeRoundedCancelCircle,
+                                    strokeWidth: 2,
+                                  ),
+                                  label: l10n.connectionDisconnectButton,
+                                  isExpanded: true,
+                                  size: ExpressiveButtonSize.large,
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
             ),
           ),
         );

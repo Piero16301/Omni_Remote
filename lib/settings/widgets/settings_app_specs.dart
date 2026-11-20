@@ -6,7 +6,7 @@ import 'package:omni_remote/l10n/l10n.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsAppSpecs extends StatelessWidget {
-  const SettingsAppSpecs({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

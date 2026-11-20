@@ -1,7 +1,7 @@
 part of 'connection_cubit.dart';
 
 class ConnectionState extends Equatable {
-  const ConnectionState({
+  const new({
     this.brokerUrl = '',
     this.brokerPort = '',
     this.brokerUsername = '',

@@ -7,7 +7,7 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 import 'package:omni_remote/settings/settings.dart';
 
-class MockAppCubit extends MockCubit<AppState> implements AppCubit {}
+class MockAppCubit extends MockCubit<AppState> implements AppCubit;
 
 void main() {
   group('SettingsPage', () {

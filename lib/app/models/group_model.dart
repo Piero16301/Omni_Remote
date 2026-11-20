@@ -1,4 +1,4 @@
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 
 part 'group_model.g.dart';
 
@@ -6,7 +6,7 @@ part 'group_model.g.dart';
 @HiveType(typeId: 2)
 class GroupModel {
   /// Constructor for GroupModel
-  GroupModel({
+  new({
     required this.title,
     required this.subtitle,
     required this.icon,

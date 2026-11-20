@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_int_literals // For Hive typeId
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/models/device_model.dart';
 
@@ -285,6 +285,6 @@ void main() {
   });
 }
 
-class MockBinaryReader extends Mock implements BinaryReader {}
+class MockBinaryReader extends Mock implements BinaryReader;
 
-class MockBinaryWriter extends Mock implements BinaryWriter {}
+class MockBinaryWriter extends Mock implements BinaryWriter;

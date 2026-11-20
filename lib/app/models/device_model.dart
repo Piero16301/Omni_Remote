@@ -1,4 +1,4 @@
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 
 part 'device_model.g.dart';
 
@@ -18,7 +18,7 @@ enum DeviceTileType {
 @HiveType(typeId: 1)
 class DeviceModel {
   /// Constructor for DeviceModel
-  DeviceModel({
+  new({
     required this.title,
     required this.subtitle,
     required this.icon,

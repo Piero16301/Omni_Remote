@@ -4,7 +4,7 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 
 class DevicePreview extends StatelessWidget {
-  const DevicePreview({
+  const new({
     required this.title,
     required this.subtitle,
     required this.iconName,
@@ -44,7 +44,7 @@ class DevicePreview extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         DevicePreviewTile(
-          key: Key('$rangeMin$rangeMax$divisions$interval'),
+          key: Key('$tileType$rangeMin$rangeMax$divisions$interval'),
           title: title,
           subtitle: subtitle,
           iconName: iconName,
@@ -60,7 +60,7 @@ class DevicePreview extends StatelessWidget {
 }
 
 class DevicePreviewTile extends StatefulWidget {
-  const DevicePreviewTile({
+  const new({
     required this.title,
     required this.subtitle,
     required this.iconName,
@@ -87,14 +87,29 @@ class DevicePreviewTile extends StatefulWidget {
 
 class _DevicePreviewTileState extends State<DevicePreviewTile> {
   bool _boolValue = true;
-  late double _numberValue;
-  late double? _minValue;
-  late double? _maxValue;
+  double _numberValue = 5;
+  double _minValue = 0;
+  double _maxValue = 10;
   int? _divisions;
 
   @override
   void initState() {
     super.initState();
+    _initNumberState();
+  }
+
+  @override
+  void didUpdateWidget(covariant DevicePreviewTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.tileType != widget.tileType ||
+        oldWidget.rangeMin != widget.rangeMin ||
+        oldWidget.rangeMax != widget.rangeMax ||
+        oldWidget.divisions != widget.divisions) {
+      _initNumberState();
+    }
+  }
+
+  void _initNumberState() {
     if (widget.tileType == DeviceTileType.number) {
       if (widget.rangeMin >= widget.rangeMax) {
         _minValue = 0;
@@ -104,10 +119,10 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
         _maxValue = widget.rangeMax;
       }
 
-      _numberValue = (_minValue! + _maxValue!) / 2;
+      _numberValue = (_minValue + _maxValue) / 2;
 
-      if (_numberValue < _minValue! || _numberValue > _maxValue!) {
-        _numberValue = (_minValue! + _maxValue!) / 2;
+      if (_numberValue < _minValue || _numberValue > _maxValue) {
+        _numberValue = (_minValue + _maxValue) / 2;
       }
 
       // Finalmente inicializar las divisiones
@@ -157,9 +172,10 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
                             : widget.title,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontVariations: <FontVariation>[
-                            ...(Theme.of(
-                                      context,
-                                    ).textTheme.bodyLarge?.fontVariations ??
+                            ...(Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.fontVariations ??
                                     const <FontVariation>[])
                                 .where((v) => v.axis != 'wght'),
                             const FontVariation('wght', 700),
@@ -254,8 +270,8 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
                             onPressed: () {
                               setState(() {
                                 if (_numberValue - widget.interval <
-                                    _minValue!) {
-                                  _numberValue = _minValue!;
+                                    _minValue) {
+                                  _numberValue = _minValue;
                                 } else {
                                   _numberValue = _numberValue - widget.interval;
                                 }
@@ -277,8 +293,8 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
                             onPressed: () {
                               setState(() {
                                 if (_numberValue + widget.interval >
-                                    _maxValue!) {
-                                  _numberValue = _maxValue!;
+                                    _maxValue) {
+                                  _numberValue = _maxValue;
                                 } else {
                                   _numberValue = _numberValue + widget.interval;
                                 }
@@ -295,8 +311,8 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
                   ],
                 ),
                 Slider(
-                  min: _minValue!,
-                  max: _maxValue!,
+                  min: _minValue,
+                  max: _maxValue,
                   divisions: _divisions,
                   value: _numberValue,
                   onChanged: (value) {

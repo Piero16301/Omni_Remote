@@ -6,7 +6,7 @@ import 'package:omni_remote/app/app.dart';
 part 'connection_state.dart';
 
 class ConnectionCubit extends Cubit<ConnectionState> {
-  ConnectionCubit() : super(const ConnectionState());
+  new() : super(const ConnectionState());
 
   final LocalStorageService localStorage = getIt<LocalStorageService>();
   final AnalyticsService _analyticsService = getIt<AnalyticsService>();
@@ -43,7 +43,7 @@ class ConnectionCubit extends Cubit<ConnectionState> {
   }
 
   Future<void> saveAndConnect({required BuildContext context}) async {
-    if (!(state.formKey.currentState?.validate() ?? false)) {
+    if (!AppFunctions.validateForm(state.formKey)) {
       return;
     }
 
@@ -55,6 +55,9 @@ class ConnectionCubit extends Cubit<ConnectionState> {
       ..saveBrokerPassword(brokerPassword: state.brokerPassword);
 
     // Conectar al broker MQTT con los nuevos ajustes
+    if (getIt.isRegistered<CrashService>()) {
+      getIt<CrashService>().setCustomKey('broker_port', state.brokerPort);
+    }
     _analyticsService.logEvent(name: 'save_broker_settings');
     await context.read<AppCubit>().reconnectWithNewSettings();
   }

@@ -1,6 +1,8 @@
+import 'dart:async';
+
 import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter/foundation.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/app/app.dart';
@@ -154,7 +156,7 @@ class MockLocalStorageRepository implements LocalStorageRepository {
 }
 
 class HiveLocalStorageRepository implements LocalStorageRepository {
-  HiveLocalStorageRepository();
+  new();
 
   static const kSettingsBoxName = '__settings__';
   static const kGroupsBoxName = '__groups__';
@@ -165,6 +167,16 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
   late final Box<GroupModel> _groupsBox;
   late final Box<DeviceModel> _devicesBox;
   late final Box<String> _brokerBox;
+
+  void _persist(Future<void> future, String reason) {
+    unawaited(
+      future.catchError((Object error, StackTrace stackTrace) {
+        if (getIt.isRegistered<CrashService>()) {
+          getIt<CrashService>().recordError(error, stackTrace, reason: reason);
+        }
+      }),
+    );
+  }
 
   @override
   Future<void> initialize() async {
@@ -220,9 +232,10 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
   @override
   void saveLanguage({required Locale language}) {
     final languageString = '${language.languageCode}_${language.countryCode}';
-    _settingsBox
-        .put(LocalStorageRepository.kUserLanguage, languageString)
-        .ignore();
+    _persist(
+      _settingsBox.put(LocalStorageRepository.kUserLanguage, languageString),
+      'Failed to save language',
+    );
   }
 
   @override
@@ -238,9 +251,13 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
 
   @override
   void saveTheme({required ThemeMode theme}) {
-    _settingsBox
-        .put(LocalStorageRepository.kUserTheme, ExpressiveTheme.toKey(theme))
-        .ignore();
+    _persist(
+      _settingsBox.put(
+        LocalStorageRepository.kUserTheme,
+        ExpressiveTheme.toKey(theme),
+      ),
+      'Failed to save theme',
+    );
   }
 
   @override
@@ -254,12 +271,13 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
 
   @override
   void saveBaseColor({required Color baseColor}) {
-    _settingsBox
-        .put(
-          LocalStorageRepository.kUserBaseColor,
-          ExpressiveColors.toKey(baseColor),
-        )
-        .ignore();
+    _persist(
+      _settingsBox.put(
+        LocalStorageRepository.kUserBaseColor,
+        ExpressiveColors.toKey(baseColor),
+      ),
+      'Failed to save baseColor',
+    );
   }
 
   @override
@@ -275,9 +293,10 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
 
   @override
   void saveFontFamily({required String fontFamily}) {
-    _settingsBox
-        .put(LocalStorageRepository.kUserFontFamily, fontFamily)
-        .ignore();
+    _persist(
+      _settingsBox.put(LocalStorageRepository.kUserFontFamily, fontFamily),
+      'Failed to save fontFamily',
+    );
   }
 
   @override
@@ -287,7 +306,10 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
 
   @override
   void saveBrokerUrl({required String brokerUrl}) {
-    _brokerBox.put(LocalStorageRepository.kBrokerUrl, brokerUrl).ignore();
+    _persist(
+      _brokerBox.put(LocalStorageRepository.kBrokerUrl, brokerUrl),
+      'Failed to save brokerUrl',
+    );
   }
 
   @override
@@ -297,7 +319,10 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
 
   @override
   void saveBrokerPort({required String brokerPort}) {
-    _brokerBox.put(LocalStorageRepository.kBrokerPort, brokerPort).ignore();
+    _persist(
+      _brokerBox.put(LocalStorageRepository.kBrokerPort, brokerPort),
+      'Failed to save brokerPort',
+    );
   }
 
   @override
@@ -307,9 +332,10 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
 
   @override
   void saveBrokerUsername({required String brokerUsername}) {
-    _brokerBox
-        .put(LocalStorageRepository.kBrokerUsername, brokerUsername)
-        .ignore();
+    _persist(
+      _brokerBox.put(LocalStorageRepository.kBrokerUsername, brokerUsername),
+      'Failed to save brokerUsername',
+    );
   }
 
   @override
@@ -319,9 +345,10 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
 
   @override
   void saveBrokerPassword({required String brokerPassword}) {
-    _brokerBox
-        .put(LocalStorageRepository.kBrokerPassword, brokerPassword)
-        .ignore();
+    _persist(
+      _brokerBox.put(LocalStorageRepository.kBrokerPassword, brokerPassword),
+      'Failed to save brokerPassword',
+    );
   }
 
   @override
@@ -356,7 +383,7 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
       final dateTime = DateFormat('yyyy-MM-dd-HH-mm-ss').format(DateTime.now());
       final newId = '$dateTime-${uuid.v4()}';
       final groupWithId = group.copyWith(id: newId);
-      _groupsBox.put(newId, groupWithId).ignore();
+      _persist(_groupsBox.put(newId, groupWithId), 'Failed to create group');
     } finally {
       performance.stopTrace(trace);
     }
@@ -369,37 +396,49 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
 
   @override
   void updateGroup({required GroupModel group}) {
-    final normalizedName = group.title.toLowerCase().replaceAll(' ', '-');
-    final existingGroups = _groupsBox.values.toList();
+    final performance = getIt<PerformanceService>();
+    final trace = performance.startTrace('update_group');
+    try {
+      final normalizedName = group.title.toLowerCase().replaceAll(' ', '-');
+      final existingGroups = _groupsBox.values.toList();
 
-    final isDuplicate = existingGroups.any(
-      (existingGroup) =>
-          existingGroup.id != group.id &&
-          existingGroup.title.toLowerCase().replaceAll(' ', '-') ==
-              normalizedName,
-    );
+      final isDuplicate = existingGroups.any(
+        (existingGroup) =>
+            existingGroup.id != group.id &&
+            existingGroup.title.toLowerCase().replaceAll(' ', '-') ==
+                normalizedName,
+      );
 
-    if (isDuplicate) {
-      throw Exception('DUPLICATE_GROUP_NAME');
-    }
+      if (isDuplicate) {
+        throw Exception('DUPLICATE_GROUP_NAME');
+      }
 
-    if (_groupsBox.containsKey(group.id)) {
-      _groupsBox.put(group.id, group).ignore();
+      if (_groupsBox.containsKey(group.id)) {
+        _persist(_groupsBox.put(group.id, group), 'Failed to update group');
+      }
+    } finally {
+      performance.stopTrace(trace);
     }
   }
 
   @override
   void deleteGroup({required String groupId}) {
-    final groupDevices = _devicesBox.values
-        .where((device) => device.groupId == groupId)
-        .toList();
-    if (groupDevices.isNotEmpty) {
-      throw Exception('GROUP_NOT_EMPTY');
-    }
-    if (_groupsBox.containsKey(groupId)) {
-      _groupsBox.delete(groupId).ignore();
-    } else {
-      throw Exception('GROUP_NOT_FOUND');
+    final performance = getIt<PerformanceService>();
+    final trace = performance.startTrace('delete_group');
+    try {
+      final groupDevices = _devicesBox.values
+          .where((device) => device.groupId == groupId)
+          .toList();
+      if (groupDevices.isNotEmpty) {
+        throw Exception('GROUP_NOT_EMPTY');
+      }
+      if (_groupsBox.containsKey(groupId)) {
+        _persist(_groupsBox.delete(groupId), 'Failed to delete group');
+      } else {
+        throw Exception('GROUP_NOT_FOUND');
+      }
+    } finally {
+      performance.stopTrace(trace);
     }
   }
 
@@ -432,7 +471,7 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
       final dateTime = DateFormat('yyyy-MM-dd-HH-mm-ss').format(DateTime.now());
       final newId = '$dateTime-${uuid.v4()}';
       final deviceWithId = device.copyWith(id: newId);
-      _devicesBox.put(newId, deviceWithId).ignore();
+      _persist(_devicesBox.put(newId, deviceWithId), 'Failed to create device');
     } finally {
       performance.stopTrace(trace);
     }
@@ -445,39 +484,51 @@ class HiveLocalStorageRepository implements LocalStorageRepository {
 
   @override
   void updateDevice({required DeviceModel device}) {
-    final groupDevices = _devicesBox.values
-        .where((d) => d.groupId == device.groupId)
-        .toList();
-    final normalizedName = device.title.toLowerCase().replaceAll(' ', '-');
+    final performance = getIt<PerformanceService>();
+    final trace = performance.startTrace('update_device');
+    try {
+      final groupDevices = _devicesBox.values
+          .where((d) => d.groupId == device.groupId)
+          .toList();
+      final normalizedName = device.title.toLowerCase().replaceAll(' ', '-');
 
-    final isDuplicate = groupDevices.any(
-      (existingDevice) =>
-          existingDevice.id != device.id &&
-          existingDevice.title.toLowerCase().replaceAll(' ', '-') ==
-              normalizedName,
-    );
+      final isDuplicate = groupDevices.any(
+        (existingDevice) =>
+            existingDevice.id != device.id &&
+            existingDevice.title.toLowerCase().replaceAll(' ', '-') ==
+                normalizedName,
+      );
 
-    if (isDuplicate) {
-      throw Exception('DUPLICATE_DEVICE_NAME');
-    }
+      if (isDuplicate) {
+        throw Exception('DUPLICATE_DEVICE_NAME');
+      }
 
-    if (_devicesBox.containsKey(device.id)) {
-      _devicesBox.put(device.id, device).ignore();
+      if (_devicesBox.containsKey(device.id)) {
+        _persist(_devicesBox.put(device.id, device), 'Failed to update device');
+      }
+    } finally {
+      performance.stopTrace(trace);
     }
   }
 
   @override
   void deleteDevice({required String deviceId}) {
-    if (_devicesBox.containsKey(deviceId)) {
-      _devicesBox.delete(deviceId).ignore();
-    } else {
-      throw Exception('DEVICE_NOT_FOUND');
+    final performance = getIt<PerformanceService>();
+    final trace = performance.startTrace('delete_device');
+    try {
+      if (_devicesBox.containsKey(deviceId)) {
+        _persist(_devicesBox.delete(deviceId), 'Failed to delete device');
+      } else {
+        throw Exception('DEVICE_NOT_FOUND');
+      }
+    } finally {
+      performance.stopTrace(trace);
     }
   }
 }
 
 class _BoxListenable<T> extends ValueListenable<List<T>> {
-  _BoxListenable(this._listenable);
+  new(this._listenable);
 
   final ValueListenable<Box<T>> _listenable;
 

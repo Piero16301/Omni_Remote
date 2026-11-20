@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:material_ui/material_ui.dart';
@@ -8,7 +9,7 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 
 class DeviceNumberTile extends StatefulWidget {
-  const DeviceNumberTile({
+  const new({
     required this.device,
     required this.group,
     required this.groupIsOnline,
@@ -80,16 +81,26 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
     _subscription = mqttService.messageStream.listen((messages) {
       for (final message in messages) {
         if (message.topic == status) {
-          final payload = message.payload as MqttPublishMessage;
-          final messageText = MqttPublishPayload.bytesToStringAsString(
-            payload.payload.message,
-          );
-          final parsedValue = double.tryParse(messageText);
+          try {
+            final payload = message.payload as MqttPublishMessage;
+            final messageText = MqttPublishPayload.bytesToStringAsString(
+              payload.payload.message,
+            );
+            final parsedValue = double.tryParse(messageText);
 
-          if (mounted && parsedValue != null) {
-            setState(() {
-              _value = parsedValue;
-            });
+            if (mounted && parsedValue != null) {
+              setState(() {
+                _value = parsedValue;
+              });
+            }
+          } on Object catch (e, stackTrace) {
+            if (getIt.isRegistered<CrashService>()) {
+              getIt<CrashService>().recordError(
+                e,
+                stackTrace,
+                reason: 'Failed to parse MQTT number device status payload',
+              );
+            }
           }
         }
       }
@@ -120,6 +131,13 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
 
     unawaited(_subscription?.cancel());
     _isSubscribed = false;
+
+    if (getIt.isRegistered<AnalyticsService>()) {
+      getIt<AnalyticsService>().logEvent(
+        name: 'verify_device_status',
+        parameters: {'device_id': widget.device.id, 'tile_type': 'number'},
+      );
+    }
 
     _trySubscribeMqttTopics();
   }
@@ -193,9 +211,10 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                         widget.device.title,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontVariations: <FontVariation>[
-                            ...(Theme.of(
-                                      context,
-                                    ).textTheme.bodyLarge?.fontVariations ??
+                            ...(Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.fontVariations ??
                                     const <FontVariation>[])
                                 .where((v) => v.axis != 'wght'),
                             const FontVariation('wght', 700),
@@ -286,9 +305,10 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                       device.title,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontVariations: <FontVariation>[
-                          ...(Theme.of(
-                                    context,
-                                  ).textTheme.titleLarge?.fontVariations ??
+                          ...(Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.fontVariations ??
                                   const <FontVariation>[])
                               .where((v) => v.axis != 'wght'),
                           const FontVariation('wght', 700),
@@ -325,9 +345,8 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                 ),
                 title: Text(
                   l10n.homeDeleteOption,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+                  style: Theme.of(context).textTheme.bodyLarge
+                      ?.copyWith(color: Theme.of(context).colorScheme.error),
                 ),
                 onTap: () {
                   Navigator.pop(context);
@@ -368,18 +387,22 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
               spacing: 10,
               children: [
                 Expanded(
-                  child: AppOutlinedButton(
+                  child: ExpressiveButton.outlined(
                     onPressed: () => Navigator.pop(context),
                     label: l10n.homeDeleteDialogCancel,
+                    isExpanded: true,
+                    size: ExpressiveButtonSize.large,
                   ),
                 ),
                 Expanded(
-                  child: AppFilledButton(
+                  child: ExpressiveButton.filled(
                     onPressed: () {
                       Navigator.pop(context);
                       widget.onDelete();
                     },
                     label: l10n.homeDeleteDialogConfirm,
+                    isExpanded: true,
+                    size: ExpressiveButtonSize.large,
                   ),
                 ),
               ],

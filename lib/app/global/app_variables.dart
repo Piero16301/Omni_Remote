@@ -9,6 +9,7 @@ class AppVariables {
   static const String commandSuffix = 'command';
 
   static const modalBottomSheetMaxHeightPct = 0.72;
+  static const double maxContentWidth = 720;
 
   static String buildGroupTopic({
     required String groupTitle,

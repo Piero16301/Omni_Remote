@@ -162,6 +162,49 @@ void main() {
     });
 
     testWidgets(
+      'transitions safely from boolean to number with default range values',
+      (tester) async {
+        var tileType = DeviceTileType.boolean;
+        await tester.pumpApp(
+          StatefulBuilder(
+            builder: (context, setState) {
+              return Scaffold(
+                body: Column(
+                  children: [
+                    DevicePreview(
+                      title: '',
+                      subtitle: '',
+                      iconName: 'LIGHT',
+                      tileType: tileType,
+                      rangeMin: 0,
+                      rangeMax: 0,
+                      divisions: 0,
+                      interval: 0,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          tileType = DeviceTileType.number;
+                        });
+                      },
+                      child: const Text('Switch to number'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+
+        expect(find.byType(Switch), findsOneWidget);
+        await tester.tap(find.text('Switch to number'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(Slider), findsOneWidget);
+      },
+    );
+
+    testWidgets(
       'inits safely when initial number value is out of bounds',
       (tester) async {},
     );

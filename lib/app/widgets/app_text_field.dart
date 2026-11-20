@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
 class AppTextField extends StatelessWidget {
-  const AppTextField({
+  const new({
     required this.label,
     this.hintText = '',
     this.errorText = '',

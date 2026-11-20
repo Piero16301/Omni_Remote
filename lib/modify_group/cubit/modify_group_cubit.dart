@@ -6,7 +6,7 @@ import 'package:omni_remote/app/app.dart';
 part 'modify_group_state.dart';
 
 class ModifyGroupCubit extends Cubit<ModifyGroupState> {
-  ModifyGroupCubit() : super(const ModifyGroupState());
+  new() : super(const ModifyGroupState());
 
   final LocalStorageService localStorage = getIt<LocalStorageService>();
   final CrashService _crashService = getIt<CrashService>();
@@ -40,7 +40,7 @@ class ModifyGroupCubit extends Cubit<ModifyGroupState> {
   }
 
   void saveGroupModel() {
-    if (!state.formKey.currentState!.validate()) {
+    if (!AppFunctions.validateForm(state.formKey)) {
       return;
     }
     emit(state.copyWith(saveStatus: ModifyGroupStatus.loading));
@@ -82,6 +82,10 @@ class ModifyGroupCubit extends Cubit<ModifyGroupState> {
           );
           modifyGroupError = ModifyGroupError.unknown;
       }
+      _analyticsService.logEvent(
+        name: 'save_group_failed',
+        parameters: {'reason': modifyGroupError.name},
+      );
       emit(
         state.copyWith(
           saveStatus: ModifyGroupStatus.failure,

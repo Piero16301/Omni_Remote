@@ -8,11 +8,11 @@ import 'package:mocktail/mocktail.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/connection/connection.dart';
 
-class MockLocalStorageService extends Mock implements LocalStorageService {}
+class MockLocalStorageService extends Mock implements LocalStorageService;
 
-class MockBuildContext extends Mock implements BuildContext {}
+class MockBuildContext extends Mock implements BuildContext;
 
-class MockAppCubit extends Mock implements AppCubit {}
+class MockAppCubit extends Mock implements AppCubit;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -35,18 +35,16 @@ void main() {
 
       await getIt.reset();
       setupServiceLocator(Environment.mock);
-      getIt
-        ..unregister<LocalStorageService>()
-        ..registerSingleton<LocalStorageService>(mockLocalStorageService);
+      await getIt.unregister<LocalStorageService>();
+      getIt.registerSingleton<LocalStorageService>(mockLocalStorageService);
 
       when(() => mockLocalStorageService.getBrokerUrl()).thenReturn('url');
       when(() => mockLocalStorageService.getBrokerPort()).thenReturn('1883');
       when(() => mockLocalStorageService.getBrokerUsername()).thenReturn('usr');
       when(() => mockLocalStorageService.getBrokerPassword()).thenReturn('pwd');
 
-      when(
-        () => mockAppCubit.stream,
-      ).thenAnswer((_) => const Stream<AppState>.empty());
+      when(() => mockAppCubit.stream)
+          .thenAnswer((_) => const Stream<AppState>.empty());
       when(() => mockAppCubit.state).thenReturn(const AppState());
 
       when(() => mockBuildContext.read<AppCubit>()).thenReturn(mockAppCubit);
@@ -203,9 +201,8 @@ void main() {
             brokerPassword: any(named: 'brokerPassword'),
           ),
         ).thenReturn(null);
-        when(
-          () => mockAppCubit.reconnectWithNewSettings(),
-        ).thenAnswer((_) async {});
+        when(() => mockAppCubit.reconnectWithNewSettings())
+            .thenAnswer((_) async {});
 
         await tester.pumpWidget(
           MaterialApp(
@@ -230,9 +227,8 @@ void main() {
         verify(
           () => mockLocalStorageService.saveBrokerUrl(brokerUrl: 'myBroker'),
         ).called(1);
-        verify(
-          () => mockLocalStorageService.saveBrokerPort(brokerPort: '1884'),
-        ).called(1);
+        verify(() => mockLocalStorageService.saveBrokerPort(brokerPort: '1884'))
+            .called(1);
         verify(
           () => mockLocalStorageService.saveBrokerUsername(
             brokerUsername: 'myUser',

@@ -9,15 +9,15 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 
-class MockAppCubit extends MockCubit<AppState> implements AppCubit {}
+class MockAppCubit extends MockCubit<AppState> implements AppCubit;
 
-class MockHomeCubit extends MockCubit<HomeState> implements HomeCubit {}
+class MockHomeCubit extends MockCubit<HomeState> implements HomeCubit;
 
-class MockMqttService extends Mock implements MqttService {}
+class MockMqttService extends Mock implements MqttService;
 
-class FakeBuildContext extends Fake implements BuildContext {}
+class FakeBuildContext extends Fake implements BuildContext;
 
-class FakeGroupModel extends Fake implements GroupModel {}
+class FakeGroupModel extends Fake implements GroupModel;
 
 void main() {
   setUpAll(() {
@@ -40,9 +40,8 @@ void main() {
       devicesNotifier = ValueNotifier<List<DeviceModel>>([]);
 
       when(() => mockMqttService.mqttClient).thenReturn(null);
-      when(
-        () => mockMqttService.messageStream,
-      ).thenAnswer((_) => const Stream.empty());
+      when(() => mockMqttService.messageStream)
+          .thenAnswer((_) => const Stream.empty());
       getIt.registerSingleton<MqttService>(mockMqttService);
 
       when(() => appCubit.state).thenReturn(
@@ -63,9 +62,8 @@ void main() {
 
     Widget buildSubject({BrokerConnectionStatus? brokerStatus}) {
       if (brokerStatus != null) {
-        when(
-          () => appCubit.state,
-        ).thenReturn(AppState(brokerConnectionStatus: brokerStatus));
+        when(() => appCubit.state)
+            .thenReturn(AppState(brokerConnectionStatus: brokerStatus));
       }
 
       final router = GoRouter(

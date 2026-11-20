@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -64,5 +58,24 @@ class DefaultFirebaseOptions {
     projectId: 'omni-remote-a8a9f',
     storageBucket: 'omni-remote-a8a9f.firebasestorage.app',
     iosBundleId: 'com.pmorales.omni.remote',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyADLGG1FY_d5x97aw3YOo700XltfbacTS8',
+    appId: '1:973688562510:ios:3052d74f70d9e48c31b41f',
+    messagingSenderId: '973688562510',
+    projectId: 'omni-remote-a8a9f',
+    storageBucket: 'omni-remote-a8a9f.firebasestorage.app',
+    iosBundleId: 'com.example.myApp',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBw_X5etOAILNp12PEBV2hR66sEjjax7JU',
+    appId: '1:973688562510:web:0e9f9ff07ffa155831b41f',
+    messagingSenderId: '973688562510',
+    projectId: 'omni-remote-a8a9f',
+    authDomain: 'omni-remote-a8a9f.firebaseapp.com',
+    storageBucket: 'omni-remote-a8a9f.firebasestorage.app',
+    measurementId: 'G-Z0CKHYD4MV',
   );
 }

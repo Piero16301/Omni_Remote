@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:omni_remote/app/app.dart';
 
@@ -40,6 +41,9 @@ class ServiceFactory {
       case Environment.mock:
         return MockCrashRepository();
       case Environment.prod:
+        if (kIsWeb) {
+          return MockCrashRepository();
+        }
         return CrashlyticsCrashRepository();
     }
   }
@@ -49,6 +53,12 @@ class ServiceFactory {
       case Environment.mock:
         return MockPerformanceRepository();
       case Environment.prod:
+        if (!kIsWeb &&
+            (defaultTargetPlatform == TargetPlatform.macOS ||
+                defaultTargetPlatform == TargetPlatform.windows ||
+                defaultTargetPlatform == TargetPlatform.linux)) {
+          return NoopPerformanceRepository();
+        }
         return FirebasePerformanceRepository();
     }
   }

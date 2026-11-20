@@ -3,7 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/home/home.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -3,6 +3,26 @@ import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/app/app.dart';
 
 class AppFunctions {
+  /// Validates [formKey] and scrolls the first invalid field into view if
+  /// it resides inside a [Scrollable].
+  static bool validateForm(GlobalKey<FormState> formKey) {
+    final invalidFields =
+        formKey.currentState?.validateGranularly() ?? const {};
+    if (invalidFields.isEmpty) {
+      return formKey.currentState != null;
+    }
+    final firstInvalidContext = invalidFields.first.context;
+    if (firstInvalidContext.mounted &&
+        Scrollable.maybeOf(firstInvalidContext) != null) {
+      Scrollable.ensureVisible(
+        firstInvalidContext,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+    return false;
+  }
+
   static void showSnackBar(
     BuildContext context, {
     String? message,
@@ -32,9 +52,10 @@ class AppFunctions {
                 message ?? '',
                 style: TextStyle(
                   fontVariations: <FontVariation>[
-                    ...(Theme.of(
-                              context,
-                            ).textTheme.labelMedium?.fontVariations ??
+                    ...(Theme.of(context)
+                                .textTheme
+                                .labelMedium
+                                ?.fontVariations ??
                             const <FontVariation>[])
                         .where((v) => v.axis != 'wght'),
                     const FontVariation('wght', 700),

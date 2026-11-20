@@ -2,7 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/app/app.dart';
 
 class AppRouteObserver extends NavigatorObserver {
-  AppRouteObserver({required this.analyticsService});
+  new({required this.analyticsService});
 
   final AnalyticsService analyticsService;
 

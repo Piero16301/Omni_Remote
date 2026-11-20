@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -13,18 +14,18 @@ import 'package:omni_remote/home/home.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 import 'package:typed_data/typed_data.dart';
 
-class MockAppCubit extends MockCubit<AppState> implements AppCubit {}
+class MockAppCubit extends MockCubit<AppState> implements AppCubit;
 
-class MockHomeCubit extends MockCubit<HomeState> implements HomeCubit {}
+class MockHomeCubit extends MockCubit<HomeState> implements HomeCubit;
 
-class MockMqttService extends Mock implements MqttService {}
+class MockMqttService extends Mock implements MqttService;
 
-class MockMqttServerClient extends Mock implements MqttServerClient {}
+class MockMqttServerClient extends Mock implements MqttServerClient;
 
 class MockMqttClientConnectionStatus extends Mock
-    implements MqttClientConnectionStatus {}
+    implements MqttClientConnectionStatus;
 
-class FakeUint8Buffer extends Fake implements Uint8Buffer {}
+class FakeUint8Buffer extends Fake implements Uint8Buffer;
 
 void main() {
   setUpAll(() {
@@ -59,22 +60,18 @@ void main() {
           StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast();
       devicesNotifier = ValueNotifier<List<DeviceModel>>([]);
 
-      when(
-        () => mockConnectionStatus.state,
-      ).thenReturn(MqttConnectionState.connected);
-      when(
-        () => mockMqttClient.connectionStatus,
-      ).thenReturn(mockConnectionStatus);
+      when(() => mockConnectionStatus.state)
+          .thenReturn(MqttConnectionState.connected);
+      when(() => mockMqttClient.connectionStatus)
+          .thenReturn(mockConnectionStatus);
       when(() => mockMqttClient.subscribe(any(), any())).thenReturn(null);
       when(() => mockMqttClient.unsubscribe(any())).thenAnswer((_) {});
-      when(
-        () => mockMqttClient.publishMessage(any(), any(), any()),
-      ).thenReturn(1);
+      when(() => mockMqttClient.publishMessage(any(), any(), any()))
+          .thenReturn(1);
 
       when(() => mockMqttService.mqttClient).thenReturn(mockMqttClient);
-      when(
-        () => mockMqttService.messageStream,
-      ).thenAnswer((_) => messageController.stream);
+      when(() => mockMqttService.messageStream)
+          .thenAnswer((_) => messageController.stream);
 
       if (!getIt.isRegistered<MqttService>()) {
         getIt.registerSingleton<MqttService>(mockMqttService);
@@ -154,9 +151,8 @@ void main() {
         suffix: AppVariables.onlineSuffix,
       );
 
-      verify(
-        () => mockMqttClient.subscribe(expectedTopic, MqttQos.atLeastOnce),
-      ).called(1);
+      verify(() => mockMqttClient.subscribe(expectedTopic, MqttQos.atLeastOnce))
+          .called(1);
     });
 
     testWidgets('shows group options on long press', (tester) async {
@@ -195,7 +191,13 @@ void main() {
       await tester.tap(find.byType(ListTile).last);
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(AppFilledButton));
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) =>
+              w is ExpressiveButton &&
+              w.variant == ExpressiveButtonVariant.filled,
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(deleteCalled, isTrue);
@@ -212,7 +214,13 @@ void main() {
 
       expect(find.byType(AlertDialog), findsOneWidget);
 
-      await tester.tap(find.byType(AppOutlinedButton));
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) =>
+              w is ExpressiveButton &&
+              w.variant == ExpressiveButtonVariant.outlined,
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(AlertDialog), findsNothing);
@@ -327,9 +335,8 @@ void main() {
         icon: 'settings',
       );
 
-      when(
-        () => homeCubit.getDevicesListenable(),
-      ).thenReturn(ValueNotifier([]));
+      when(() => homeCubit.getDevicesListenable())
+          .thenReturn(ValueNotifier([]));
 
       await tester.pumpWidget(
         MultiBlocProvider(

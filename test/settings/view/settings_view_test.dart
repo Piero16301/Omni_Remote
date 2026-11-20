@@ -9,9 +9,9 @@ import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/l10n/l10n.dart';
 import 'package:omni_remote/settings/settings.dart';
 
-class MockAppCubit extends MockCubit<AppState> implements AppCubit {}
+class MockAppCubit extends MockCubit<AppState> implements AppCubit;
 
-class FakeBuildContext extends Fake implements BuildContext {}
+class FakeBuildContext extends Fake implements BuildContext;
 
 void main() {
   setUpAll(() {
@@ -28,15 +28,12 @@ void main() {
       appCubit = MockAppCubit();
       when(() => appCubit.state).thenReturn(const AppState());
 
-      when(
-        () => appCubit.changeLanguage(language: any(named: 'language')),
-      ).thenReturn(null);
-      when(
-        () => appCubit.changeTheme(theme: any(named: 'theme')),
-      ).thenReturn(null);
-      when(
-        () => appCubit.changeBaseColor(baseColor: any(named: 'baseColor')),
-      ).thenReturn(null);
+      when(() => appCubit.changeLanguage(language: any(named: 'language')))
+          .thenReturn(null);
+      when(() => appCubit.changeTheme(theme: any(named: 'theme')))
+          .thenReturn(null);
+      when(() => appCubit.changeBaseColor(baseColor: any(named: 'baseColor')))
+          .thenReturn(null);
       when(
         () => appCubit.changeFontFamily(fontFamily: any(named: 'fontFamily')),
       ).thenReturn(null);
