@@ -119,34 +119,32 @@ class ModifyDeviceView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    ExpressiveCardGroup(
-                      margin: EdgeInsets.zero,
-                      children: [
-                        ExpressiveListTile(
-                          leading: ExpressiveBadge(
-                            icon: HugeIcon(
-                              icon: IconHelper.getIconByName(
-                                selectedGroup.icon,
+                    ExpressiveDropdownButton<String>(
+                      label: l10n.modifyDeviceGroupLabel,
+                      modalTitle: l10n.modifyDeviceSelectGroup,
+                      hintText: l10n.modifyDeviceNoGroup,
+                      value: state.selectedGroupId,
+                      maxHeightFraction:
+                          AppVariables.modalBottomSheetMaxHeightPct,
+                      placeholderIcon: HugeIcon(
+                        icon: IconHelper.getIconByName(''),
+                        strokeWidth: 2,
+                      ),
+                      items: groups
+                          .map(
+                            (group) => ExpressiveDropdownItem<String>(
+                              value: group.id,
+                              label: group.title,
+                              icon: HugeIcon(
+                                icon: IconHelper.getIconByName(group.icon),
+                                strokeWidth: 2,
                               ),
-                              strokeWidth: 2,
                             ),
-                          ),
-                          title: Text(l10n.modifyDeviceGroupLabel),
-                          subtitle: Text(
-                            selectedGroup.title.isNotEmpty
-                                ? selectedGroup.title
-                                : l10n.modifyDeviceNoGroup,
-                          ),
-                          trailing: HugeIcon(
-                            icon: HugeIcons.strokeRoundedArrowRight01,
-                            size: 20,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurfaceVariant,
-                          ),
-                          onTap: () => _showGroupPickerModal(context, state),
-                        ),
-                      ],
+                          )
+                          .toList(),
+                      onChanged: context
+                          .read<ModifyDeviceCubit>()
+                          .changeSelectedGroup,
                     ),
                     const SizedBox(height: 16),
                     AppIconSelector(
@@ -391,104 +389,6 @@ class ModifyDeviceView extends StatelessWidget {
               icon: HugeIcons.strokeRoundedFloppyDisk,
               size: 28,
               strokeWidth: 2,
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showGroupPickerModal(BuildContext context, ModifyDeviceState state) {
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final groups = context.read<ModifyDeviceCubit>().groups;
-    final maxHeight =
-        MediaQuery.of(context).size.height *
-        AppVariables.modalBottomSheetMaxHeightPct;
-
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: colorScheme.surfaceContainer,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      builder: (modalContext) {
-        return ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: maxHeight),
-          child: SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 36,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: colorScheme.onSurfaceVariant.withValues(
-                        alpha: 0.4,
-                      ),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.modifyDeviceSelectGroup,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Flexible(
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.zero,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: groups.map((group) {
-                          final isSelected = state.selectedGroupId == group.id;
-                          return ListTile(
-                            leading: HugeIcon(
-                              icon: IconHelper.getIconByName(group.icon),
-                              color: isSelected
-                                  ? colorScheme.primary
-                                  : colorScheme.onSurfaceVariant,
-                              strokeWidth: 2,
-                            ),
-                            title: Text(
-                              group.title,
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                fontWeight: isSelected
-                                    ? FontWeight.w700
-                                    : FontWeight.w500,
-                                color: isSelected
-                                    ? colorScheme.primary
-                                    : colorScheme.onSurface,
-                              ),
-                            ),
-                            trailing: isSelected
-                                ? HugeIcon(
-                                    icon: HugeIcons
-                                        .strokeRoundedCheckmarkCircle02,
-                                    color: colorScheme.primary,
-                                    strokeWidth: 2,
-                                  )
-                                : null,
-                            onTap: () {
-                              context
-                                  .read<ModifyDeviceCubit>()
-                                  .changeSelectedGroup(group.id);
-                              Navigator.pop(modalContext);
-                            },
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
         );

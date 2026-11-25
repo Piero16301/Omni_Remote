@@ -234,6 +234,8 @@ void main() {
 
         await tester.pumpWidget(buildSubject());
 
+        expect(find.byType(ExpressiveDropdownButton<String>), findsOneWidget);
+
         await tester.tap(find.byType(ExpressiveListTile));
         await tester.pumpAndSettle();
 

@@ -42,7 +42,6 @@ void main() {
         ),
       );
 
-      when(() => connectionCubit.togglePasswordVisibility()).thenReturn(null);
       when(() => connectionCubit.saveAndConnect(context: any(named: 'context')))
           .thenAnswer((_) async {});
       when(
@@ -67,15 +66,18 @@ void main() {
     testWidgets('triggers cubit methods on form interaction', (tester) async {
       await tester.pumpWidget(buildSubject());
 
-      final urlField = find.widgetWithText(AppTextField, 'mqtt.eclipse.org');
+      final urlField = find.widgetWithText(
+        ExpressiveTextFormField,
+        'mqtt.eclipse.org',
+      );
       await tester.enterText(urlField, 'new.url');
       verify(() => connectionCubit.changeBrokerUrl('new.url')).called(1);
 
-      final portField = find.widgetWithText(AppTextField, '1883');
+      final portField = find.widgetWithText(ExpressiveTextFormField, '1883');
       await tester.enterText(portField, '8883');
       verify(() => connectionCubit.changeBrokerPort('8883')).called(1);
 
-      final typeWidgets = find.byType(AppTextField);
+      final typeWidgets = find.byType(ExpressiveTextFormField);
       await tester.enterText(typeWidgets.at(2), 'user');
       verify(() => connectionCubit.changeBrokerUsername('user')).called(1);
 
@@ -89,14 +91,24 @@ void main() {
 
       final toggleIcon = find.byWidgetPredicate(
         (widget) =>
-            widget is HugeIcon && widget.icon == HugeIcons.strokeRoundedEye,
+            widget is HugeIcon && widget.icon == HugeIcons.strokeRoundedView,
       );
-      final visibilityToggle = find.ancestor(
-        of: toggleIcon,
-        matching: find.byType(IconButton),
+      expect(toggleIcon, findsOneWidget);
+      await tester.tap(toggleIcon);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is HugeIcon &&
+              widget.icon == HugeIcons.strokeRoundedViewOffSlash,
+        ),
+        findsOneWidget,
       );
-      tester.widget<IconButton>(visibilityToggle).onPressed?.call();
-      verify(() => connectionCubit.togglePasswordVisibility()).called(1);
+      expect(
+        tester.widget<TextField>(find.byType(TextField).at(3)).obscureText,
+        isFalse,
+      );
 
       final saveButton = find.byWidgetPredicate(
         (w) =>
