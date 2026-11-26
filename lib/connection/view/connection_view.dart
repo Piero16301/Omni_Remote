@@ -73,17 +73,18 @@ class ConnectionView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    AppTextField(
+                    ExpressiveTextFormField.filled(
                       initialValue: state.brokerUrl,
                       onChanged: context
                           .read<ConnectionCubit>()
                           .changeBrokerUrl,
-                      label: l10n.connectionUrlLabel,
+                      labelText: l10n.connectionUrlLabel,
                       hintText: l10n.connectionUrlHint,
-                      prefix: const HugeIcon(
+                      prefixIcon: const HugeIcon(
                         icon: HugeIcons.strokeRoundedLink01,
                         strokeWidth: 2,
                       ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return l10n.connectionFieldErrorEmpty;
@@ -92,18 +93,19 @@ class ConnectionView extends StatelessWidget {
                       },
                     ),
                     const SizedBox(height: 16),
-                    AppTextField(
+                    ExpressiveTextFormField.filled(
                       initialValue: state.brokerPort,
                       onChanged: context
                           .read<ConnectionCubit>()
                           .changeBrokerPort,
-                      label: l10n.connectionPortLabel,
+                      labelText: l10n.connectionPortLabel,
                       hintText: l10n.connectionPortHint,
-                      prefix: const HugeIcon(
+                      prefixIcon: const HugeIcon(
                         icon: HugeIcons.strokeRoundedGps01,
                         strokeWidth: 2,
                       ),
                       keyboardType: TextInputType.number,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return l10n.connectionFieldErrorEmpty;
@@ -112,17 +114,18 @@ class ConnectionView extends StatelessWidget {
                       },
                     ),
                     const SizedBox(height: 16),
-                    AppTextField(
+                    ExpressiveTextFormField.filled(
                       initialValue: state.brokerUsername,
                       onChanged: context
                           .read<ConnectionCubit>()
                           .changeBrokerUsername,
-                      label: l10n.connectionUsernameLabel,
+                      labelText: l10n.connectionUsernameLabel,
                       hintText: l10n.connectionUsernameHint,
-                      prefix: const HugeIcon(
+                      prefixIcon: const HugeIcon(
                         icon: HugeIcons.strokeRoundedUser,
                         strokeWidth: 2,
                       ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return l10n.connectionFieldErrorEmpty;
@@ -131,35 +134,26 @@ class ConnectionView extends StatelessWidget {
                       },
                     ),
                     const SizedBox(height: 16),
-                    AppTextField(
+                    ExpressiveTextFormField.filled(
                       initialValue: state.brokerPassword,
                       onChanged: context
                           .read<ConnectionCubit>()
                           .changeBrokerPassword,
-                      label: l10n.connectionPasswordLabel,
+                      labelText: l10n.connectionPasswordLabel,
                       hintText: l10n.connectionPasswordHint,
-                      prefix: const HugeIcon(
+                      prefixIcon: const HugeIcon(
                         icon: HugeIcons.strokeRoundedLockPassword,
                         strokeWidth: 2,
                       ),
-                      obscureText: state.hidePassword,
+                      obscureText: true,
+                      showPasswordToggle: true,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return l10n.connectionFieldErrorEmpty;
                         }
                         return null;
                       },
-                      suffix: IconButton(
-                        onPressed: () => context
-                            .read<ConnectionCubit>()
-                            .togglePasswordVisibility(),
-                        icon: HugeIcon(
-                          icon: state.hidePassword
-                              ? HugeIcons.strokeRoundedEye
-                              : HugeIcons.strokeRoundedViewOff,
-                          strokeWidth: 2,
-                        ),
-                      ),
                     ),
                     const SizedBox(height: 32),
                     ExpressiveButton.filled(
