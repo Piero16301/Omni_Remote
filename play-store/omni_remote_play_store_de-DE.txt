@@ -1,0 +1,47 @@
+App name (max 30 chars):
+Omni Remote: MQTT IoT-Control
+
+Short description (max 80 chars):
+Steuere Arduino, ESP32 & Raspberry Pi per MQTT mit deinem eigenen Dashboard
+
+Full description:
+Dein Smartphone. Dein Dashboard. Deine IoT-Projekte im Griff. 🚀
+
+Keine Lust mehr auf starre Apps, die nie zu deinem Projekt passen? Omni Remote ist der schnellste Weg, um deinen Arduino, ESP8266, ESP32 und Raspberry Pi per MQTT zu steuern – mit einem Dashboard, das DU in weniger als einer Minute gestaltest.
+
+Kein Konto. Keine Cloud-Bindung. Kein App-Code nötig. Einfach verbinden, Gerät hinzufügen und loslegen.
+
+⚡ IN 4 EINFACHEN SCHRITTEN STARTKLAR
+1. Gib deinen MQTT-Broker ein (HiveMQ, Mosquitto, EMQX oder deinen eigenen).
+2. Erstelle eine Gruppe, z. B. „Wohnzimmer“ oder „Roboter“.
+3. Füge ein Gerät hinzu – Omni Remote zeigt dir sofort die Command- und Status-Topics.
+4. Kopiere die Topics in deinen Arduino/ESP-Code. Fertig – steuere alles von überall! 🌍
+
+🎛️ ALLES, WAS DU FÜR DEINE HARDWARE BRAUCHST
+• Schalter (EIN/AUS): Lichter, Relais, Steckdosen, Pumpen, Schlösser.
+• Schieberegler & Zahlenwerte: LED-Helligkeit (PWM), Motorgeschwindigkeit, Servowinkel, Thermostate. Lege Minimum, Maximum und Schrittweite selbst fest.
+• Live-Status: Sieh den aktuellen Zustand deines Geräts samt Verbindungsanzeige.
+• Clevere Gruppen: Organisiere nach Raum, Projekt oder Roboter – mit eigenem Namen und Symbol.
+
+🔗 FLEXIBLE & SICHERE MQTT-VERBINDUNG
+• Funktioniert mit jedem lokalen oder Cloud-MQTT-Broker.
+• Authentifizierung mit Benutzername & Passwort.
+• Automatisch generierte Topics zum Kopieren – weniger konfigurieren, mehr tüfteln.
+
+🎨 MACH ES ZU DEINEM
+• Hunderte Symbole für deine Geräte und Gruppen.
+• Helles & dunkles Design sowie eine Farbpalette nach deinem Geschmack.
+• Verfügbar auf Englisch und Spanisch.
+• Moderne, flüssige Oberfläche auf Basis von Flutter.
+
+🔒 DATENSCHUTZ ZUERST
+Alle Einstellungen und Geräte werden lokal auf deinem Smartphone gespeichert. Keine Kontopflicht, keine eigenen Server.
+
+👩‍💻 PERFEKT FÜR
+Maker • Studierende • Smart-Home-Fans • Robotik-Projekte • Schulprojekte • DIY-Heimautomation
+
+Verschwende keine Stunden mehr mit Oberflächen. Lade Omni Remote jetzt herunter und mach dein Smartphone zur Fernbedienung für deine Elektronik-Projekte! ⭐
+
+Fragen oder Ideen? Wir freuen uns auf dein Feedback – hinterlasse eine Bewertung und sag uns, welches Feature du dir als Nächstes wünschst!
+
+Keywords: MQTT, IoT, Arduino, ESP32, ESP8266, Raspberry Pi, Smart Home, Heimautomation, Fernbedienung, Maker, Dashboard

@@ -11,14 +11,14 @@ dependencies:
   bloc: ^9.2.2
   country_flags: ^4.1.2
   equatable: ^3.0.0
-  expressive_kit: ^0.1.1
+  expressive_kit: ^0.1.2
   firebase_analytics: ^13.1.0
   firebase_core: ^5.2.0
   firebase_crashlytics: ^6.1.0
   firebase_performance: ^0.12.2
   flutter:
     sdk: flutter
-  flutter_bloc: ^9.1.1
+  flutter_bloc: ^9.1.2
   flutter_localizations:
     sdk: flutter
   get_it: ^9.3.0
@@ -34,7 +34,7 @@ dependencies:
   uuid: ^4.6.0
 
 dev_dependencies:
-  bloc_test: ^10.0.0
+  bloc_test: ^10.0.1
   flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
