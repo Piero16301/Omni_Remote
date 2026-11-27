@@ -201,6 +201,9 @@ jobs:
           PATCH=${PADDED: -1:1}
           echo "value=${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
 
+      - name: 🔧 Set Environment to Production
+        run: sed -i 's/Environment\.[a-zA-Z0-9_]*/Environment.prod/g' lib/main.dart
+
       - name: 🛠️ Build the Application
         run: |
           BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
