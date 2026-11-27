@@ -231,43 +231,18 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
                     ],
                   ),
                 ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 8,
-                  children: [
-                    IconButton(
-                      onPressed: widget.groupIsOnline
-                          ? () =>
-                                _publishCommand(_value - widget.device.interval)
-                          : null,
-                      icon: const HugeIcon(
-                        icon: HugeIcons.strokeRoundedRemove01,
-                        strokeWidth: 2,
-                      ),
-                    ),
-                    Text(
-                      _value.toStringAsFixed(1),
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    IconButton(
-                      onPressed: widget.groupIsOnline
-                          ? () =>
-                                _publishCommand(_value + widget.device.interval)
-                          : null,
-                      icon: const HugeIcon(
-                        icon: HugeIcons.strokeRoundedAdd01,
-                        strokeWidth: 2,
-                      ),
-                    ),
-                  ],
+                Text(
+                  _value.toStringAsFixed(1),
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],
             ),
-            Slider(
+            ExpressiveSlider(
               min: widget.device.rangeMin,
               max: widget.device.rangeMax,
               divisions: widget.device.divisions,
               value: _value,
+              step: widget.device.interval,
               onChanged: widget.groupIsOnline
                   ? (value) => setState(() {
                       _value = value;
@@ -363,53 +338,23 @@ class _DeviceNumberTileState extends State<DeviceNumberTile> {
   void _showDeleteConfirmation(BuildContext context, DeviceModel device) {
     final l10n = AppLocalizations.of(context);
 
-    showDialog<void>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(
-            l10n.homeDeleteDialogTitle(device.title),
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontVariations: <FontVariation>[
-                ...(Theme.of(context).textTheme.titleLarge?.fontVariations ??
-                        const <FontVariation>[])
-                    .where((v) => v.axis != 'wght'),
-                const FontVariation('wght', 700),
-              ],
-            ),
-          ),
-          content: Text(
-            l10n.homeDeleteDialogContent(device.title),
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          actions: [
-            Row(
-              spacing: 10,
-              children: [
-                Expanded(
-                  child: ExpressiveButton.outlined(
-                    onPressed: () => Navigator.pop(context),
-                    label: l10n.homeDeleteDialogCancel,
-                    isExpanded: true,
-                    size: ExpressiveButtonSize.large,
-                  ),
-                ),
-                Expanded(
-                  child: ExpressiveButton.filled(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      widget.onDelete();
-                    },
-                    label: l10n.homeDeleteDialogConfirm,
-                    isExpanded: true,
-                    size: ExpressiveButtonSize.large,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
+    unawaited(
+      showExpressiveAlertDialog<bool>(
+        context: context,
+        title: l10n.homeDeleteDialogTitle(device.title),
+        content: l10n.homeDeleteDialogContent(device.title),
+        icon: const HugeIcon(
+          icon: HugeIcons.strokeRoundedDelete02,
+          strokeWidth: 2,
+        ),
+        isDestructive: true,
+        confirmLabel: l10n.homeDeleteDialogConfirm,
+        cancelLabel: l10n.homeDeleteDialogCancel,
+      ).then((confirmed) {
+        if (confirmed ?? false) {
+          widget.onDelete();
+        }
+      }),
     );
   }
 }

@@ -4,6 +4,8 @@
     "@homeAppBarTitle": {},
     "homeNewGroupButton": "Nouveau groupe",
     "@homeNewGroupButton": {},
+    "homeNewDeviceButton": "Appareil",
+    "@homeNewDeviceButton": {},
     "homeEmptyGroupsMessage": "Aucun groupe enregistré, appuyez sur le bouton ci-dessous pour créer un nouveau groupe",
     "@homeEmptyGroupsMessage": {},
     "settingsAppearanceTitle": "Apparence",

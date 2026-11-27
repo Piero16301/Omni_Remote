@@ -174,50 +174,32 @@ class HomeView extends StatelessWidget {
                             context.read<HomeCubit>().deleteGroup(group),
                       ),
                     ),
-                    Card(
-                      elevation: 0,
-                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      clipBehavior: Clip.antiAlias,
-                      child: InkWell(
-                        onTap: () =>
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: ExpressiveButton.tonal(
+                        onPressed: () =>
                             context.pushNamed(AppRoute.modifyGroup.name),
-                        borderRadius: BorderRadius.circular(24),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const HugeIcon(
-                                icon: HugeIcons.strokeRoundedDashboardSquareAdd,
-                                strokeWidth: 2,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                l10n.homeNewGroupButton,
-                                style: Theme.of(context).textTheme.titleSmall
-                                    ?.copyWith(fontWeight: FontWeight.w600),
-                              ),
-                            ],
-                          ),
+                        label: l10n.homeNewGroupButton,
+                        icon: const HugeIcon(
+                          icon: HugeIcons.strokeRoundedDashboardSquareAdd,
+                          strokeWidth: 2,
                         ),
+                        isExpanded: true,
+                        size: ExpressiveButtonSize.large,
                       ),
                     ),
                   ],
                 ),
               ),
               floatingActionButton: groups.isNotEmpty
-                  ? ExpressiveFab(
+                  ? ExpressiveExtendedFab(
                       onPressed: () =>
                           context.pushNamed(AppRoute.modifyDevice.name),
                       icon: const HugeIcon(
-                        icon: HugeIcons.strokeRoundedComputerAdd,
-                        size: 28,
+                        icon: HugeIcons.strokeRoundedAdd01,
                         strokeWidth: 2,
                       ),
+                      label: l10n.homeNewDeviceButton,
                     )
                   : null,
             );

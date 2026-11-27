@@ -79,15 +79,16 @@ class ModifyDeviceView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    AppTextField(
+                    ExpressiveTextFormField.filled(
                       initialValue: state.title,
                       onChanged: context.read<ModifyDeviceCubit>().changeTitle,
-                      label: l10n.modifyDeviceTitleLabel,
+                      labelText: l10n.modifyDeviceTitleLabel,
                       hintText: l10n.modifyDeviceTitleHint,
-                      prefix: const HugeIcon(
+                      prefixIcon: const HugeIcon(
                         icon: HugeIcons.strokeRoundedBookmark01,
                         strokeWidth: 2,
                       ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return l10n.modifyDeviceTitleErrorEmpty;
@@ -105,15 +106,14 @@ class ModifyDeviceView extends StatelessWidget {
                       },
                     ),
                     const SizedBox(height: 16),
-                    AppTextField(
+                    ExpressiveTextFormField.filled(
                       initialValue: state.subtitle,
-                      isRequired: false,
                       onChanged: context
                           .read<ModifyDeviceCubit>()
                           .changeSubtitle,
-                      label: l10n.modifyDeviceSubtitleLabel,
+                      labelText: l10n.modifyDeviceSubtitleLabel,
                       hintText: l10n.modifyDeviceSubtitleHint,
-                      prefix: const HugeIcon(
+                      prefixIcon: const HugeIcon(
                         icon: HugeIcons.strokeRoundedNote,
                         strokeWidth: 2,
                       ),
@@ -220,7 +220,7 @@ class ModifyDeviceView extends StatelessWidget {
                         spacing: 16,
                         children: [
                           Expanded(
-                            child: AppTextField(
+                            child: ExpressiveTextFormField.filled(
                               initialValue: state.deviceModel != null
                                   ? state.rangeMin.toString()
                                   : (state.rangeMin != 0
@@ -238,8 +238,10 @@ class ModifyDeviceView extends StatelessWidget {
                                   const TextInputType.numberWithOptions(
                                     decimal: true,
                                   ),
-                              label: l10n.modifyDeviceRangeMinLabel,
+                              labelText: l10n.modifyDeviceRangeMinLabel,
                               hintText: l10n.modifyDeviceRangeMinHint,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return l10n.modifyDeviceRangeErrorEmpty;
@@ -256,7 +258,7 @@ class ModifyDeviceView extends StatelessWidget {
                             ),
                           ),
                           Expanded(
-                            child: AppTextField(
+                            child: ExpressiveTextFormField.filled(
                               initialValue: state.rangeMax != 0
                                   ? state.rangeMax.toString()
                                   : '',
@@ -272,8 +274,10 @@ class ModifyDeviceView extends StatelessWidget {
                                   const TextInputType.numberWithOptions(
                                     decimal: true,
                                   ),
-                              label: l10n.modifyDeviceRangeMaxLabel,
+                              labelText: l10n.modifyDeviceRangeMaxLabel,
                               hintText: l10n.modifyDeviceRangeMaxHint,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return l10n.modifyDeviceRangeErrorEmpty;
@@ -294,7 +298,7 @@ class ModifyDeviceView extends StatelessWidget {
                         spacing: 16,
                         children: [
                           Expanded(
-                            child: AppTextField(
+                            child: ExpressiveTextFormField.filled(
                               initialValue: state.divisions != 0
                                   ? state.divisions.toString()
                                   : '',
@@ -307,8 +311,10 @@ class ModifyDeviceView extends StatelessWidget {
                                 }
                               },
                               keyboardType: TextInputType.number,
-                              label: l10n.modifyDeviceDivisionsLabel,
+                              labelText: l10n.modifyDeviceDivisionsLabel,
                               hintText: l10n.modifyDeviceDivisionsHint,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return l10n.modifyDeviceRangeErrorEmpty;
@@ -325,7 +331,7 @@ class ModifyDeviceView extends StatelessWidget {
                             ),
                           ),
                           Expanded(
-                            child: AppTextField(
+                            child: ExpressiveTextFormField.filled(
                               initialValue: state.interval != 0
                                   ? state.interval.toString()
                                   : '',
@@ -341,8 +347,10 @@ class ModifyDeviceView extends StatelessWidget {
                                   const TextInputType.numberWithOptions(
                                     decimal: true,
                                   ),
-                              label: l10n.modifyDeviceIntervalLabel,
+                              labelText: l10n.modifyDeviceIntervalLabel,
                               hintText: l10n.modifyDeviceIntervalHint,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return l10n.modifyDeviceRangeErrorEmpty;

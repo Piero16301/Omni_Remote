@@ -1,3 +1,4 @@
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/app/app.dart';
@@ -141,188 +142,138 @@ class _DevicePreviewTileState extends State<DevicePreviewTile> {
 
     switch (widget.tileType) {
       case DeviceTileType.boolean:
-        return Card(
+        return ExpressiveCard(
           margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              spacing: 16,
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.circle,
-                  ),
+          child: Row(
+            spacing: 16,
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
                 ),
-                HugeIcon(
-                  icon: IconHelper.getIconByName(widget.iconName),
-                  size: 28,
-                  strokeWidth: 2,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 4,
-                    children: [
-                      Text(
-                        widget.title.isEmpty
-                            ? l10n.modifyDeviceDeviceTitle
-                            : widget.title,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontVariations: <FontVariation>[
-                            ...(Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.fontVariations ??
-                                    const <FontVariation>[])
-                                .where((v) => v.axis != 'wght'),
-                            const FontVariation('wght', 700),
-                          ],
-                        ),
+              ),
+              HugeIcon(
+                icon: IconHelper.getIconByName(widget.iconName),
+                size: 28,
+                strokeWidth: 2,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 4,
+                  children: [
+                    Text(
+                      widget.title.isEmpty
+                          ? l10n.modifyDeviceDeviceTitle
+                          : widget.title,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontVariations: <FontVariation>[
+                          ...(Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.fontVariations ??
+                                  const <FontVariation>[])
+                              .where((v) => v.axis != 'wght'),
+                          const FontVariation('wght', 700),
+                        ],
                       ),
-                      Visibility(
-                        visible: widget.subtitle.isNotEmpty,
-                        child: Text(
+                    ),
+                    Visibility(
+                      visible: widget.subtitle.isNotEmpty,
+                      child: Text(
+                        widget.subtitle.isEmpty
+                            ? l10n.modifyDeviceDeviceSubtitle
+                            : widget.subtitle,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ExpressiveSwitch(
+                value: _boolValue,
+                onChanged: (value) {
+                  setState(() {
+                    _boolValue = value;
+                  });
+                },
+              ),
+            ],
+          ),
+        );
+      case DeviceTileType.number:
+        return ExpressiveCard(
+          margin: EdgeInsets.zero,
+          child: Column(
+            children: [
+              Row(
+                spacing: 16,
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: Colors.green,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  HugeIcon(
+                    icon: IconHelper.getIconByName(widget.iconName),
+                    size: 28,
+                    strokeWidth: 2,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 4,
+                      children: [
+                        Text(
+                          widget.title.isEmpty
+                              ? l10n.modifyDeviceDeviceTitle
+                              : widget.title,
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(
+                                fontVariations: <FontVariation>[
+                                  ...(Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge
+                                              ?.fontVariations ??
+                                          const <FontVariation>[])
+                                      .where((v) => v.axis != 'wght'),
+                                  const FontVariation('wght', 700),
+                                ],
+                              ),
+                        ),
+                        Text(
                           widget.subtitle.isEmpty
                               ? l10n.modifyDeviceDeviceSubtitle
                               : widget.subtitle,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Switch(
-                  value: _boolValue,
-                  onChanged: (value) {
-                    setState(() {
-                      _boolValue = value;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      case DeviceTileType.number:
-        return Card(
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Row(
-                  spacing: 16,
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: Colors.green,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    HugeIcon(
-                      icon: IconHelper.getIconByName(widget.iconName),
-                      size: 28,
-                      strokeWidth: 2,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 4,
-                        children: [
-                          Text(
-                            widget.title.isEmpty
-                                ? l10n.modifyDeviceDeviceTitle
-                                : widget.title,
-                            style: Theme.of(context).textTheme.bodyLarge
-                                ?.copyWith(
-                                  fontVariations: <FontVariation>[
-                                    ...(Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge
-                                                ?.fontVariations ??
-                                            const <FontVariation>[])
-                                        .where((v) => v.axis != 'wght'),
-                                    const FontVariation('wght', 700),
-                                  ],
-                                ),
-                          ),
-                          Text(
-                            widget.subtitle.isEmpty
-                                ? l10n.modifyDeviceDeviceSubtitle
-                                : widget.subtitle,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 8,
-                      children: [
-                        Visibility(
-                          visible: widget.interval > 0,
-                          child: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                if (_numberValue - widget.interval <
-                                    _minValue) {
-                                  _numberValue = _minValue;
-                                } else {
-                                  _numberValue = _numberValue - widget.interval;
-                                }
-                              });
-                            },
-                            icon: const HugeIcon(
-                              icon: HugeIcons.strokeRoundedRemove01,
-                              strokeWidth: 2,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          _numberValue.toStringAsFixed(1),
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        Visibility(
-                          visible: widget.interval > 0,
-                          child: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                if (_numberValue + widget.interval >
-                                    _maxValue) {
-                                  _numberValue = _maxValue;
-                                } else {
-                                  _numberValue = _numberValue + widget.interval;
-                                }
-                              });
-                            },
-                            icon: const HugeIcon(
-                              icon: HugeIcons.strokeRoundedAdd01,
-                              strokeWidth: 2,
-                            ),
-                          ),
-                        ),
                       ],
                     ),
-                  ],
-                ),
-                Slider(
-                  min: _minValue,
-                  max: _maxValue,
-                  divisions: _divisions,
-                  value: _numberValue,
-                  onChanged: (value) {
-                    setState(() {
-                      _numberValue = value;
-                    });
-                  },
-                ),
-              ],
-            ),
+                  ),
+                  Text(
+                    _numberValue.toStringAsFixed(1),
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ],
+              ),
+              ExpressiveSlider(
+                min: _minValue,
+                max: _maxValue,
+                divisions: _divisions,
+                value: _numberValue,
+                onChanged: (value) {
+                  setState(() {
+                    _numberValue = value;
+                  });
+                },
+              ),
+            ],
           ),
         );
     }

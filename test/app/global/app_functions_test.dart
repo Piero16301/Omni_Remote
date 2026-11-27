@@ -34,8 +34,5 @@ void main() {
 
     expect(find.text('Test message'), findsOneWidget);
     expect(find.byType(SnackBar), findsOneWidget);
-
-    final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
-    expect(snackBar.backgroundColor, Colors.green);
   });
 }

@@ -8,15 +8,16 @@ abstract class PerformanceRepository {
 }
 
 class MockPerformanceRepository implements PerformanceRepository {
+  final List<String> startedTraces = <String>[];
+
   @override
   Trace? startTrace(String name) {
-    throw UnimplementedError();
+    startedTraces.add(name);
+    return null;
   }
 
   @override
-  void stopTrace(Trace? trace) {
-    throw UnimplementedError();
-  }
+  void stopTrace(Trace? trace) {}
 }
 
 class NoopPerformanceRepository implements PerformanceRepository {

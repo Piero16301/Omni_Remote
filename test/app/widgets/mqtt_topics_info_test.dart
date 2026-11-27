@@ -1,3 +1,4 @@
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/app/app.dart';
@@ -49,7 +50,7 @@ void main() {
       );
 
       expect(find.text(expectedTopic), findsOneWidget);
-      expect(find.byType(IconButton), findsWidgets);
+      expect(find.byType(ExpressiveIconButton), findsWidgets);
     });
 
     testWidgets('renders empty when missing parameters for device type', (
@@ -90,7 +91,7 @@ void main() {
 
       expect(find.text(statusTopic), findsOneWidget);
       expect(find.text(commandTopic), findsOneWidget);
-      expect(find.byType(IconButton), findsNWidgets(2));
+      expect(find.byType(ExpressiveIconButton), findsNWidgets(2));
     });
 
     testWidgets('renders number device topics info correctly', (tester) async {
@@ -118,7 +119,7 @@ void main() {
 
       expect(find.text(statusTopic), findsOneWidget);
       expect(find.text(commandTopic), findsOneWidget);
-      expect(find.byType(IconButton), findsNWidgets(2));
+      expect(find.byType(ExpressiveIconButton), findsNWidgets(2));
     });
 
     testWidgets('copies topic to clipboard and shows snackbar on tap', (
@@ -133,7 +134,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      final copyButton = find.byType(IconButton).first;
+      final copyButton = find.byType(ExpressiveIconButton).first;
       await tester.tap(copyButton);
       await tester.pumpAndSettle();
 

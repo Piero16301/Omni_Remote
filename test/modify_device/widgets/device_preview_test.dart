@@ -1,5 +1,5 @@
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/modify_device/widgets/device_preview.dart';
@@ -25,9 +25,9 @@ void main() {
       expect(find.text('My Boolean'), findsOneWidget);
       expect(find.text('A simple switch'), findsOneWidget);
 
-      expect(find.byType(Switch), findsOneWidget);
+      expect(find.byType(ExpressiveSwitch), findsOneWidget);
 
-      await tester.tap(find.byType(Switch));
+      await tester.tap(find.byType(ExpressiveSwitch));
       await tester.pumpAndSettle();
     });
 
@@ -47,7 +47,7 @@ void main() {
         ),
       );
 
-      expect(find.byType(Switch), findsOneWidget);
+      expect(find.byType(ExpressiveSwitch), findsOneWidget);
       expect(find.text('Device title'), findsOneWidget);
     });
 
@@ -70,71 +70,14 @@ void main() {
       expect(find.text('My Number'), findsOneWidget);
       expect(find.text('A simple slider'), findsOneWidget);
 
-      expect(find.byType(Slider), findsOneWidget);
+      expect(find.byType(ExpressiveSlider), findsOneWidget);
 
-      final decreaseIcon = find.byWidgetPredicate(
-        (widget) =>
-            widget is HugeIcon &&
-            widget.icon == HugeIcons.strokeRoundedRemove01,
+      final slider = tester.widget<ExpressiveSlider>(
+        find.byType(ExpressiveSlider),
       );
-      final increaseIcon = find.byWidgetPredicate(
-        (widget) =>
-            widget is HugeIcon && widget.icon == HugeIcons.strokeRoundedAdd01,
-      );
-
-      expect(decreaseIcon, findsOneWidget);
-      expect(increaseIcon, findsOneWidget);
-
-      await tester.tap(decreaseIcon);
-      await tester.pumpAndSettle();
-
-      await tester.tap(increaseIcon);
-      await tester.pumpAndSettle();
-
-      final slider = tester.widget<Slider>(find.byType(Slider));
       slider.onChanged?.call(8);
       await tester.pumpAndSettle();
-    });
-
-    testWidgets('interval buttons handle boundaries properly', (tester) async {
-      await tester.pumpApp(
-        const Scaffold(
-          body: DevicePreview(
-            title: 'Boundary Test',
-            subtitle: 'Testing min max',
-            iconName: 'lightbulb',
-            tileType: DeviceTileType.number,
-            rangeMin: 5,
-            rangeMax: 7,
-            divisions: 2,
-            interval: 2,
-          ),
-        ),
-      );
-
-      expect(find.text('6.0'), findsOneWidget);
-
-      final decreaseButton = find.byWidgetPredicate(
-        (widget) =>
-            widget is HugeIcon &&
-            widget.icon == HugeIcons.strokeRoundedRemove01,
-      );
-      final increaseButton = find.byWidgetPredicate(
-        (widget) =>
-            widget is HugeIcon && widget.icon == HugeIcons.strokeRoundedAdd01,
-      );
-
-      await tester.tap(decreaseButton);
-      await tester.pumpAndSettle();
-      expect(find.text('5.0'), findsOneWidget);
-
-      await tester.tap(increaseButton);
-      await tester.pumpAndSettle();
-      expect(find.text('7.0'), findsOneWidget);
-
-      await tester.tap(increaseButton);
-      await tester.pumpAndSettle();
-      expect(find.text('7.0'), findsOneWidget);
+      expect(find.text('8.0'), findsOneWidget);
     });
 
     testWidgets('inits safely when rangeMin >= rangeMax for Number type', (
@@ -155,7 +98,9 @@ void main() {
         ),
       );
 
-      final slider = tester.widget<Slider>(find.byType(Slider));
+      final slider = tester.widget<ExpressiveSlider>(
+        find.byType(ExpressiveSlider),
+      );
       expect(slider.min, 0.0);
       expect(slider.max, 10.0);
       expect(slider.divisions, 1);
@@ -196,11 +141,11 @@ void main() {
           ),
         );
 
-        expect(find.byType(Switch), findsOneWidget);
+        expect(find.byType(ExpressiveSwitch), findsOneWidget);
         await tester.tap(find.text('Switch to number'));
         await tester.pumpAndSettle();
 
-        expect(find.byType(Slider), findsOneWidget);
+        expect(find.byType(ExpressiveSlider), findsOneWidget);
       },
     );
 

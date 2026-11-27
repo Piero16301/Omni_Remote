@@ -428,59 +428,85 @@ void main() {
       devicesListenable.removeListener(deviceListener);
     });
 
-    test('MockLocalStorageRepository coverage', () async {
+    test('MockLocalStorageRepository predefined values and CRUD', () async {
       final mock = MockLocalStorageRepository();
       await mock.initialize();
-      mock.saveLanguage(language: const Locale('en'));
-      expect(mock.getLanguage(), isNotNull);
-      mock.saveTheme(theme: ThemeMode.light);
-      expect(mock.getTheme(), isNotNull);
-      mock.saveBaseColor(baseColor: Colors.red);
-      expect(mock.getBaseColor(), isNotNull);
-      mock.saveFontFamily(fontFamily: 'f');
-      expect(mock.getFontFamily(), isNotNull);
-      mock.saveBrokerUrl(brokerUrl: 'u');
-      expect(mock.getBrokerUrl(), isEmpty);
-      mock.saveBrokerPort(brokerPort: 'p');
-      expect(mock.getBrokerPort(), isEmpty);
-      mock.saveBrokerUsername(brokerUsername: 'u');
-      expect(mock.getBrokerUsername(), isEmpty);
-      mock.saveBrokerPassword(brokerPassword: 'p');
-      expect(mock.getBrokerPassword(), isEmpty);
+
+      expect(mock.getLanguage(), const Locale('en', 'US'));
+      expect(mock.getTheme(), ThemeMode.light);
+      expect(mock.getBaseColor(), Colors.blue);
+      expect(mock.getFontFamily(), isNotEmpty);
+      expect(mock.getBrokerUrl(), isNotEmpty);
+      expect(mock.getBrokerPort(), isNotEmpty);
+      expect(mock.getBrokerUsername(), isNotEmpty);
+      expect(mock.getBrokerPassword(), isNotEmpty);
+
+      mock
+        ..saveLanguage(language: const Locale('es', 'ES'))
+        ..saveTheme(theme: ThemeMode.dark)
+        ..saveBaseColor(baseColor: Colors.red)
+        ..saveFontFamily(fontFamily: 'Roboto')
+        ..saveBrokerUrl(brokerUrl: 'test.broker.io')
+        ..saveBrokerPort(brokerPort: '8883')
+        ..saveBrokerUsername(brokerUsername: 'user2')
+        ..saveBrokerPassword(brokerPassword: 'pass2');
+
+      expect(mock.getLanguage(), const Locale('es', 'ES'));
+      expect(mock.getTheme(), ThemeMode.dark);
+      expect(mock.getBaseColor(), Colors.red);
+      expect(mock.getFontFamily(), 'Roboto');
+      expect(mock.getBrokerUrl(), 'test.broker.io');
+      expect(mock.getBrokerPort(), '8883');
+      expect(mock.getBrokerUsername(), 'user2');
+      expect(mock.getBrokerPassword(), 'pass2');
+
+      final initialGroupsCount = mock.getGroups().length;
+      final initialDevicesCount = mock.getDevices().length;
+      expect(initialGroupsCount, greaterThan(0));
+      expect(initialDevicesCount, greaterThan(0));
+      expect(mock.getGroupsListenable().value.length, initialGroupsCount);
+      expect(mock.getDevicesListenable().value.length, initialDevicesCount);
+
       mock.createGroup(
-        group: GroupModel(id: '1', title: 'G', subtitle: 'S', icon: 'i'),
+        group: GroupModel(title: 'Garage', subtitle: 'Sub', icon: 'GARAGE'),
       );
-      expect(mock.getGroups(), isEmpty);
-      expect(mock.getGroupsListenable().value, isEmpty);
+      expect(mock.getGroups().length, initialGroupsCount + 1);
+      final createdGroup = mock.getGroups().last;
+
+      mock.updateGroup(group: createdGroup.copyWith(subtitle: 'Updated Sub'));
+      expect(
+        mock.getGroups().firstWhere((g) => g.id == createdGroup.id).subtitle,
+        'Updated Sub',
+      );
+
+      mock.createDevice(
+        device: DeviceModel(
+          title: 'Garage Door',
+          subtitle: 'Main',
+          groupId: createdGroup.id,
+          icon: 'GARAGE_DOOR',
+          tileType: DeviceTileType.boolean,
+        ),
+      );
+      expect(mock.getDevices().length, initialDevicesCount + 1);
+      final createdDevice = mock.getDevices().last;
+
+      mock.updateDevice(
+        device: createdDevice.copyWith(subtitle: 'Updated Main'),
+      );
+      expect(
+        mock.getDevices().firstWhere((d) => d.id == createdDevice.id).subtitle,
+        'Updated Main',
+      );
+
+      expect(() => mock.deleteGroup(groupId: createdGroup.id), throwsException);
+
       mock
-        ..updateGroup(
-          group: GroupModel(id: '1', title: 'G', subtitle: 'S', icon: 'i'),
-        )
-        ..deleteGroup(groupId: '1')
-        ..createDevice(
-          device: DeviceModel(
-            id: '1',
-            title: 'D',
-            subtitle: 'S',
-            groupId: '1',
-            icon: 'i',
-            tileType: DeviceTileType.boolean,
-          ),
-        );
-      expect(mock.getDevices(), isEmpty);
-      expect(mock.getDevicesListenable().value, isEmpty);
-      mock
-        ..updateDevice(
-          device: DeviceModel(
-            id: '1',
-            title: 'D',
-            subtitle: 'S',
-            groupId: '1',
-            icon: 'i',
-            tileType: DeviceTileType.boolean,
-          ),
-        )
-        ..deleteDevice(deviceId: '1');
+        ..deleteDevice(deviceId: createdDevice.id)
+        ..deleteGroup(groupId: createdGroup.id);
+
+      expect(mock.getDevices().length, initialDevicesCount);
+      expect(mock.getGroups().length, initialGroupsCount);
     });
   });
 }

@@ -1,3 +1,4 @@
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:omni_remote/app/helpers/icon_helper.dart';
@@ -34,8 +35,9 @@ class GroupPreview extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Card(
+        ExpressiveCard(
           margin: EdgeInsets.zero,
+          padding: EdgeInsets.zero,
           child: Column(
             children: [
               Container(

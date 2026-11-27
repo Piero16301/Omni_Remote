@@ -82,7 +82,7 @@ void main() {
 
       await tester.pumpWidget(buildSubject());
 
-      final appTextFields = find.byType(AppTextField);
+      final appTextFields = find.byType(ExpressiveTextFormField);
       await tester.enterText(appTextFields.at(0), 'New Title');
       verify(() => modifyDeviceCubit.changeTitle('New Title')).called(1);
 
@@ -111,7 +111,7 @@ void main() {
 
       await tester.pumpWidget(buildSubject());
 
-      final appTextFields = find.byType(AppTextField);
+      final appTextFields = find.byType(ExpressiveTextFormField);
       expect(appTextFields.evaluate().length, 6);
 
       await tester.enterText(appTextFields.at(2), '1.0');
@@ -214,7 +214,7 @@ void main() {
         );
 
         await tester.pumpWidget(buildSubject());
-        expect(find.byType(AppTextField), findsWidgets);
+        expect(find.byType(ExpressiveTextFormField), findsWidgets);
       },
     );
 
@@ -278,8 +278,8 @@ void main() {
 
     testWidgets('title validator validates input correctly', (tester) async {
       await tester.pumpWidget(buildSubject());
-      final titleField = tester.widget<AppTextField>(
-        find.byType(AppTextField).first,
+      final titleField = tester.widget<ExpressiveTextFormField>(
+        find.byType(ExpressiveTextFormField).first,
       );
 
       expect(titleField.validator?.call(null), isNotNull);
@@ -324,13 +324,21 @@ void main() {
 
         await tester.pumpWidget(buildSubject());
 
-        final appTextFields = find.byType(AppTextField);
+        final appTextFields = find.byType(ExpressiveTextFormField);
         expect(appTextFields.evaluate().length, 6);
 
-        final rangeMinField = tester.widget<AppTextField>(appTextFields.at(2));
-        final rangeMaxField = tester.widget<AppTextField>(appTextFields.at(3));
-        final divisionsField = tester.widget<AppTextField>(appTextFields.at(4));
-        final intervalField = tester.widget<AppTextField>(appTextFields.at(5));
+        final rangeMinField = tester.widget<ExpressiveTextFormField>(
+          appTextFields.at(2),
+        );
+        final rangeMaxField = tester.widget<ExpressiveTextFormField>(
+          appTextFields.at(3),
+        );
+        final divisionsField = tester.widget<ExpressiveTextFormField>(
+          appTextFields.at(4),
+        );
+        final intervalField = tester.widget<ExpressiveTextFormField>(
+          appTextFields.at(5),
+        );
 
         // rangeMin validator
         expect(rangeMinField.validator?.call(null), isNotNull);

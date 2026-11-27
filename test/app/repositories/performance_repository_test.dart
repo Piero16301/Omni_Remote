@@ -51,14 +51,17 @@ void main() {
   });
 
   group('MockPerformanceRepository', () {
-    test('startTrace throws UnimplementedError', () {
+    test('startTrace records trace name and returns null', () {
       final mock = MockPerformanceRepository();
-      expect(() => mock.startTrace('trace_name'), throwsUnimplementedError);
+      final result = mock.startTrace('trace_name');
+      expect(result, isNull);
+      expect(mock.startedTraces, contains('trace_name'));
     });
 
-    test('stopTrace throws UnimplementedError', () {
+    test('stopTrace completes normally', () {
       final mock = MockPerformanceRepository();
-      expect(() => mock.stopTrace(MockTrace()), throwsUnimplementedError);
+      expect(() => mock.stopTrace(MockTrace()), returnsNormally);
+      expect(() => mock.stopTrace(null), returnsNormally);
     });
   });
 }

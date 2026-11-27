@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
@@ -15,8 +16,17 @@ abstract class CrashRepository {
 }
 
 class MockCrashRepository implements CrashRepository {
+  final List<String> logs = <String>[];
+  final Map<String, Object> customKeys = <String, Object>{
+    'environment': 'mock',
+  };
+  final List<Object> recordedErrors = <Object>[];
+
   @override
-  void log(String message) {}
+  void log(String message) {
+    logs.add(message);
+    developer.log('[MockCrash] $message');
+  }
 
   @override
   void recordError(
@@ -25,10 +35,20 @@ class MockCrashRepository implements CrashRepository {
     dynamic reason,
     Iterable<Object> information = const [],
     bool? fatal,
-  }) {}
+  }) {
+    recordedErrors.add(exception as Object);
+    developer.log(
+      '[MockCrash] Error: $exception '
+      '(reason: $reason, fatal: ${fatal ?? false})',
+      error: exception,
+      stackTrace: stack,
+    );
+  }
 
   @override
-  void setCustomKey(String key, Object value) {}
+  void setCustomKey(String key, Object value) {
+    customKeys[key] = value;
+  }
 }
 
 class CrashlyticsCrashRepository implements CrashRepository {

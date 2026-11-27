@@ -49,110 +49,265 @@ abstract class LocalStorageRepository {
 }
 
 class MockLocalStorageRepository implements LocalStorageRepository {
+  Locale? _language = const Locale('en', 'US');
+  ThemeMode? _theme = ThemeMode.light;
+  Color? _baseColor = Colors.blue;
+  String? _fontFamily = ExpressiveFonts.defaultFont;
+
+  String? _brokerUrl = 'broker.emqx.io';
+  String? _brokerPort = '1883';
+  String? _brokerUsername = 'omni_mock_user';
+  String? _brokerPassword = 'omni_mock_password';
+
+  final List<GroupModel> _groups = <GroupModel>[
+    GroupModel(
+      id: 'mock-group-living-room',
+      title: 'Living Room',
+      subtitle: 'Main floor',
+      icon: 'LIVING_ROOM',
+    ),
+    GroupModel(
+      id: 'mock-group-bedroom',
+      title: 'Bedroom',
+      subtitle: 'Master suite',
+      icon: 'BEDROOM',
+    ),
+  ];
+
+  final List<DeviceModel> _devices = <DeviceModel>[
+    DeviceModel(
+      id: 'mock-device-ceiling-light',
+      title: 'Ceiling Light',
+      subtitle: 'Main switch',
+      icon: 'LIGHT',
+      tileType: DeviceTileType.boolean,
+      groupId: 'mock-group-living-room',
+    ),
+    DeviceModel(
+      id: 'mock-device-thermostat',
+      title: 'Thermostat',
+      subtitle: 'Target temperature (°C)',
+      icon: 'THERMOSTAT',
+      tileType: DeviceTileType.number,
+      groupId: 'mock-group-living-room',
+      rangeMin: 16,
+      rangeMax: 30,
+      divisions: 28,
+      interval: 0.5,
+    ),
+    DeviceModel(
+      id: 'mock-device-bedside-lamp',
+      title: 'Bedside Lamp',
+      subtitle: 'Nightstand',
+      icon: 'BULB',
+      tileType: DeviceTileType.boolean,
+      groupId: 'mock-group-bedroom',
+    ),
+    DeviceModel(
+      id: 'mock-device-ceiling-fan',
+      title: 'Ceiling Fan',
+      subtitle: 'Speed level',
+      icon: 'FAN',
+      tileType: DeviceTileType.number,
+      groupId: 'mock-group-bedroom',
+      rangeMax: 5,
+      divisions: 5,
+      interval: 1,
+    ),
+  ];
+
+  late final ValueNotifier<List<GroupModel>> _groupsNotifier =
+      ValueNotifier<List<GroupModel>>(List<GroupModel>.unmodifiable(_groups));
+  late final ValueNotifier<List<DeviceModel>> _devicesNotifier =
+      ValueNotifier<List<DeviceModel>>(
+        List<DeviceModel>.unmodifiable(_devices),
+      );
+
   @override
   Future<void> initialize() async {}
 
   @override
-  void saveLanguage({required Locale language}) {}
-
-  @override
-  Locale? getLanguage() {
-    return const Locale('en', 'US');
+  void saveLanguage({required Locale language}) {
+    _language = language;
   }
 
   @override
-  void saveTheme({required ThemeMode theme}) {}
+  Locale? getLanguage() => _language;
 
   @override
-  ThemeMode? getTheme() {
-    return ThemeMode.light;
+  void saveTheme({required ThemeMode theme}) {
+    _theme = theme;
   }
 
   @override
-  void saveBaseColor({required Color baseColor}) {}
+  ThemeMode? getTheme() => _theme;
 
   @override
-  Color? getBaseColor() {
-    return Colors.blue;
+  void saveBaseColor({required Color baseColor}) {
+    _baseColor = baseColor;
   }
 
   @override
-  void saveFontFamily({required String fontFamily}) {}
+  Color? getBaseColor() => _baseColor;
 
   @override
-  String? getFontFamily() {
-    return 'default';
+  void saveFontFamily({required String fontFamily}) {
+    _fontFamily = fontFamily;
   }
 
   @override
-  void createDevice({required DeviceModel device}) {}
+  String? getFontFamily() => _fontFamily;
 
   @override
-  void createGroup({required GroupModel group}) {}
-
-  @override
-  void deleteDevice({required String deviceId}) {}
-
-  @override
-  void deleteGroup({required String groupId}) {}
-
-  @override
-  String? getBrokerPassword() {
-    return '';
+  void saveBrokerUrl({required String brokerUrl}) {
+    _brokerUrl = brokerUrl;
   }
 
   @override
-  String? getBrokerPort() {
-    return '';
+  String? getBrokerUrl() => _brokerUrl;
+
+  @override
+  void saveBrokerPort({required String brokerPort}) {
+    _brokerPort = brokerPort;
   }
 
   @override
-  String? getBrokerUrl() {
-    return '';
+  String? getBrokerPort() => _brokerPort;
+
+  @override
+  void saveBrokerUsername({required String brokerUsername}) {
+    _brokerUsername = brokerUsername;
   }
 
   @override
-  String? getBrokerUsername() {
-    return '';
+  String? getBrokerUsername() => _brokerUsername;
+
+  @override
+  void saveBrokerPassword({required String brokerPassword}) {
+    _brokerPassword = brokerPassword;
   }
 
   @override
-  List<DeviceModel> getDevices() {
-    return [];
+  String? getBrokerPassword() => _brokerPassword;
+
+  @override
+  ValueListenable<List<GroupModel>> getGroupsListenable() => _groupsNotifier;
+
+  @override
+  void createGroup({required GroupModel group}) {
+    final normalizedName = group.title.toLowerCase().replaceAll(' ', '-');
+    final isDuplicate = _groups.any(
+      (existingGroup) =>
+          existingGroup.title.toLowerCase().replaceAll(' ', '-') ==
+          normalizedName,
+    );
+    if (isDuplicate) {
+      throw Exception('DUPLICATE_GROUP_NAME');
+    }
+
+    final newId = group.id.isNotEmpty
+        ? group.id
+        : 'mock-group-${const Uuid().v4()}';
+    _groups.add(group.copyWith(id: newId));
+    _groupsNotifier.value = List<GroupModel>.unmodifiable(_groups);
   }
 
   @override
-  ValueListenable<List<DeviceModel>> getDevicesListenable() {
-    return ValueNotifier([]);
+  List<GroupModel> getGroups() => List<GroupModel>.unmodifiable(_groups);
+
+  @override
+  void updateGroup({required GroupModel group}) {
+    final normalizedName = group.title.toLowerCase().replaceAll(' ', '-');
+    final isDuplicate = _groups.any(
+      (existingGroup) =>
+          existingGroup.id != group.id &&
+          existingGroup.title.toLowerCase().replaceAll(' ', '-') ==
+              normalizedName,
+    );
+    if (isDuplicate) {
+      throw Exception('DUPLICATE_GROUP_NAME');
+    }
+
+    final index = _groups.indexWhere((g) => g.id == group.id);
+    if (index != -1) {
+      _groups[index] = group;
+      _groupsNotifier.value = List<GroupModel>.unmodifiable(_groups);
+    }
   }
 
   @override
-  List<GroupModel> getGroups() {
-    return [];
+  void deleteGroup({required String groupId}) {
+    final hasDevices = _devices.any((device) => device.groupId == groupId);
+    if (hasDevices) {
+      throw Exception('GROUP_NOT_EMPTY');
+    }
+
+    final index = _groups.indexWhere((g) => g.id == groupId);
+    if (index == -1) {
+      throw Exception('GROUP_NOT_FOUND');
+    }
+
+    _groups.removeAt(index);
+    _groupsNotifier.value = List<GroupModel>.unmodifiable(_groups);
   }
 
   @override
-  ValueListenable<List<GroupModel>> getGroupsListenable() {
-    return ValueNotifier([]);
+  ValueListenable<List<DeviceModel>> getDevicesListenable() => _devicesNotifier;
+
+  @override
+  void createDevice({required DeviceModel device}) {
+    final normalizedName = device.title.toLowerCase().replaceAll(' ', '-');
+    final isDuplicate = _devices.any(
+      (existingDevice) =>
+          existingDevice.groupId == device.groupId &&
+          existingDevice.title.toLowerCase().replaceAll(' ', '-') ==
+              normalizedName,
+    );
+    if (isDuplicate) {
+      throw Exception('DUPLICATE_DEVICE_NAME');
+    }
+
+    final newId = device.id.isNotEmpty
+        ? device.id
+        : 'mock-device-${const Uuid().v4()}';
+    _devices.add(device.copyWith(id: newId));
+    _devicesNotifier.value = List<DeviceModel>.unmodifiable(_devices);
   }
 
   @override
-  void saveBrokerPassword({required String brokerPassword}) {}
+  List<DeviceModel> getDevices() => List<DeviceModel>.unmodifiable(_devices);
 
   @override
-  void saveBrokerPort({required String brokerPort}) {}
+  void updateDevice({required DeviceModel device}) {
+    final normalizedName = device.title.toLowerCase().replaceAll(' ', '-');
+    final isDuplicate = _devices.any(
+      (existingDevice) =>
+          existingDevice.groupId == device.groupId &&
+          existingDevice.id != device.id &&
+          existingDevice.title.toLowerCase().replaceAll(' ', '-') ==
+              normalizedName,
+    );
+    if (isDuplicate) {
+      throw Exception('DUPLICATE_DEVICE_NAME');
+    }
+
+    final index = _devices.indexWhere((d) => d.id == device.id);
+    if (index != -1) {
+      _devices[index] = device;
+      _devicesNotifier.value = List<DeviceModel>.unmodifiable(_devices);
+    }
+  }
 
   @override
-  void saveBrokerUrl({required String brokerUrl}) {}
+  void deleteDevice({required String deviceId}) {
+    final index = _devices.indexWhere((d) => d.id == deviceId);
+    if (index == -1) {
+      throw Exception('DEVICE_NOT_FOUND');
+    }
 
-  @override
-  void saveBrokerUsername({required String brokerUsername}) {}
-
-  @override
-  void updateDevice({required DeviceModel device}) {}
-
-  @override
-  void updateGroup({required GroupModel group}) {}
+    _devices.removeAt(index);
+    _devicesNotifier.value = List<DeviceModel>.unmodifiable(_devices);
+  }
 }
 
 class HiveLocalStorageRepository implements LocalStorageRepository {
