@@ -153,8 +153,7 @@ void main() {
       expect(find.text('Thermostat'), findsOneWidget);
       expect(find.text('Main'), findsOneWidget);
       expect(find.text('16.0'), findsOneWidget);
-      expect(find.byType(Slider), findsOneWidget);
-      expect(find.byType(IconButton), findsWidgets);
+      expect(find.byType(ExpressiveSlider), findsOneWidget);
     });
 
     testWidgets('subscribes to MQTT topic on load', (tester) async {
@@ -170,7 +169,7 @@ void main() {
           .called(1);
     });
 
-    testWidgets('publishes MQTT message when increased', (tester) async {
+    testWidgets('publishes MQTT message when slider changes', (tester) async {
       await tester.pumpWidget(buildSubject());
 
       final expectedTopic = AppVariables.buildDeviceTopic(
@@ -179,9 +178,10 @@ void main() {
         suffix: AppVariables.commandSuffix,
       );
 
-      final iconButtons = find.byType(IconButton);
-
-      await tester.tap(iconButtons.last);
+      final slider = tester.widget<ExpressiveSlider>(
+        find.byType(ExpressiveSlider),
+      );
+      slider.onChangeEnd?.call(20);
       await tester.pumpAndSettle();
 
       verify(
@@ -252,7 +252,7 @@ void main() {
       await tester.tap(find.byType(ListTile).last);
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.byType(ExpressiveAlertDialog), findsOneWidget);
 
       await tester.tap(
         find.byWidgetPredicate(
@@ -263,7 +263,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.byType(ExpressiveAlertDialog), findsNothing);
     });
 
     testWidgets('increment button is disabled when groupIsOnline is false', (
@@ -271,7 +271,9 @@ void main() {
     ) async {
       await tester.pumpWidget(buildSubject(groupIsOnline: false));
 
-      final slider = tester.widget<Slider>(find.byType(Slider));
+      final slider = tester.widget<ExpressiveSlider>(
+        find.byType(ExpressiveSlider),
+      );
       expect(slider.onChanged, isNull);
       expect(slider.onChangeEnd, isNull);
     });
@@ -319,7 +321,7 @@ void main() {
       );
 
       expect(find.text('Heater'), findsOneWidget);
-      expect(find.byType(Slider), findsOneWidget);
+      expect(find.byType(ExpressiveSlider), findsOneWidget);
     });
 
     testWidgets('BlocListener handles disconnect state', (tester) async {
@@ -370,89 +372,15 @@ void main() {
       expect(find.text('22.5'), findsOneWidget);
     });
 
-    testWidgets('publish fires when + button is tapped', (tester) async {
-      await tester.pumpWidget(buildSubject());
-
-      final expectedTopic = AppVariables.buildDeviceTopic(
-        groupTitle: testGroup.title,
-        deviceTitle: testDevice.title,
-        suffix: AppVariables.commandSuffix,
-      );
-
-      final iconButtons = find.byType(IconButton);
-      await tester.tap(iconButtons.last);
-      await tester.pumpAndSettle();
-
-      verify(
-        () => mockMqttClient.publishMessage(
-          expectedTopic,
-          MqttQos.atLeastOnce,
-          any(),
-        ),
-      ).called(1);
-    });
-
-    testWidgets('publish fires when - button is tapped', (tester) async {
-      await tester.pumpWidget(buildSubject());
-
-      final expectedTopic = AppVariables.buildDeviceTopic(
-        groupTitle: testGroup.title,
-        deviceTitle: testDevice.title,
-        suffix: AppVariables.commandSuffix,
-      );
-
-      final statusTopic = AppVariables.buildDeviceTopic(
-        groupTitle: testGroup.title,
-        deviceTitle: testDevice.title,
-        suffix: AppVariables.statusSuffix,
-      );
-
-      final builder = MqttClientPayloadBuilder()..addString('20.0');
-      final publishMessage = MqttPublishMessage()
-        ..payload.message = builder.payload!;
-      messageController.add([
-        MqttReceivedMessage<MqttMessage>(statusTopic, publishMessage),
-      ]);
-      await tester.pump();
-
-      final iconButtons = find.byType(IconButton);
-      await tester.tap(iconButtons.first);
-      await tester.pumpAndSettle();
-
-      verify(
-        () => mockMqttClient.publishMessage(
-          expectedTopic,
-          MqttQos.atLeastOnce,
-          any(),
-        ),
-      ).called(greaterThanOrEqualTo(1));
-    });
-
-    testWidgets('does not publish when mqttClient is null on increment', (
-      tester,
-    ) async {
-      when(() => mockMqttService.mqttClient).thenReturn(null);
-
-      await tester.pumpWidget(buildSubject());
-
-      await tester.tap(find.byType(IconButton).last);
-      await tester.pump();
-
-      verifyNever(() => mockMqttClient.publishMessage(any(), any(), any()));
-      verifyNever(
-        () => mockAnalyticsService.logEvent(
-          name: 'device_action_number',
-          parameters: any(named: 'parameters'),
-        ),
-      );
-    });
-
     testWidgets('logs analytics event when command is published', (
       tester,
     ) async {
       await tester.pumpWidget(buildSubject());
 
-      await tester.tap(find.byType(IconButton).last);
+      final slider = tester.widget<ExpressiveSlider>(
+        find.byType(ExpressiveSlider),
+      );
+      slider.onChangeEnd?.call(17);
       await tester.pumpAndSettle();
 
       verify(
@@ -468,8 +396,8 @@ void main() {
     ) async {
       await tester.pumpWidget(buildSubject());
 
-      final sliderFinder = find.byType(Slider);
-      final slider = tester.widget<Slider>(sliderFinder);
+      final sliderFinder = find.byType(ExpressiveSlider);
+      final slider = tester.widget<ExpressiveSlider>(sliderFinder);
 
       slider.onChanged!(20);
       await tester.pump();

@@ -352,13 +352,66 @@ void main() {
       mockRepo.dispose();
     });
 
-    test('mqttClient is null', () {
-      expect(mockRepo.mqttClient, isNull);
+    test('mqttClient is initialized and starts disconnected', () {
+      expect(mockRepo.mqttClient, isNotNull);
+      expect(
+        mockRepo.mqttClient?.connectionStatus?.state,
+        MqttConnectionState.disconnected,
+      );
     });
 
-    test('initializeMqttClient completes normally', () async {
-      await expectLater(mockRepo.initializeMqttClient(), completes);
+    test('initializeMqttClient keeps broker disconnected initially', () async {
+      final expectation = expectLater(
+        mockRepo.connectionStatusStream,
+        emits(BrokerConnectionStatus.disconnected),
+      );
+      await mockRepo.initializeMqttClient();
+      await expectation;
+      expect(
+        mockRepo.mqttClient?.connectionStatus?.state,
+        MqttConnectionState.disconnected,
+      );
     });
+
+    test(
+      'subscribe emits predefined values and publish updates status',
+      () async {
+        await mockRepo.connectMqtt();
+
+        final messagesFuture = mockRepo.messageStream.take(2).toList();
+
+        mockRepo.mqttClient!.subscribe(
+          'living-room/ceiling-light/status',
+          MqttQos.atLeastOnce,
+        );
+
+        final builder = MqttClientPayloadBuilder()..addString('0');
+        mockRepo.mqttClient!.publishMessage(
+          'living-room/ceiling-light/command',
+          MqttQos.atLeastOnce,
+          builder.payload!,
+        );
+
+        final batches = await messagesFuture;
+        expect(batches.length, 2);
+        expect(batches[0].first.topic, 'living-room/ceiling-light/status');
+        final firstPayload = batches[0].first.payload as MqttPublishMessage;
+        expect(
+          MqttPublishPayload.bytesToStringAsString(
+            firstPayload.payload.message,
+          ),
+          '1',
+        );
+        expect(batches[1].first.topic, 'living-room/ceiling-light/status');
+        final secondPayload = batches[1].first.payload as MqttPublishMessage;
+        expect(
+          MqttPublishPayload.bytesToStringAsString(
+            secondPayload.payload.message,
+          ),
+          '0',
+        );
+      },
+    );
 
     test('connectMqtt emits connecting and connected', () async {
       final expectation = expectLater(

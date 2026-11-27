@@ -119,7 +119,7 @@ void main() {
       await tester.pumpWidget(buildSubject());
 
       expect(find.byType(Visibility), findsWidgets);
-      expect(find.byType(ExpressiveFab), findsNothing);
+      expect(find.byType(ExpressiveExtendedFab), findsNothing);
     });
 
     testWidgets('renders group cards and FAB when groups exist', (
@@ -131,7 +131,7 @@ void main() {
       await tester.pumpWidget(buildSubject());
 
       expect(find.byType(GroupCard), findsOneWidget);
-      expect(find.byType(ExpressiveFab), findsOneWidget);
+      expect(find.byType(ExpressiveExtendedFab), findsOneWidget);
     });
 
     testWidgets('navigates to connection page when antenna icon tapped', (
@@ -158,7 +158,7 @@ void main() {
       tester,
     ) async {
       await tester.pumpWidget(buildSubject());
-      await tester.tap(find.byType(Card).last);
+      await tester.tap(find.byType(ExpressiveButton));
       await tester.pumpAndSettle();
 
       expect(find.text('ModifyGroupScreen'), findsOneWidget);
@@ -171,7 +171,7 @@ void main() {
         GroupModel(id: 'g1', title: 'Living Room', subtitle: '', icon: ''),
       ];
       await tester.pumpWidget(buildSubject());
-      await tester.tap(find.byType(ExpressiveFab));
+      await tester.tap(find.byType(ExpressiveExtendedFab));
       await tester.pumpAndSettle();
 
       expect(find.text('ModifyDeviceScreen'), findsOneWidget);

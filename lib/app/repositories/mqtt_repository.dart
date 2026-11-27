@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:omni_remote/app/app.dart';
 import 'package:omni_remote/app/helpers/mqtt_client_factory.dart';
+import 'package:typed_data/typed_buffers.dart';
 import 'package:uuid/uuid.dart';
 
 enum BrokerConnectionStatus {
@@ -30,13 +31,33 @@ abstract class MqttRepository {
 }
 
 class MockMqttRepository implements MqttRepository {
+  new() {
+    _mockClient = _MockMqttClient(
+      onSubscribe: _handleSubscribe,
+      onUnsubscribe: _handleUnsubscribe,
+      onPublish: _handlePublish,
+    );
+  }
+
   final _messageController =
       StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast();
   final _connectionStatusController =
       StreamController<BrokerConnectionStatus>.broadcast();
 
+  late final _MockMqttClient _mockClient;
+  final Set<String> _subscribedTopics = <String>{};
+
+  final Map<String, String> _topicValues = <String, String>{
+    'living-room/${AppVariables.onlineSuffix}': '1',
+    'living-room/ceiling-light/${AppVariables.statusSuffix}': '1',
+    'living-room/thermostat/${AppVariables.statusSuffix}': '22.5',
+    'bedroom/${AppVariables.onlineSuffix}': '0',
+    'bedroom/bedside-lamp/${AppVariables.statusSuffix}': '0',
+    'bedroom/ceiling-fan/${AppVariables.statusSuffix}': '3.0',
+  };
+
   @override
-  MqttClient? get mqttClient => null;
+  MqttClient? get mqttClient => _mockClient;
 
   @override
   Stream<List<MqttReceivedMessage<MqttMessage>>> get messageStream =>
@@ -47,20 +68,28 @@ class MockMqttRepository implements MqttRepository {
       _connectionStatusController.stream;
 
   @override
-  Future<void> initializeMqttClient() async {}
+  Future<void> initializeMqttClient() async {
+    _mockClient.connectionState = MqttConnectionState.disconnected;
+    _connectionStatusController.add(BrokerConnectionStatus.disconnected);
+  }
 
   @override
   Future<void> connectMqtt() async {
+    _mockClient.connectionState = MqttConnectionState.connecting;
     _connectionStatusController.add(BrokerConnectionStatus.connecting);
     await Future<void>.delayed(const Duration(milliseconds: 500));
+    if (_connectionStatusController.isClosed) return;
+    _mockClient.connectionState = MqttConnectionState.connected;
     _connectionStatusController.add(BrokerConnectionStatus.connected);
   }
 
   @override
   void disconnectMqtt() {
-    _connectionStatusController
-      ..add(BrokerConnectionStatus.disconnecting)
-      ..add(BrokerConnectionStatus.disconnected);
+    _mockClient.connectionState = MqttConnectionState.disconnecting;
+    _connectionStatusController.add(BrokerConnectionStatus.disconnecting);
+    _subscribedTopics.clear();
+    _mockClient.connectionState = MqttConnectionState.disconnected;
+    _connectionStatusController.add(BrokerConnectionStatus.disconnected);
   }
 
   @override
@@ -69,10 +98,96 @@ class MockMqttRepository implements MqttRepository {
     await connectMqtt();
   }
 
+  void _handleSubscribe(String topic) {
+    _subscribedTopics.add(topic);
+
+    var value = _topicValues[topic];
+    if (value == null && topic.endsWith('/${AppVariables.onlineSuffix}')) {
+      value = '1';
+      _topicValues[topic] = value;
+    }
+
+    if (value != null) {
+      _emitMessage(topic, value);
+    }
+  }
+
+  void _handleUnsubscribe(String topic) {
+    _subscribedTopics.remove(topic);
+  }
+
+  void _handlePublish(String topic, Uint8Buffer data) {
+    final payload = MqttPublishPayload.bytesToStringAsString(data);
+    _topicValues[topic] = payload;
+
+    const commandSuffix = '/${AppVariables.commandSuffix}';
+    if (topic.endsWith(commandSuffix)) {
+      final statusTopic =
+          '${topic.substring(0, topic.length - commandSuffix.length)}'
+          '/${AppVariables.statusSuffix}';
+      _topicValues[statusTopic] = payload;
+      _emitMessage(statusTopic, payload);
+    }
+  }
+
+  void _emitMessage(String topic, String payload) {
+    if (_messageController.isClosed) return;
+    final builder = MqttClientPayloadBuilder()..addString(payload);
+    final publishMessage = MqttPublishMessage()
+        .toTopic(topic)
+        .publishData(builder.payload!);
+    _messageController.add(<MqttReceivedMessage<MqttMessage>>[
+      MqttReceivedMessage<MqttMessage>(topic, publishMessage),
+    ]);
+  }
+
   @override
   void dispose() {
     unawaited(_messageController.close());
     unawaited(_connectionStatusController.close());
+  }
+}
+
+class _MockMqttClient extends MqttClient {
+  new({
+    required this._onSubscribe,
+    required this._onUnsubscribe,
+    required this._onPublish,
+  }) : super('mock.broker.local', 'mock-client');
+
+  final void Function(String topic) _onSubscribe;
+  final void Function(String topic) _onUnsubscribe;
+  final void Function(String topic, Uint8Buffer data) _onPublish;
+  final MqttClientConnectionStatus _status = MqttClientConnectionStatus()
+    ..state = MqttConnectionState.disconnected;
+
+  set connectionState(MqttConnectionState state) {
+    _status.state = state;
+  }
+
+  @override
+  MqttClientConnectionStatus? get connectionStatus => _status;
+
+  @override
+  Subscription? subscribe(String topic, MqttQos qosLevel) {
+    _onSubscribe(topic);
+    return null;
+  }
+
+  @override
+  void unsubscribe(String topic, {dynamic expectAcknowledge = false}) {
+    _onUnsubscribe(topic);
+  }
+
+  @override
+  int publishMessage(
+    String topic,
+    MqttQos qualityOfService,
+    Uint8Buffer data, {
+    bool retain = false,
+  }) {
+    _onPublish(topic, data);
+    return 0;
   }
 }
 

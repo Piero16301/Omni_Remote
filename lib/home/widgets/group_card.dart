@@ -140,114 +140,131 @@ class _GroupCardState extends State<GroupCard> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: Column(
-        children: [
-          InkWell(
-            onLongPress: () => _showGroupOptions(context, widget.group),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                ),
-                color: Theme.of(context).colorScheme.primary
-                    .withValues(alpha: 0.1),
+    return BlocListener<AppCubit, AppState>(
+      listenWhen: (previous, current) =>
+          previous.brokerConnectionStatus != current.brokerConnectionStatus,
+      listener: (context, state) {
+        if (state.brokerConnectionStatus.isConnected) {
+          _trySubscribeMqttTopics();
+        } else if (state.brokerConnectionStatus.isDisconnected) {
+          _isSubscribed = false;
+          if (mounted) {
+            setState(() {
+              _isOnline = false;
+            });
+          }
+        }
+      },
+      child: ExpressiveCard(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        padding: EdgeInsets.zero,
+        child: Column(
+          children: [
+            InkWell(
+              onLongPress: () => _showGroupOptions(context, widget.group),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  spacing: 16,
-                  children: [
-                    HugeIcon(
-                      icon: IconHelper.getIconByName(widget.group.icon),
-                      size: 32,
-                      strokeWidth: 2,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 4,
-                        children: [
-                          Text(
-                            widget.group.title,
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(
-                                  fontVariations: <FontVariation>[
-                                    ...(Theme.of(context)
-                                                .textTheme
-                                                .titleLarge
-                                                ?.fontVariations ??
-                                            const <FontVariation>[])
-                                        .where((v) => v.axis != 'wght'),
-                                    const FontVariation('wght', 700),
-                                  ],
-                                ),
-                          ),
-                          Visibility(
-                            visible: widget.group.subtitle.isNotEmpty,
-                            child: Text(
-                              widget.group.subtitle,
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                          ),
-                        ],
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
+                  color: Theme.of(context).colorScheme.primary
+                      .withValues(alpha: 0.1),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    spacing: 16,
+                    children: [
+                      HugeIcon(
+                        icon: IconHelper.getIconByName(widget.group.icon),
+                        size: 32,
+                        strokeWidth: 2,
                       ),
-                    ),
-                    HugeIcon(
-                      icon: _isOnline
-                          ? HugeIcons.strokeRoundedWifiConnected02
-                          : HugeIcons.strokeRoundedWifiDisconnected02,
-                      strokeWidth: 2,
-                      color: _isOnline ? Colors.green : Colors.red,
-                    ),
-                  ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 4,
+                          children: [
+                            Text(
+                              widget.group.title,
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(
+                                    fontVariations: <FontVariation>[
+                                      ...(Theme.of(context)
+                                                  .textTheme
+                                                  .titleLarge
+                                                  ?.fontVariations ??
+                                              const <FontVariation>[])
+                                          .where((v) => v.axis != 'wght'),
+                                      const FontVariation('wght', 700),
+                                    ],
+                                  ),
+                            ),
+                            Visibility(
+                              visible: widget.group.subtitle.isNotEmpty,
+                              child: Text(
+                                widget.group.subtitle,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      HugeIcon(
+                        icon: _isOnline
+                            ? HugeIcons.strokeRoundedWifiConnected02
+                            : HugeIcons.strokeRoundedWifiDisconnected02,
+                        strokeWidth: 2,
+                        color: _isOnline ? Colors.green : Colors.red,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          ValueListenableBuilder(
-            valueListenable: context.read<HomeCubit>().getDevicesListenable(),
-            builder: (builderContext, devices, widgetBuilder) {
-              final devicesInGroup = devices
-                  .where((device) => device.groupId == widget.group.id)
-                  .toList();
+            ValueListenableBuilder(
+              valueListenable: context.read<HomeCubit>().getDevicesListenable(),
+              builder: (builderContext, devices, widgetBuilder) {
+                final devicesInGroup = devices
+                    .where((device) => device.groupId == widget.group.id)
+                    .toList();
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 16,
-                ),
-                child: Column(
-                  spacing: 18,
-                  children: devicesInGroup.isEmpty
-                      ? [
-                          Text(
-                            l10n.homeGroupEmptyDevicesMessage,
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  fontStyle: FontStyle.italic,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant,
-                                ),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 16,
+                  ),
+                  child: Column(
+                    spacing: 18,
+                    children: devicesInGroup.isEmpty
+                        ? [
+                            Text(
+                              l10n.homeGroupEmptyDevicesMessage,
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    fontStyle: FontStyle.italic,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
+                            ),
+                          ]
+                        : getDevicesTiles(
+                            context: context,
+                            group: widget.group,
+                            devices: devicesInGroup,
                           ),
-                        ]
-                      : getDevicesTiles(
-                          context: context,
-                          group: widget.group,
-                          devices: devicesInGroup,
-                        ),
-                ),
-              );
-            },
-          ),
-        ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -348,53 +365,23 @@ class _GroupCardState extends State<GroupCard> {
   void _showDeleteConfirmation(BuildContext context, GroupModel group) {
     final l10n = AppLocalizations.of(context);
 
-    showDialog<void>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(
-            l10n.homeDeleteDialogTitle(group.title),
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontVariations: <FontVariation>[
-                ...(Theme.of(context).textTheme.titleLarge?.fontVariations ??
-                        const <FontVariation>[])
-                    .where((v) => v.axis != 'wght'),
-                const FontVariation('wght', 700),
-              ],
-            ),
-          ),
-          content: Text(
-            l10n.homeDeleteDialogContent(group.title),
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          actions: [
-            Row(
-              spacing: 10,
-              children: [
-                Expanded(
-                  child: ExpressiveButton.outlined(
-                    onPressed: () => Navigator.pop(context),
-                    label: l10n.homeDeleteDialogCancel,
-                    isExpanded: true,
-                    size: ExpressiveButtonSize.large,
-                  ),
-                ),
-                Expanded(
-                  child: ExpressiveButton.filled(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      widget.onDelete();
-                    },
-                    label: l10n.homeDeleteDialogConfirm,
-                    isExpanded: true,
-                    size: ExpressiveButtonSize.large,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
+    unawaited(
+      showExpressiveAlertDialog<bool>(
+        context: context,
+        title: l10n.homeDeleteDialogTitle(group.title),
+        content: l10n.homeDeleteDialogContent(group.title),
+        icon: const HugeIcon(
+          icon: HugeIcons.strokeRoundedDelete02,
+          strokeWidth: 2,
+        ),
+        isDestructive: true,
+        confirmLabel: l10n.homeDeleteDialogConfirm,
+        cancelLabel: l10n.homeDeleteDialogCancel,
+      ).then((confirmed) {
+        if (confirmed ?? false) {
+          widget.onDelete();
+        }
+      }),
     );
   }
 

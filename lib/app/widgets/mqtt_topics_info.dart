@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:expressive_kit/expressive_kit.dart';
 import 'package:flutter/services.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:material_ui/material_ui.dart';
@@ -86,28 +87,24 @@ class MqttTopicsInfo extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Card(
-          elevation: 2,
+        ExpressiveCard(
           margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 12,
-              children: [
-                _TopicItem(
-                  label: l10n.modifyDeviceMqttTopicOnline,
-                  topic: onlineTopic,
-                  onCopy: () => _copyToClipboard(
-                    context,
-                    l10n.modifyDeviceMqttSnackbarCopy(
-                      l10n.modifyDeviceMqttTopicOnline,
-                    ),
-                    onlineTopic,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 12,
+            children: [
+              _TopicItem(
+                label: l10n.modifyDeviceMqttTopicOnline,
+                topic: onlineTopic,
+                onCopy: () => _copyToClipboard(
+                  context,
+                  l10n.modifyDeviceMqttSnackbarCopy(
+                    l10n.modifyDeviceMqttTopicOnline,
                   ),
+                  onlineTopic,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 16),
@@ -192,39 +189,35 @@ class MqttTopicsInfo extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        Card(
-          elevation: 2,
+        ExpressiveCard(
           margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 12,
-              children: [
-                _TopicItem(
-                  label: l10n.modifyDeviceMqttTopicStatus,
-                  topic: statusTopic,
-                  onCopy: () => _copyToClipboard(
-                    context,
-                    l10n.modifyDeviceMqttSnackbarCopy(
-                      l10n.modifyDeviceMqttTopicStatus,
-                    ),
-                    statusTopic,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 12,
+            children: [
+              _TopicItem(
+                label: l10n.modifyDeviceMqttTopicStatus,
+                topic: statusTopic,
+                onCopy: () => _copyToClipboard(
+                  context,
+                  l10n.modifyDeviceMqttSnackbarCopy(
+                    l10n.modifyDeviceMqttTopicStatus,
                   ),
+                  statusTopic,
                 ),
-                _TopicItem(
-                  label: l10n.modifyDeviceMqttTopicCommand,
-                  topic: commandTopic,
-                  onCopy: () => _copyToClipboard(
-                    context,
-                    l10n.modifyDeviceMqttSnackbarCopy(
-                      l10n.modifyDeviceMqttTopicCommand,
-                    ),
-                    commandTopic,
+              ),
+              _TopicItem(
+                label: l10n.modifyDeviceMqttTopicCommand,
+                topic: commandTopic,
+                onCopy: () => _copyToClipboard(
+                  context,
+                  l10n.modifyDeviceMqttSnackbarCopy(
+                    l10n.modifyDeviceMqttTopicCommand,
                   ),
+                  commandTopic,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 16),
@@ -408,14 +401,15 @@ class _TopicItem extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-        IconButton(
+        ExpressiveIconButton.circle(
           onPressed: onCopy,
+          variant: ExpressiveIconButtonVariant.tonal,
+          size: ExpressiveIconButtonSize.small,
           icon: const HugeIcon(
             icon: HugeIcons.strokeRoundedCopy01,
             size: 20,
             strokeWidth: 2,
           ),
-          visualDensity: VisualDensity.compact,
         ),
       ],
     );

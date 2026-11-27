@@ -11,7 +11,7 @@ Future<void> main() async {
   // Initialize Firebase with the default options
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  const currentEnv = Environment.prod;
+  const currentEnv = Environment.mock;
 
   // Setup service locator
   setupServiceLocator(currentEnv);

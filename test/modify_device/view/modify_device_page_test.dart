@@ -113,7 +113,7 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        await tester.tap(find.byType(Switch));
+        await tester.tap(find.byType(ExpressiveSwitch));
         await tester.pumpAndSettle();
 
         await tester.tap(find.byType(ExpressiveFab));
@@ -158,13 +158,15 @@ void main() {
         await tester.pumpAndSettle();
 
         await tester.scrollUntilVisible(
-          find.byType(Slider),
+          find.byType(ExpressiveSlider),
           200,
           scrollable: find.byType(Scrollable).first,
         );
         await tester.pumpAndSettle();
 
-        final slider = tester.widget<Slider>(find.byType(Slider));
+        final slider = tester.widget<ExpressiveSlider>(
+          find.byType(ExpressiveSlider),
+        );
         slider.onChanged?.call(8);
         await tester.pumpAndSettle();
 

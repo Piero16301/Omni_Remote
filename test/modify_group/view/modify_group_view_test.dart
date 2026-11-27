@@ -63,7 +63,7 @@ void main() {
     testWidgets('triggers cubit methods on form interaction', (tester) async {
       await tester.pumpWidget(buildSubject());
 
-      final appTextFields = find.byType(AppTextField);
+      final appTextFields = find.byType(ExpressiveTextFormField);
       await tester.enterText(appTextFields.at(0), 'New Title');
       verify(() => modifyGroupCubit.changeTitle('New Title')).called(1);
 
@@ -148,8 +148,8 @@ void main() {
 
     testWidgets('title validator validates input correctly', (tester) async {
       await tester.pumpWidget(buildSubject());
-      final titleField = tester.widget<AppTextField>(
-        find.byType(AppTextField).first,
+      final titleField = tester.widget<ExpressiveTextFormField>(
+        find.byType(ExpressiveTextFormField).first,
       );
 
       expect(titleField.validator?.call(null), isNotNull);

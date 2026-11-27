@@ -126,6 +126,9 @@ jobs:
           PATCH=${PADDED: -1:1}
           echo "value=${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
 
+      - name: 🔧 Set Environment to Production
+        run: sed -i 's/Environment\.[a-zA-Z0-9_]*/Environment.prod/g' lib/main.dart
+
       - name: 🛠️ Build the application (AAB)
         run: |
           flutter build appbundle --flavor production -t lib/main.dart --build-name="${{ steps.build_name.outputs.value }}" --build-number="${{ github.run_number }}"

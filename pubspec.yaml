@@ -11,7 +11,7 @@ dependencies:
   bloc: ^9.2.2
   country_flags: ^4.1.2
   equatable: ^3.0.0
-  expressive_kit: ^0.1.2
+  expressive_kit: ^0.1.3
   firebase_analytics: ^13.1.0
   firebase_core: ^5.2.0
   firebase_crashlytics: ^6.1.0

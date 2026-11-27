@@ -212,7 +212,7 @@ void main() {
       await tester.tap(find.byType(ListTile).last);
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.byType(ExpressiveAlertDialog), findsOneWidget);
 
       await tester.tap(
         find.byWidgetPredicate(
@@ -223,7 +223,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.byType(ExpressiveAlertDialog), findsNothing);
     });
 
     testWidgets('reconnect option in bottom sheet calls _verifyStatus', (
@@ -361,5 +361,59 @@ void main() {
       expect(find.text('Bedroom'), findsOneWidget);
       expect(find.text(''), findsNothing);
     });
+
+    testWidgets(
+      'subscribes and turns online when AppCubit transitions to connected',
+      (tester) async {
+        await getIt.reset();
+        setupServiceLocator(Environment.mock);
+
+        final realAppCubit = AppCubit()..initialLoad();
+        await realAppCubit.initializeMqttClient();
+        final realHomeCubit = HomeCubit();
+
+        await tester.pumpWidget(
+          MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: realAppCubit),
+              BlocProvider.value(value: realHomeCubit),
+            ],
+            child: MaterialApp(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: Scaffold(
+                body: GroupCard(
+                  group: testGroup,
+                  onEdit: () {},
+                  onDelete: () {},
+                ),
+              ),
+            ),
+          ),
+        );
+
+        final initFuture = getIt<MqttService>().connectMqtt();
+        await tester.pump(const Duration(milliseconds: 600));
+        await initFuture;
+        await tester.pump();
+        await tester.pump();
+
+        expect(
+          realAppCubit.state.brokerConnectionStatus,
+          BrokerConnectionStatus.connected,
+        );
+        expect(
+          getIt<MqttService>().mqttClient?.connectionStatus?.state,
+          MqttConnectionState.connected,
+        );
+        final icons = tester
+            .widgetList<HugeIcon>(find.byType(HugeIcon))
+            .toList();
+        expect(icons.map((i) => i.color), contains(Colors.green));
+
+        await realAppCubit.close();
+        await realHomeCubit.close();
+      },
+    );
   });
 }

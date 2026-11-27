@@ -148,7 +148,7 @@ void main() {
 
       expect(find.text('Light'), findsOneWidget);
       expect(find.text('Main'), findsOneWidget);
-      expect(find.byType(Switch), findsOneWidget);
+      expect(find.byType(ExpressiveSwitch), findsOneWidget);
     });
 
     testWidgets('subscribes to MQTT topic on load', (tester) async {
@@ -173,7 +173,7 @@ void main() {
         suffix: AppVariables.commandSuffix,
       );
 
-      final switchWidget = find.byType(Switch);
+      final switchWidget = find.byType(ExpressiveSwitch);
       await tester.tap(switchWidget);
       await tester.pumpAndSettle();
 
@@ -223,7 +223,7 @@ void main() {
       await tester.tap(find.byType(ListTile).last);
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.byType(ExpressiveAlertDialog), findsOneWidget);
     });
 
     testWidgets('calls onDelete when Delete confirmation is accepted', (
@@ -261,7 +261,7 @@ void main() {
       await tester.tap(find.byType(ListTile).last);
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.byType(ExpressiveAlertDialog), findsOneWidget);
 
       await tester.tap(
         find.byWidgetPredicate(
@@ -272,7 +272,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.byType(ExpressiveAlertDialog), findsNothing);
     });
 
     testWidgets('Switch is disabled when groupIsOnline is false', (
@@ -280,7 +280,7 @@ void main() {
     ) async {
       await tester.pumpWidget(buildSubject(groupIsOnline: false));
 
-      final sw = tester.widget<Switch>(find.byType(Switch));
+      final sw = tester.widget<ExpressiveSwitch>(find.byType(ExpressiveSwitch));
       expect(sw.onChanged, isNull);
     });
 
@@ -299,7 +299,7 @@ void main() {
 
       await tester.pumpWidget(buildSubject());
 
-      await tester.tap(find.byType(Switch));
+      await tester.tap(find.byType(ExpressiveSwitch));
       await tester.pump();
 
       verifyNever(() => mockMqttClient.publishMessage(any(), any(), any()));
@@ -343,7 +343,7 @@ void main() {
       );
 
       expect(find.text('Fan'), findsOneWidget);
-      expect(find.byType(Switch), findsOneWidget);
+      expect(find.byType(ExpressiveSwitch), findsOneWidget);
     });
 
     testWidgets('BlocListener handles disconnect state', (tester) async {
@@ -392,14 +392,14 @@ void main() {
       messageController.add([receivedMessage]);
       await tester.pump();
 
-      final sw = tester.widget<Switch>(find.byType(Switch));
+      final sw = tester.widget<ExpressiveSwitch>(find.byType(ExpressiveSwitch));
       expect(sw.value, isTrue);
     });
 
     testWidgets('logs analytics event when toggled', (tester) async {
       await tester.pumpWidget(buildSubject());
 
-      await tester.tap(find.byType(Switch));
+      await tester.tap(find.byType(ExpressiveSwitch));
       await tester.pumpAndSettle();
 
       verify(
@@ -422,7 +422,7 @@ void main() {
       ]);
       await tester.pump();
 
-      final sw = tester.widget<Switch>(find.byType(Switch));
+      final sw = tester.widget<ExpressiveSwitch>(find.byType(ExpressiveSwitch));
       expect(sw.value, isFalse);
     });
 

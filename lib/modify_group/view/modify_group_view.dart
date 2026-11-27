@@ -70,15 +70,16 @@ class ModifyGroupView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  AppTextField(
+                  ExpressiveTextFormField.filled(
                     initialValue: state.title,
                     onChanged: context.read<ModifyGroupCubit>().changeTitle,
-                    label: l10n.modifyGroupTitleLabel,
+                    labelText: l10n.modifyGroupTitleLabel,
                     hintText: l10n.modifyGroupTitleHint,
-                    prefix: const HugeIcon(
+                    prefixIcon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedBookmark01,
                       strokeWidth: 2,
                     ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return l10n.modifyGroupTitleErrorEmpty;
@@ -96,13 +97,12 @@ class ModifyGroupView extends StatelessWidget {
                     },
                   ),
                   const SizedBox(height: 16),
-                  AppTextField(
+                  ExpressiveTextFormField.filled(
                     initialValue: state.subtitle,
-                    isRequired: false,
                     onChanged: context.read<ModifyGroupCubit>().changeSubtitle,
-                    label: l10n.modifyGroupSubtitleLabel,
+                    labelText: l10n.modifyGroupSubtitleLabel,
                     hintText: l10n.modifyGroupSubtitleHint,
-                    prefix: const HugeIcon(
+                    prefixIcon: const HugeIcon(
                       icon: HugeIcons.strokeRoundedNote,
                       strokeWidth: 2,
                     ),
